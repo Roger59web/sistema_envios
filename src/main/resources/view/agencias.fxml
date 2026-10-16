@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox spacing="16" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.AgenciasController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <Label text="Agencias" styleClass="titulo"/>
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="170"/>
+                <TableColumn fx:id="colCiudad" text="Ciudad" prefWidth="100"/>
+                <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="190"/>
+                <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
+        <Label fx:id="lblModo" styleClass="subtitulo"/>
+        <Label text="Nombre" styleClass="etiqueta"/>
+        <TextField fx:id="txtNombre"/>
+        <Label text="Ciudad" styleClass="etiqueta"/>
+        <TextField fx:id="txtCiudad"/>
+        <Label text="Dirección" styleClass="etiqueta"/>
+        <TextField fx:id="txtDireccion"/>
+        <Label text="Teléfono" styleClass="etiqueta"/>
+        <TextField fx:id="txtTelefono"/>
+        <CheckBox fx:id="chkActivo" text="Agencia activa"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            <Button text="Nueva" onAction="#onNuevo"/>
+            <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardar"/>
+        </HBox>
+    </VBox>
+</HBox>

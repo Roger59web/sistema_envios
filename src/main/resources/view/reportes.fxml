@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.ReportesController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <Label text="Reportes" styleClass="titulo"/>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Label text="Desde:" styleClass="etiqueta"/>
+        <DatePicker fx:id="dpDesde"/>
+        <Label text="Hasta:" styleClass="etiqueta"/>
+        <DatePicker fx:id="dpHasta"/>
+        <Button text="Generar" styleClass="boton-primario" onAction="#onGenerar"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Exportar a CSV" onAction="#onExportar"/>
+    </HBox>
+
+    <HBox spacing="32" styleClass="panel-form" alignment="CENTER_LEFT">
+        <VBox spacing="2">
+            <Label text="Envíos registrados" styleClass="etiqueta"/>
+            <Label fx:id="lblTotalEnvios" styleClass="costo"/>
+        </VBox>
+        <VBox spacing="2">
+            <Label text="Ingresos (sin anulados)" styleClass="etiqueta"/>
+            <Label fx:id="lblIngresos" styleClass="costo"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="16">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Por agencia de origen" styleClass="subtitulo"/>
+            <TableView fx:id="tablaAgencias" prefHeight="130">
+                <columns>
+                    <TableColumn fx:id="colAgEtiqueta" text="Agencia" prefWidth="180"/>
+                    <TableColumn fx:id="colAgCantidad" text="Envíos" prefWidth="70"/>
+                    <TableColumn fx:id="colAgMonto" text="Ingresos (S/)" prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Por estado" styleClass="subtitulo"/>
+            <TableView fx:id="tablaEstados" prefHeight="130">
+                <columns>
+                    <TableColumn fx:id="colEstEtiqueta" text="Estado" prefWidth="180"/>
+                    <TableColumn fx:id="colEstCantidad" text="Envíos" prefWidth="70"/>
+                    <TableColumn fx:id="colEstMonto" text="Monto (S/)" prefWidth="110"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </HBox>
+
+    <Label text="Detalle de envíos" styleClass="subtitulo"/>
+    <TableView fx:id="tablaDetalle" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colCodigo" text="Código" prefWidth="90"/>
+            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="115"/>
+            <TableColumn fx:id="colRuta" text="Ruta" prefWidth="210"/>
+            <TableColumn fx:id="colRemitente" text="Remitente" prefWidth="150"/>
+            <TableColumn fx:id="colDestinatario" text="Destinatario" prefWidth="150"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="130"/>
+            <TableColumn fx:id="colCosto" text="Costo (S/)" prefWidth="80"/>
+        </columns>
+    </TableView>
+</VBox>

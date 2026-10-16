@@ -20,7 +20,7 @@ public class LoginController {
     @FXML
     private void onIngresar() {
         String usuario = txtUsuario.getText().trim();
-        String clave = txtClave.getText().trim();
+        String clave = txtClave.getText();
 
         if (usuario.isEmpty() || clave.isEmpty()) {
             lblError.setText("Ingresa tu usuario y contraseña.");

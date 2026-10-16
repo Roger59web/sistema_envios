@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.SeguimientoController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <Label text="Seguimiento de envíos" styleClass="titulo"/>
+
+    <HBox spacing="8">
+        <TextField fx:id="txtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
+        <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscar"/>
+    </HBox>
+
+    <GridPane hgap="12" vgap="6" styleClass="panel-form">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+        </columnConstraints>
+
+        <Label text="Código:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="lblCodigo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Estado:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <Label fx:id="lblEstado" styleClass="subtitulo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+        <Label text="Ruta:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="lblRuta" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Registrado:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <Label fx:id="lblFecha" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+        <Label text="Remitente:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label fx:id="lblRemitente" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Destinatario:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <Label fx:id="lblDestinatario" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+        <Label text="Contenido:" styleClass="etiqueta" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label fx:id="lblDescripcion" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Peso / bultos:" styleClass="etiqueta" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+        <Label fx:id="lblPesoBultos" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+
+        <Label text="Costo:" styleClass="etiqueta" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Label fx:id="lblCosto" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Label text="Historial de movimientos" styleClass="subtitulo"/>
+    <TableView fx:id="tablaHistorial" VBox.vgrow="ALWAYS" prefHeight="180">
+        <columns>
+            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120"/>
+            <TableColumn fx:id="colEstadoHist" text="Estado" prefWidth="140"/>
+            <TableColumn fx:id="colAgencia" text="Agencia" prefWidth="150"/>
+            <TableColumn fx:id="colEmpleado" text="Empleado" prefWidth="160"/>
+            <TableColumn fx:id="colObservacion" text="Observación" prefWidth="260"/>
+        </columns>
+    </TableView>
+
+    <VBox fx:id="panelEstado" spacing="6" styleClass="panel-form">
+        <Label text="Actualizar estado" styleClass="subtitulo"/>
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <ComboBox fx:id="cmbNuevoEstado" promptText="Nuevo estado" prefWidth="200"/>
+            <TextField fx:id="txtObservacion" promptText="Observación (obligatoria al anular)" HBox.hgrow="ALWAYS"/>
+            <Button text="Actualizar" styleClass="boton-primario" onAction="#onActualizarEstado"/>
+        </HBox>
+    </VBox>
+</VBox>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox spacing="16" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.ClientesController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <Label text="Clientes" styleClass="titulo"/>
+        <HBox spacing="8">
+            <TextField fx:id="txtBuscar" promptText="Buscar por documento o nombre" HBox.hgrow="ALWAYS"/>
+            <Button text="Buscar" onAction="#onBuscar"/>
+        </HBox>
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colTipo" text="Tipo" prefWidth="60"/>
+                <TableColumn fx:id="colDocumento" text="Documento" prefWidth="110"/>
+                <TableColumn fx:id="colNombre" text="Nombre / Razón social" prefWidth="250"/>
+                <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="110"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
+        <Label fx:id="lblModo" styleClass="subtitulo"/>
+        <Label text="Tipo de documento" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbTipo" maxWidth="Infinity"/>
+        <Label text="Número de documento" styleClass="etiqueta"/>
+        <TextField fx:id="txtDocumento"/>
+        <Label text="Nombre completo / Razón social" styleClass="etiqueta"/>
+        <TextField fx:id="txtNombre"/>
+        <Label text="Teléfono" styleClass="etiqueta"/>
+        <TextField fx:id="txtTelefono"/>
+        <Label text="Correo electrónico" styleClass="etiqueta"/>
+        <TextField fx:id="txtEmail"/>
+        <Label text="Dirección" styleClass="etiqueta"/>
+        <TextField fx:id="txtDireccion"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            <Button text="Nuevo" onAction="#onNuevo"/>
+            <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardar"/>
+        </HBox>
+    </VBox>
+</HBox>

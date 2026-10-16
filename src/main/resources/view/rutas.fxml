@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox spacing="16" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.RutasController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <Label text="Rutas y tarifas" styleClass="titulo"/>
+        <Label text="Costo del envío = precio base (hasta 1 kg) + precio por cada kg adicional." styleClass="aviso"/>
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colOrigen" text="Origen" prefWidth="140"/>
+                <TableColumn fx:id="colDestino" text="Destino" prefWidth="140"/>
+                <TableColumn fx:id="colDias" text="Días" prefWidth="50"/>
+                <TableColumn fx:id="colBase" text="Base (S/)" prefWidth="75"/>
+                <TableColumn fx:id="colExtra" text="Kg extra (S/)" prefWidth="90"/>
+                <TableColumn fx:id="colPesoMax" text="Peso máx." prefWidth="75"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="70"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
+        <Label fx:id="lblModo" styleClass="subtitulo" wrapText="true"/>
+        <Label text="Agencia de origen" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbOrigen" maxWidth="Infinity"/>
+        <Label text="Agencia de destino" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbDestino" maxWidth="Infinity"/>
+        <Label text="Días estimados" styleClass="etiqueta"/>
+        <TextField fx:id="txtDias"/>
+        <Label text="Precio base (S/, hasta 1 kg)" styleClass="etiqueta"/>
+        <TextField fx:id="txtPrecioBase"/>
+        <Label text="Precio por kg adicional (S/)" styleClass="etiqueta"/>
+        <TextField fx:id="txtPrecioKg"/>
+        <Label text="Peso máximo (kg)" styleClass="etiqueta"/>
+        <TextField fx:id="txtPesoMax"/>
+        <CheckBox fx:id="chkActivo" text="Ruta activa"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            <Button text="Nueva" onAction="#onNuevo"/>
+            <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardar"/>
+        </HBox>
+    </VBox>
+</HBox>

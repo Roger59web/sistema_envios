@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefWidth="900" prefHeight="560"
+<BorderPane prefWidth="1100" prefHeight="680"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.grupo.envios.controller.PrincipalController">
     <top>
@@ -20,21 +20,29 @@
     </top>
 
     <left>
-        <VBox spacing="8" styleClass="menu-lateral" prefWidth="200">
+        <VBox spacing="6" styleClass="menu-lateral" prefWidth="210">
             <padding>
                 <Insets top="16" right="12" bottom="16" left="12"/>
             </padding>
-            <Button text="Clientes" maxWidth="Infinity" onAction="#onModuloPendiente"/>
-            <Button text="Registrar envío" maxWidth="Infinity" onAction="#onModuloPendiente"/>
-            <Button text="Seguimiento" maxWidth="Infinity" onAction="#onModuloPendiente"/>
-            <Button text="Entregas" maxWidth="Infinity" onAction="#onModuloPendiente"/>
-            <Button text="Reportes" maxWidth="Infinity" onAction="#onModuloPendiente"/>
+            <Button text="Inicio" maxWidth="Infinity" onAction="#onInicio"/>
+
+            <Label text="OPERACIÓN" styleClass="seccion-menu"/>
+            <Button fx:id="btnClientes" text="Clientes" maxWidth="Infinity" onAction="#onClientes"/>
+            <Button fx:id="btnEnvio" text="Registrar envío" maxWidth="Infinity" onAction="#onRegistrarEnvio"/>
+            <Button text="Seguimiento" maxWidth="Infinity" onAction="#onSeguimiento"/>
+            <Button fx:id="btnEntregas" text="Entregas" maxWidth="Infinity" onAction="#onEntregas"/>
+
+            <VBox fx:id="seccionAdmin" spacing="6">
+                <Label text="ADMINISTRACIÓN" styleClass="seccion-menu"/>
+                <Button text="Reportes" maxWidth="Infinity" onAction="#onReportes"/>
+                <Button text="Agencias" maxWidth="Infinity" onAction="#onAgencias"/>
+                <Button text="Rutas y tarifas" maxWidth="Infinity" onAction="#onRutas"/>
+                <Button text="Empleados" maxWidth="Infinity" onAction="#onEmpleados"/>
+            </VBox>
         </VBox>
     </left>
 
     <center>
-        <StackPane>
-            <Label fx:id="lblBienvenida" styleClass="titulo"/>
-        </StackPane>
+        <StackPane fx:id="contenido"/>
     </center>
 </BorderPane>

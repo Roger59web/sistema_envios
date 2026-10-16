@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.EntregasController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <Label text="Entrega de encomiendas" styleClass="titulo"/>
+
+    <HBox spacing="8">
+        <TextField fx:id="txtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
+        <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscar"/>
+    </HBox>
+
+    <GridPane hgap="12" vgap="6" styleClass="panel-form">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="180"/>
+        </columnConstraints>
+
+        <Label text="Código:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="lblCodigo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Estado:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <Label fx:id="lblEstado" styleClass="subtitulo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+        <Label text="Ruta:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <Label fx:id="lblRuta" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Contenido:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <Label fx:id="lblDescripcion" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+        <Label text="Remitente:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label fx:id="lblRemitente" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Destinatario:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <Label fx:id="lblDestinatario" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+    </GridPane>
+
+    <Label fx:id="lblAviso" styleClass="aviso" wrapText="true"/>
+
+    <VBox fx:id="panelEntrega" spacing="6" styleClass="panel-form">
+        <Label text="Datos de quien recoge" styleClass="subtitulo"/>
+        <HBox spacing="8">
+            <TextField fx:id="txtReceptor" promptText="Nombre completo" HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="txtDniReceptor" promptText="DNI" prefWidth="120"/>
+            <Button text="Usar datos del destinatario" onAction="#onUsarDestinatario"/>
+        </HBox>
+        <TextField fx:id="txtObservacion" promptText="Observación (opcional)"/>
+        <HBox alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="6"/>
+            </padding>
+            <Button text="Registrar entrega" styleClass="boton-primario" onAction="#onRegistrarEntrega"/>
+        </HBox>
+    </VBox>
+</VBox>

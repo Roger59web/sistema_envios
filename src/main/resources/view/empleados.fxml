@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox spacing="16" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.EmpleadosController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <Label text="Empleados" styleClass="titulo"/>
+        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colDni" text="DNI" prefWidth="80"/>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="170"/>
+                <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="90"/>
+                <TableColumn fx:id="colRol" text="Rol" prefWidth="110"/>
+                <TableColumn fx:id="colAgencia" text="Agencia" prefWidth="140"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="70"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
+        <Label fx:id="lblModo" styleClass="subtitulo"/>
+        <Label text="Agencia" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbAgencia" maxWidth="Infinity"/>
+        <Label text="Rol" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbRol" maxWidth="Infinity"/>
+        <Label text="DNI" styleClass="etiqueta"/>
+        <TextField fx:id="txtDni"/>
+        <Label text="Nombres" styleClass="etiqueta"/>
+        <TextField fx:id="txtNombres"/>
+        <Label text="Apellidos" styleClass="etiqueta"/>
+        <TextField fx:id="txtApellidos"/>
+        <Label text="Usuario" styleClass="etiqueta"/>
+        <TextField fx:id="txtUsuario"/>
+        <Label text="Contraseña" styleClass="etiqueta"/>
+        <PasswordField fx:id="txtClave"/>
+        <CheckBox fx:id="chkActivo" text="Empleado activo"/>
+        <HBox spacing="8" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10"/>
+            </padding>
+            <Button text="Nuevo" onAction="#onNuevo"/>
+            <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardar"/>
+        </HBox>
+    </VBox>
+</HBox>

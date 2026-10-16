@@ -26,7 +26,8 @@ public final class Navegador {
         Stage stage = (Stage) origen.getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle(titulo);
-        stage.setResizable(true);
+        stage.setResizable(!"login.fxml".equals(fxml));
+        stage.sizeToScene();
         stage.centerOnScreen();
     }
 }
