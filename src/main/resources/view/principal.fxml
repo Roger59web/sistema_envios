@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefWidth="900" prefHeight="560"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.grupo.envios.controller.PrincipalController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="barra-superior">
+            <padding>
+                <Insets top="12" right="20" bottom="12" left="20"/>
+            </padding>
+            <Label text="Sistema de Envíos" styleClass="titulo-barra"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblUsuario" styleClass="texto-barra"/>
+            <Button fx:id="btnCerrarSesion" text="Cerrar sesión" onAction="#onCerrarSesion"/>
+        </HBox>
+    </top>
+
+    <left>
+        <VBox spacing="8" styleClass="menu-lateral" prefWidth="200">
+            <padding>
+                <Insets top="16" right="12" bottom="16" left="12"/>
+            </padding>
+            <Button text="Clientes" maxWidth="Infinity" onAction="#onModuloPendiente"/>
+            <Button text="Registrar envío" maxWidth="Infinity" onAction="#onModuloPendiente"/>
+            <Button text="Seguimiento" maxWidth="Infinity" onAction="#onModuloPendiente"/>
+            <Button text="Entregas" maxWidth="Infinity" onAction="#onModuloPendiente"/>
+            <Button text="Reportes" maxWidth="Infinity" onAction="#onModuloPendiente"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane>
+            <Label fx:id="lblBienvenida" styleClass="titulo"/>
+        </StackPane>
+    </center>
+</BorderPane>
