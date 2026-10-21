@@ -20,6 +20,7 @@
         <Button text="Generar" styleClass="boton-primario" onAction="#onGenerar"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Exportar a CSV" onAction="#onExportar"/>
+        <Button text="Exportar a PDF" onAction="#onExportarPdf"/>
     </HBox>
 
     <HBox spacing="32" styleClass="panel-form" alignment="CENTER_LEFT">
@@ -56,7 +57,10 @@
         </VBox>
     </HBox>
 
-    <Label text="Detalle de envíos" styleClass="subtitulo"/>
+    <HBox spacing="8" alignment="BASELINE_LEFT">
+        <Label text="Detalle de envíos" styleClass="subtitulo"/>
+        <Label text="(doble clic en un envío para ver e imprimir su ticket)" styleClass="aviso"/>
+    </HBox>
     <TableView fx:id="tablaDetalle" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colCodigo" text="Código" prefWidth="90"/>

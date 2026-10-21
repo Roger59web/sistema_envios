@@ -19,9 +19,13 @@ public class EnvioDAO {
             SELECT e.id_envio, e.codigo_seguimiento, e.id_ruta,
                    ru.id_agencia_origen, ru.id_agencia_destino,
                    ao.nombre AS origen, ad.nombre AS destino,
+                   ao.direccion AS origen_direccion, ao.telefono AS origen_telefono,
                    e.id_remitente, rem.nombre_completo AS remitente, rem.numero_documento AS remitente_doc,
+                   rem.telefono AS remitente_tel,
                    e.id_destinatario, des.nombre_completo AS destinatario, des.numero_documento AS destinatario_doc,
-                   e.id_empleado_registro, e.id_estado_actual, es.nombre AS estado, e.fecha_registro,
+                   des.telefono AS destinatario_tel,
+                   e.id_empleado_registro, em.nombres || ' ' || em.apellidos AS empleado_registro,
+                   e.id_estado_actual, es.nombre AS estado, e.fecha_registro,
                    e.descripcion, e.cantidad_bultos, e.peso_kg, e.valor_declarado, e.costo_envio, e.observaciones
             FROM envio e
             JOIN ruta ru ON ru.id_ruta = e.id_ruta
@@ -30,6 +34,7 @@ public class EnvioDAO {
             JOIN cliente rem ON rem.id_cliente = e.id_remitente
             JOIN cliente des ON des.id_cliente = e.id_destinatario
             JOIN estado_envio es ON es.id_estado = e.id_estado_actual
+            JOIN empleado em ON em.id_empleado = e.id_empleado_registro
             """;
 
     /** Reserva el siguiente id de envío (sirve para armar el código de seguimiento). */
@@ -157,13 +162,18 @@ public class EnvioDAO {
         e.setIdAgenciaDestino(rs.getInt("id_agencia_destino"));
         e.setOrigen(rs.getString("origen"));
         e.setDestino(rs.getString("destino"));
+        e.setOrigenDireccion(rs.getString("origen_direccion"));
+        e.setOrigenTelefono(rs.getString("origen_telefono"));
         e.setIdRemitente(rs.getInt("id_remitente"));
         e.setRemitente(rs.getString("remitente"));
         e.setRemitenteDocumento(rs.getString("remitente_doc"));
+        e.setRemitenteTelefono(rs.getString("remitente_tel"));
         e.setIdDestinatario(rs.getInt("id_destinatario"));
         e.setDestinatario(rs.getString("destinatario"));
         e.setDestinatarioDocumento(rs.getString("destinatario_doc"));
+        e.setDestinatarioTelefono(rs.getString("destinatario_tel"));
         e.setIdEmpleadoRegistro(rs.getInt("id_empleado_registro"));
+        e.setEmpleadoRegistro(rs.getString("empleado_registro"));
         e.setIdEstadoActual(rs.getInt("id_estado_actual"));
         e.setEstado(rs.getString("estado"));
         e.setFechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime());

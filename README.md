@@ -52,6 +52,14 @@ se confirma la llegada y se entrega en la agencia de **destino**. El administrad
 4. `cajero2` (Arequipa) → **Entregas** → registra quién recoge (nombre y DNI).
 5. `admin` → **Reportes** para ver envíos e ingresos por agencia y por estado, y exportar a CSV.
 
+## Ticket y PDF
+
+- Al **registrar un envío** se abre la vista previa del ticket (formato de impresora térmica de 80 mm).
+  Desde ahí se puede **imprimir** (botón o `Ctrl+P`) o **guardar el detalle en PDF** (A4, con comprobante e historial).
+- En **Seguimiento**, con un envío cargado: *Imprimir ticket*, *Guardar PDF* y *Copiar código*.
+- En **Reportes**: *Exportar a PDF* (resumen + detalle) además de CSV, y doble clic en un envío para ver su ticket.
+- Para obtener el ticket como PDF también se puede elegir la impresora *Microsoft Print to PDF*.
+
 ## Cálculo de la tarifa
 
 Cada ruta (origen → destino) tiene una tarifa: precio base (hasta 1 kg), precio por kg adicional y peso máximo.

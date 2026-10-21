@@ -35,6 +35,20 @@
     -fx-text-fill: #1e8449;
 }
 
+.aviso-exito {
+    -fx-background-color: #e3f4ea;
+    -fx-text-fill: #1e8449;
+    -fx-font-weight: bold;
+    -fx-padding: 10 12;
+}
+
+/* Color del estado del envío (Seguimiento y Entregas) */
+.estado-registrado { -fx-text-fill: #2c5282; }
+.estado-en-transito { -fx-text-fill: #b9770e; }
+.estado-en-agencia-destino { -fx-text-fill: #6c3483; }
+.estado-entregado { -fx-text-fill: #1e8449; }
+.estado-anulado { -fx-text-fill: #c0392b; }
+
 .login-box {
     -fx-background-color: #f4f6f9;
 }

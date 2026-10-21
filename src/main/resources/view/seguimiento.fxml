@@ -15,6 +15,10 @@
     <HBox spacing="8">
         <TextField fx:id="txtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
         <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscar"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnCopiar" text="Copiar código" onAction="#onCopiarCodigo"/>
+        <Button fx:id="btnPdf" text="Guardar PDF" onAction="#onGuardarPdf"/>
+        <Button fx:id="btnTicket" text="Imprimir ticket" styleClass="boton-primario" onAction="#onTicket"/>
     </HBox>
 
     <GridPane hgap="12" vgap="6" styleClass="panel-form">

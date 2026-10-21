@@ -2,13 +2,17 @@ package com.grupo.envios.controller;
 
 import com.grupo.envios.model.Envio;
 import com.grupo.envios.model.ResumenFila;
+import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.service.ReporteService;
 import com.grupo.envios.util.Alertas;
+import com.grupo.envios.util.GeneradorPdf;
+import com.grupo.envios.util.VistaTicket;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
@@ -49,6 +53,7 @@ public class ReportesController {
     @FXML private TableColumn<Envio, BigDecimal> colCosto;
 
     private final ReporteService service = new ReporteService();
+    private final EnvioService envioService = new EnvioService();
 
     @FXML
     private void initialize() {
@@ -66,6 +71,16 @@ public class ReportesController {
         colDestinatario.setCellValueFactory(new PropertyValueFactory<>("destinatario"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         colCosto.setCellValueFactory(new PropertyValueFactory<>("costoEnvio"));
+
+        tablaDetalle.setRowFactory(tabla -> {
+            TableRow<Envio> fila = new TableRow<>();
+            fila.setOnMouseClicked(ev -> {
+                if (ev.getClickCount() == 2 && !fila.isEmpty()) {
+                    verTicket(fila.getItem());
+                }
+            });
+            return fila;
+        });
 
         LocalDate hoy = LocalDate.now();
         dpDesde.setValue(hoy.withDayOfMonth(1));
@@ -125,6 +140,37 @@ public class ReportesController {
                 w.write("\n");
             }
             Alertas.info("Reporte guardado en:\n" + archivo.getAbsolutePath());
+        } catch (Exception e) {
+            Alertas.manejar(e);
+        }
+    }
+
+    @FXML
+    private void onExportarPdf() {
+        List<Envio> detalle = new ArrayList<>(tablaDetalle.getItems());
+        if (detalle.isEmpty()) {
+            Alertas.advertencia("No hay envíos en el reporte para exportar.");
+            return;
+        }
+        File archivo = GeneradorPdf.elegirDestino(tablaDetalle.getScene().getWindow(), "Guardar reporte de envíos",
+                "reporte_envios_" + dpDesde.getValue() + "_" + dpHasta.getValue() + ".pdf");
+        if (archivo == null) {
+            return;
+        }
+        try {
+            GeneradorPdf.reporte(dpDesde.getValue(), dpHasta.getValue(),
+                    new ArrayList<>(tablaAgencias.getItems()), new ArrayList<>(tablaEstados.getItems()),
+                    detalle, archivo);
+            GeneradorPdf.ofrecerAbrir(archivo);
+        } catch (Exception e) {
+            Alertas.manejar(e);
+        }
+    }
+
+    private void verTicket(Envio envio) {
+        try {
+            VistaTicket.mostrar(envioService.detalle(envio.getCodigoSeguimiento()),
+                    tablaDetalle.getScene().getWindow());
         } catch (Exception e) {
             Alertas.manejar(e);
         }

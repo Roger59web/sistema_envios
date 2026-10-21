@@ -1,13 +1,18 @@
 package com.grupo.envios.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Comprobante {
+
+    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private int idEnvio;
     private String tipo;
     private String serie;
     private int numero;
+    private LocalDateTime fechaEmision;
     private BigDecimal subtotal;
     private BigDecimal igv;
     private BigDecimal total;
@@ -25,6 +30,9 @@ public class Comprobante {
     public int getNumero() { return numero; }
     public void setNumero(int numero) { this.numero = numero; }
 
+    public LocalDateTime getFechaEmision() { return fechaEmision; }
+    public void setFechaEmision(LocalDateTime fechaEmision) { this.fechaEmision = fechaEmision; }
+
     public BigDecimal getSubtotal() { return subtotal; }
     public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 
@@ -40,5 +48,9 @@ public class Comprobante {
     /** Ejemplo: B001-00000012 */
     public String getNumeroTexto() {
         return serie + "-" + String.format("%08d", numero);
+    }
+
+    public String getFechaTexto() {
+        return fechaEmision == null ? "" : fechaEmision.format(FORMATO);
     }
 }

@@ -9,8 +9,10 @@ import com.grupo.envios.service.ClienteService;
 import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.service.RutaService;
 import com.grupo.envios.util.Alertas;
+import com.grupo.envios.util.Formato;
 import com.grupo.envios.util.Sesion;
 import com.grupo.envios.util.Validaciones;
+import com.grupo.envios.util.VistaTicket;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -71,6 +73,10 @@ public class RegistrarEnvioController {
 
         cmbRuta.valueProperty().addListener((obs, anterior, nueva) -> actualizarCosto());
         txtPeso.textProperty().addListener((obs, anterior, nuevo) -> actualizarCosto());
+
+        // Enter en el documento busca al cliente sin tener que usar el mouse.
+        txtRemDoc.setOnAction(e -> onBuscarRemitente());
+        txtDesDoc.setOnAction(e -> onBuscarDestinatario());
 
         limpiar();
     }
@@ -155,13 +161,26 @@ public class RegistrarEnvioController {
                     cmbMetodo.getValue());
 
             ResultadoRegistro resultado = envioService.registrar(solicitud, Sesion.getActual());
-            Alertas.info("Envío registrado correctamente.\n\n"
-                    + "Código de seguimiento: " + resultado.codigoSeguimiento() + "\n"
-                    + "Comprobante: " + resultado.comprobante() + "\n"
-                    + "Total cobrado: S/ " + resultado.total().toPlainString());
             limpiar();
+            mostrarTicket(resultado);
         } catch (Exception e) {
             Alertas.manejar(e);
+        }
+    }
+
+    /** Tras registrar, abre la vista previa del ticket para imprimirlo o guardarlo en PDF. */
+    private void mostrarTicket(ResultadoRegistro resultado) {
+        String resumen = "Envío registrado correctamente.\n"
+                + "Código: " + resultado.codigoSeguimiento()
+                + "   |   Comprobante: " + resultado.comprobante()
+                + "\nTotal cobrado: " + Formato.soles(resultado.total());
+        try {
+            VistaTicket.mostrar(envioService.detalle(resultado.codigoSeguimiento()),
+                    lblCosto.getScene().getWindow(), resumen);
+        } catch (Exception e) {
+            // El envío ya quedó registrado: si falla la vista previa, al menos se informa el resultado.
+            e.printStackTrace();
+            Alertas.info(resumen + "\n\nPuedes reimprimir el ticket desde Seguimiento.");
         }
     }
 }

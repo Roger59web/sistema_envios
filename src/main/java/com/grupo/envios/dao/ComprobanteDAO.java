@@ -1,5 +1,6 @@
 package com.grupo.envios.dao;
 
+import com.grupo.envios.config.Conexion;
 import com.grupo.envios.model.Comprobante;
 
 import java.sql.Connection;
@@ -33,6 +34,32 @@ public class ComprobanteDAO {
             ps.setBigDecimal(7, c.getTotal());
             ps.setString(8, c.getMetodoPago());
             ps.executeUpdate();
+        }
+    }
+
+    /** Devuelve el comprobante del envío, o null si no tiene. */
+    public Comprobante buscarPorEnvio(int idEnvio) throws SQLException {
+        String sql = "SELECT id_envio, tipo, serie, numero, fecha_emision, subtotal, igv, total, metodo_pago "
+                + "FROM comprobante WHERE id_envio = ?";
+        try (Connection cn = Conexion.obtener();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idEnvio);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                Comprobante c = new Comprobante();
+                c.setIdEnvio(rs.getInt("id_envio"));
+                c.setTipo(rs.getString("tipo"));
+                c.setSerie(rs.getString("serie"));
+                c.setNumero(rs.getInt("numero"));
+                c.setFechaEmision(rs.getTimestamp("fecha_emision").toLocalDateTime());
+                c.setSubtotal(rs.getBigDecimal("subtotal"));
+                c.setIgv(rs.getBigDecimal("igv"));
+                c.setTotal(rs.getBigDecimal("total"));
+                c.setMetodoPago(rs.getString("metodo_pago"));
+                return c;
+            }
         }
     }
 }

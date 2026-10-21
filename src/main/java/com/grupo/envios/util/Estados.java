@@ -1,5 +1,7 @@
 package com.grupo.envios.util;
 
+import javafx.scene.control.Label;
+
 /**
  * Identificadores de la tabla estado_envio (se cargan en ese orden en el script SQL inicial).
  */
@@ -23,6 +25,14 @@ public final class Estados {
             case ANULADO -> "ANULADO";
             default -> "DESCONOCIDO";
         };
+    }
+
+    /** Pinta la etiqueta con el color del estado (clases estado-* de estilos.css). */
+    public static void colorear(Label etiqueta, String nombre) {
+        etiqueta.getStyleClass().removeIf(c -> c.startsWith("estado-"));
+        if (nombre != null && !nombre.isBlank()) {
+            etiqueta.getStyleClass().add("estado-" + nombre.trim().toLowerCase().replace(' ', '-'));
+        }
     }
 
     /** Devuelve el id del estado con ese nombre, o 0 si no existe. */

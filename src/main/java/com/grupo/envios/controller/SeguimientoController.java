@@ -7,21 +7,30 @@ import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.util.Alertas;
 import com.grupo.envios.util.Estados;
 import com.grupo.envios.util.Sesion;
+import com.grupo.envios.util.VistaTicket;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.util.List;
 
 public class SeguimientoController {
 
     @FXML private TextField txtCodigo;
+    @FXML private Button btnCopiar;
+    @FXML private Button btnPdf;
+    @FXML private Button btnTicket;
 
     @FXML private Label lblCodigo;
     @FXML private Label lblEstado;
@@ -70,8 +79,16 @@ public class SeguimientoController {
         lblDescripcion.setText("");
         lblPesoBultos.setText("");
         lblCosto.setText("");
+        Estados.colorear(lblEstado, null);
         tablaHistorial.getItems().clear();
         ocultarPanelEstado();
+        habilitarAcciones(false);
+    }
+
+    private void habilitarAcciones(boolean hayEnvio) {
+        btnCopiar.setDisable(!hayEnvio);
+        btnPdf.setDisable(!hayEnvio);
+        btnTicket.setDisable(!hayEnvio);
     }
 
     private void ocultarPanelEstado() {
@@ -83,6 +100,8 @@ public class SeguimientoController {
         envio = e;
         lblCodigo.setText(e.getCodigoSeguimiento());
         lblEstado.setText(e.getEstado());
+        Estados.colorear(lblEstado, e.getEstado());
+        habilitarAcciones(true);
         lblRuta.setText(e.getRuta());
         lblFecha.setText(e.getFechaTexto());
         lblRemitente.setText(e.getRemitente() + " (" + e.getRemitenteDocumento() + ")");
@@ -112,6 +131,44 @@ public class SeguimientoController {
             mostrar(service.buscar(txtCodigo.getText()));
         } catch (Exception e) {
             limpiarDetalle();
+            Alertas.manejar(e);
+        }
+    }
+
+    @FXML
+    private void onCopiarCodigo() {
+        if (envio == null) {
+            return;
+        }
+        ClipboardContent contenido = new ClipboardContent();
+        contenido.putString(envio.getCodigoSeguimiento());
+        Clipboard.getSystemClipboard().setContent(contenido);
+        btnCopiar.setText("¡Copiado!");
+        PauseTransition pausa = new PauseTransition(Duration.seconds(1.5));
+        pausa.setOnFinished(ev -> btnCopiar.setText("Copiar código"));
+        pausa.play();
+    }
+
+    @FXML
+    private void onTicket() {
+        if (envio == null) {
+            return;
+        }
+        try {
+            VistaTicket.mostrar(service.detalle(envio.getCodigoSeguimiento()), txtCodigo.getScene().getWindow());
+        } catch (Exception e) {
+            Alertas.manejar(e);
+        }
+    }
+
+    @FXML
+    private void onGuardarPdf() {
+        if (envio == null) {
+            return;
+        }
+        try {
+            VistaTicket.guardarPdf(service.detalle(envio.getCodigoSeguimiento()), txtCodigo.getScene().getWindow());
+        } catch (Exception e) {
             Alertas.manejar(e);
         }
     }

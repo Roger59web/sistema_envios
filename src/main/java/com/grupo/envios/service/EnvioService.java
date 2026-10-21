@@ -7,6 +7,7 @@ import com.grupo.envios.dao.EnvioDAO;
 import com.grupo.envios.dao.HistorialDAO;
 import com.grupo.envios.model.Cliente;
 import com.grupo.envios.model.Comprobante;
+import com.grupo.envios.model.DetalleEnvio;
 import com.grupo.envios.model.Empleado;
 import com.grupo.envios.model.Envio;
 import com.grupo.envios.model.HistorialEnvio;
@@ -165,6 +166,13 @@ public class EnvioService {
 
     public List<HistorialEnvio> historial(int idEnvio) throws SQLException {
         return historialDAO.listarPorEnvio(idEnvio);
+    }
+
+    /** Envío con su comprobante e historial: lo necesario para imprimir el ticket o el PDF. */
+    public DetalleEnvio detalle(String codigo) throws SQLException {
+        Envio envio = buscar(codigo);
+        return new DetalleEnvio(envio, comprobanteDAO.buscarPorEnvio(envio.getIdEnvio()),
+                historialDAO.listarPorEnvio(envio.getIdEnvio()));
     }
 
     /** Estados a los que se puede pasar desde el estado actual (la entrega se hace en su módulo). */

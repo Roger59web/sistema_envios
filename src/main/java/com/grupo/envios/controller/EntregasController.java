@@ -42,6 +42,7 @@ public class EntregasController {
         envio = null;
         lblCodigo.setText("");
         lblEstado.setText("");
+        Estados.colorear(lblEstado, null);
         lblRuta.setText("");
         lblRemitente.setText("");
         lblDestinatario.setText("");
@@ -57,6 +58,7 @@ public class EntregasController {
         envio = e;
         lblCodigo.setText(e.getCodigoSeguimiento());
         lblEstado.setText(e.getEstado());
+        Estados.colorear(lblEstado, e.getEstado());
         lblRuta.setText(e.getRuta());
         lblRemitente.setText(e.getRemitente() + " (" + e.getRemitenteDocumento() + ")");
         lblDestinatario.setText(e.getDestinatario() + " (" + e.getDestinatarioDocumento() + ")");
