@@ -5,6 +5,7 @@ import com.grupo.envios.dao.ComprobanteDAO;
 import com.grupo.envios.dao.EntregaDAO;
 import com.grupo.envios.dao.EnvioDAO;
 import com.grupo.envios.dao.HistorialDAO;
+import com.grupo.envios.dao.ManifiestoDAO;
 import com.grupo.envios.model.Cliente;
 import com.grupo.envios.model.Comprobante;
 import com.grupo.envios.model.DetalleEnvio;
@@ -25,9 +26,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
-/** Reglas de negocio de los envíos: tarifa, registro, cambios de estado y entrega. */
+/** Reglas de negocio de los envíos: tarifa, registro, cambios de estado, despacho en lote y entrega. */
 public class EnvioService {
 
     private static final BigDecimal FACTOR_IGV = new BigDecimal("1.18");
@@ -38,6 +40,7 @@ public class EnvioService {
     private final HistorialDAO historialDAO = new HistorialDAO();
     private final ComprobanteDAO comprobanteDAO = new ComprobanteDAO();
     private final EntregaDAO entregaDAO = new EntregaDAO();
+    private final ManifiestoDAO manifiestoDAO = new ManifiestoDAO();
     private final ClienteService clienteService = new ClienteService();
 
     // ------------------------------------------------------------------ tarifa
@@ -252,9 +255,141 @@ public class EnvioService {
         try (Connection cn = Conexion.obtener()) {
             cn.setAutoCommit(false);
             try {
-                envioDAO.actualizarEstado(cn, actual.getIdEnvio(), nuevoEstado);
-                historialDAO.insertar(cn, actual.getIdEnvio(), nuevoEstado, empleado.getIdAgencia(),
+                moverEstado(cn, actual, nuevoEstado);
+                historialDAO.insertar(cn, actual.getIdEnvio(), nuevoEstado, agenciaDelMovimiento(nuevoEstado, actual),
                         empleado.getIdEmpleado(), motivo);
+                cn.commit();
+            } catch (SQLException | RuntimeException e) {
+                cn.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Aviso para quien consulta un envío que no le toca mover: qué sigue y qué agencia lo hace.
+     * Devuelve "" si el empleado puede hacer el siguiente paso o si el envío ya terminó su flujo.
+     */
+    public String avisoSoloConsulta(Envio envio, Empleado empleado) {
+        return switch (envio.getIdEstadoActual()) {
+            case Estados.REGISTRADO -> puedeCambiarA(Estados.EN_TRANSITO, envio, empleado) ? ""
+                    : "Solo consulta. El despacho lo realiza el personal de almacén de " + envio.getOrigen() + ".";
+            case Estados.EN_TRANSITO -> puedeCambiarA(Estados.EN_AGENCIA_DESTINO, envio, empleado) ? ""
+                    : "Solo consulta. La llegada la confirma el personal de almacén de " + envio.getDestino() + ".";
+            case Estados.EN_AGENCIA_DESTINO -> puedeEntregarEn(empleado, envio.getIdAgenciaDestino())
+                    ? "Listo para entregar: regístralo en Entregas o en la Bandeja de agencia."
+                    : "Solo consulta. La entrega la registra el cajero de " + envio.getDestino() + ".";
+            default -> "";
+        };
+    }
+
+    // ------------------------------------------------------- bandeja de agencia
+
+    /** Envíos registrados en la agencia que esperan salir. */
+    public List<Envio> porDespachar(int idAgencia) throws SQLException {
+        return envioDAO.listarPorEstadoYAgencia(Estados.REGISTRADO, idAgencia, true);
+    }
+
+    /** Envíos que vienen en camino hacia la agencia. */
+    public List<Envio> porRecibir(int idAgencia) throws SQLException {
+        return envioDAO.listarPorEstadoYAgencia(Estados.EN_TRANSITO, idAgencia, false);
+    }
+
+    /** Envíos que ya están en la agencia esperando que el destinatario los recoja. */
+    public List<Envio> porEntregar(int idAgencia) throws SQLException {
+        return envioDAO.listarPorEstadoYAgencia(Estados.EN_AGENCIA_DESTINO, idAgencia, false);
+    }
+
+    public boolean puedeOperarAlmacen(Empleado empleado, int idAgencia) {
+        return tieneRol(empleado, Roles.ADMINISTRADOR, Roles.ALMACEN)
+                && (esAdmin(empleado) || empleado.getIdAgencia() == idAgencia);
+    }
+
+    public boolean puedeEntregarEn(Empleado empleado, int idAgencia) {
+        return puedeEntregar(empleado) && (esAdmin(empleado) || empleado.getIdAgencia() == idAgencia);
+    }
+
+    /**
+     * Despacha varios envíos juntos: crea un manifiesto de carga (vehículo y conductor) y pasa
+     * todos a EN TRANSITO. Todos deben ir por la misma ruta. Devuelve el código del manifiesto.
+     */
+    public String despachar(List<Envio> envios, String placa, String conductor, String observacion,
+                            Empleado empleado) throws SQLException {
+        if (envios == null || envios.isEmpty()) {
+            throw new NegocioException("Marca al menos un envío para despachar.");
+        }
+        Envio primero = envios.get(0);
+        if (!puedeCambiarA(Estados.EN_TRANSITO, primero, empleado)) {
+            throw new NegocioException(mensajeSinPermiso(Estados.EN_TRANSITO, primero));
+        }
+        for (Envio e : envios) {
+            if (e.getIdRuta() != primero.getIdRuta()) {
+                throw new NegocioException("Un manifiesto agrupa envíos de un mismo destino: "
+                        + primero.getCodigoSeguimiento() + " va a " + primero.getDestino() + " y "
+                        + e.getCodigoSeguimiento() + " a " + e.getDestino() + ". Filtra por destino.");
+            }
+        }
+        String placaOk = Validaciones.opcional(placa, "Placa", 10);
+        if (placaOk != null) {
+            placaOk = placaOk.toUpperCase(Locale.ROOT);
+        }
+        String conductorOk = Validaciones.opcional(conductor, "Conductor", 100);
+        String obs = Validaciones.opcional(observacion, "Observación", 200);
+
+        try (Connection cn = Conexion.obtener()) {
+            cn.setAutoCommit(false);
+            try {
+                int idManifiesto = manifiestoDAO.insertar(cn, primero.getIdRuta(), empleado.getIdEmpleado(),
+                        placaOk, conductorOk, obs);
+                String codigo = ManifiestoDAO.codigo(idManifiesto);
+                String detalle = "Despachado en " + codigo + (placaOk == null ? "" : " (placa " + placaOk + ")");
+                for (Envio e : envios) {
+                    if (!envioDAO.actualizarEstadoSi(cn, e.getIdEnvio(), Estados.REGISTRADO,
+                            Estados.EN_TRANSITO, idManifiesto)) {
+                        throw new NegocioException(e.getCodigoSeguimiento()
+                                + " ya no está pendiente de despacho. Actualiza la bandeja.");
+                    }
+                    historialDAO.insertar(cn, e.getIdEnvio(), Estados.EN_TRANSITO, e.getIdAgenciaOrigen(),
+                            empleado.getIdEmpleado(), detalle);
+                }
+                cn.commit();
+                return codigo;
+            } catch (SQLException | RuntimeException e) {
+                cn.rollback();
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * Confirma la llegada de varios envíos a la agencia destino. Solo se marcan los paquetes que
+     * físicamente llegaron: los que falten siguen EN TRANSITO y aparecen como atrasados.
+     */
+    public void recibir(List<Envio> envios, String observacion, Empleado empleado) throws SQLException {
+        if (envios == null || envios.isEmpty()) {
+            throw new NegocioException("Marca al menos un envío que haya llegado.");
+        }
+        for (Envio e : envios) {
+            if (!puedeCambiarA(Estados.EN_AGENCIA_DESTINO, e, empleado)) {
+                throw new NegocioException(mensajeSinPermiso(Estados.EN_AGENCIA_DESTINO, e));
+            }
+        }
+        String obs = Validaciones.opcional(observacion, "Observación", 200);
+
+        try (Connection cn = Conexion.obtener()) {
+            cn.setAutoCommit(false);
+            try {
+                for (Envio e : envios) {
+                    if (!envioDAO.actualizarEstadoSi(cn, e.getIdEnvio(), Estados.EN_TRANSITO,
+                            Estados.EN_AGENCIA_DESTINO, null)) {
+                        throw new NegocioException(e.getCodigoSeguimiento()
+                                + " ya no está en tránsito. Actualiza la bandeja.");
+                    }
+                    String detalle = obs != null ? obs : "Llegó a agencia destino"
+                            + (e.getManifiesto() == null ? "" : " (" + e.getManifiesto() + ")");
+                    historialDAO.insertar(cn, e.getIdEnvio(), Estados.EN_AGENCIA_DESTINO, e.getIdAgenciaDestino(),
+                            empleado.getIdEmpleado(), detalle);
+                }
                 cn.commit();
             } catch (SQLException | RuntimeException e) {
                 cn.rollback();
@@ -284,14 +419,20 @@ public class EnvioService {
         Validaciones.validarDni(dniReceptor, "El DNI de quien recoge");
         String dni = dniReceptor.trim();
         String obs = Validaciones.opcional(observacion, "Observación", 200);
+        boolean tercero = !dni.equals(actual.getDestinatarioDocumento());
+        if (tercero && obs == null) {
+            throw new NegocioException("Quien recoge no es el destinatario registrado. Indica en la observación "
+                    + "su vínculo (familiar, trabajador de la empresa, carta poder...).");
+        }
 
         try (Connection cn = Conexion.obtener()) {
             cn.setAutoCommit(false);
             try {
+                moverEstado(cn, actual, Estados.ENTREGADO);
                 entregaDAO.insertar(cn, actual.getIdEnvio(), empleado.getIdEmpleado(), nombre, dni, obs);
-                envioDAO.actualizarEstado(cn, actual.getIdEnvio(), Estados.ENTREGADO);
-                historialDAO.insertar(cn, actual.getIdEnvio(), Estados.ENTREGADO, empleado.getIdAgencia(),
-                        empleado.getIdEmpleado(), "Entregado a " + nombre + " (DNI " + dni + ")");
+                historialDAO.insertar(cn, actual.getIdEnvio(), Estados.ENTREGADO, actual.getIdAgenciaDestino(),
+                        empleado.getIdEmpleado(), "Entregado a " + nombre + " (DNI " + dni + ")"
+                                + (tercero ? " - recoge un tercero: " + obs : ""));
                 cn.commit();
             } catch (SQLException | RuntimeException e) {
                 cn.rollback();
@@ -301,6 +442,20 @@ public class EnvioService {
     }
 
     // ----------------------------------------------------------------- ayudas
+
+    /** Cambia el estado solo si nadie lo cambió antes (si no, avisa en lugar de pisar el otro cambio). */
+    private void moverEstado(Connection cn, Envio envio, int nuevoEstado) throws SQLException {
+        if (!envioDAO.actualizarEstadoSi(cn, envio.getIdEnvio(), envio.getIdEstadoActual(), nuevoEstado, null)) {
+            throw new NegocioException("El envío " + envio.getCodigoSeguimiento()
+                    + " acaba de cambiar de estado. Vuelve a buscarlo.");
+        }
+    }
+
+    /** Agencia donde ocurre físicamente el movimiento (el administrador puede operar desde otra). */
+    private int agenciaDelMovimiento(int nuevoEstado, Envio envio) {
+        return nuevoEstado == Estados.EN_AGENCIA_DESTINO || nuevoEstado == Estados.ENTREGADO
+                ? envio.getIdAgenciaDestino() : envio.getIdAgenciaOrigen();
+    }
 
     private boolean esAdmin(Empleado e) {
         return e != null && Roles.ADMINISTRADOR.equals(e.getRol());

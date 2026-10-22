@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.BandejaController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Bandeja de la agencia" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Agencia:" styleClass="etiqueta"/>
+        <ComboBox fx:id="cmbAgencia" prefWidth="240"/>
+        <Button text="Actualizar" onAction="#onActualizar"/>
+    </HBox>
+
+    <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- 1. Paquetes registrados aquí que esperan salir -->
+        <Tab fx:id="tabDespachar" text="Por despachar">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="cmbDestino" promptText="Destino" prefWidth="240"/>
+                    <TextField fx:id="txtEscanearDespacho" promptText="Escanea o escribe el código y pulsa Enter"
+                               HBox.hgrow="ALWAYS"/>
+                    <Button text="Marcar todos" onAction="#onMarcarTodosDespacho"/>
+                </HBox>
+                <TableView fx:id="tablaDespachar" editable="true" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colDespMarca" text="✔" prefWidth="40" sortable="false"/>
+                        <TableColumn fx:id="colDespCodigo" text="Código" prefWidth="110"/>
+                        <TableColumn fx:id="colDespDestino" text="Destino" prefWidth="160"/>
+                        <TableColumn fx:id="colDespDestinatario" text="Destinatario" prefWidth="190"/>
+                        <TableColumn fx:id="colDespBultos" text="Bultos" prefWidth="60"/>
+                        <TableColumn fx:id="colDespPeso" text="Peso kg" prefWidth="70"/>
+                        <TableColumn fx:id="colDespFecha" text="Registrado" prefWidth="125"/>
+                        <TableColumn fx:id="colDespAlerta" text="Alerta" prefWidth="150"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No hay envíos pendientes de despacho."/>
+                    </placeholder>
+                </TableView>
+                <VBox spacing="6" styleClass="panel-form">
+                    <Label text="Manifiesto de carga" styleClass="subtitulo"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="txtPlaca" promptText="Placa del vehículo" prefWidth="140"/>
+                        <TextField fx:id="txtConductor" promptText="Conductor" prefWidth="220"/>
+                        <TextField fx:id="txtObsDespacho" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnDespachar" text="Despachar" styleClass="boton-primario"
+                                onAction="#onDespachar"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <!-- 2. Paquetes que vienen en camino hacia esta agencia -->
+        <Tab fx:id="tabRecibir" text="Por recibir">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <TextField fx:id="txtEscanearRecibir" promptText="Escanea cada paquete que baja del vehículo y pulsa Enter"
+                               HBox.hgrow="ALWAYS"/>
+                    <Button text="Marcar todos" onAction="#onMarcarTodosRecibir"/>
+                </HBox>
+                <TableView fx:id="tablaRecibir" editable="true" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colRecMarca" text="✔" prefWidth="40" sortable="false"/>
+                        <TableColumn fx:id="colRecCodigo" text="Código" prefWidth="110"/>
+                        <TableColumn fx:id="colRecOrigen" text="Origen" prefWidth="160"/>
+                        <TableColumn fx:id="colRecManifiesto" text="Manifiesto" prefWidth="110"/>
+                        <TableColumn fx:id="colRecBultos" text="Bultos" prefWidth="60"/>
+                        <TableColumn fx:id="colRecSalida" text="Salió" prefWidth="125"/>
+                        <TableColumn fx:id="colRecEstimada" text="Llegada estimada" prefWidth="120"/>
+                        <TableColumn fx:id="colRecAlerta" text="Alerta" prefWidth="150"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No hay envíos en camino hacia esta agencia."/>
+                    </placeholder>
+                </TableView>
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
+                    <TextField fx:id="txtObsRecepcion" promptText="Observación (ej: caja golpeada)" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnRecibir" text="Confirmar llegada" styleClass="boton-primario"
+                            onAction="#onRecibir"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <!-- 3. Paquetes en esta agencia esperando que el destinatario los recoja -->
+        <Tab fx:id="tabEntregar" text="Por entregar">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <Label text="Doble clic en un envío para registrar su entrega." styleClass="aviso"/>
+                <TableView fx:id="tablaEntregar" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colEntCodigo" text="Código" prefWidth="110"/>
+                        <TableColumn fx:id="colEntDestinatario" text="Destinatario" prefWidth="200"/>
+                        <TableColumn fx:id="colEntDocumento" text="Documento" prefWidth="110"/>
+                        <TableColumn fx:id="colEntTelefono" text="Teléfono" prefWidth="100"/>
+                        <TableColumn fx:id="colEntOrigen" text="Origen" prefWidth="150"/>
+                        <TableColumn fx:id="colEntLlego" text="Llegó" prefWidth="125"/>
+                        <TableColumn fx:id="colEntAlerta" text="Alerta" prefWidth="190"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No hay envíos esperando entrega."/>
+                    </placeholder>
+                </TableView>
+                <HBox alignment="CENTER_RIGHT">
+                    <Button text="Entregar seleccionado" styleClass="boton-primario" onAction="#onEntregar"/>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

@@ -51,6 +51,8 @@
 
         <Label text="Costo:" styleClass="etiqueta" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <Label fx:id="lblCosto" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="Llegada estimada:" styleClass="etiqueta" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+        <Label fx:id="lblEstimada" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
     </GridPane>
 
     <Label text="Historial de movimientos" styleClass="subtitulo"/>
@@ -63,6 +65,8 @@
             <TableColumn fx:id="colObservacion" text="Observación" prefWidth="260"/>
         </columns>
     </TableView>
+
+    <Label fx:id="lblPermiso" styleClass="aviso" wrapText="true"/>
 
     <VBox fx:id="panelEstado" spacing="6" styleClass="panel-form">
         <Label text="Actualizar estado" styleClass="subtitulo"/>

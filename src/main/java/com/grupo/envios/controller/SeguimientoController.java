@@ -41,6 +41,7 @@ public class SeguimientoController {
     @FXML private Label lblDescripcion;
     @FXML private Label lblPesoBultos;
     @FXML private Label lblCosto;
+    @FXML private Label lblEstimada;
 
     @FXML private TableView<HistorialEnvio> tablaHistorial;
     @FXML private TableColumn<HistorialEnvio, String> colFecha;
@@ -49,6 +50,7 @@ public class SeguimientoController {
     @FXML private TableColumn<HistorialEnvio, String> colEmpleado;
     @FXML private TableColumn<HistorialEnvio, String> colObservacion;
 
+    @FXML private Label lblPermiso;
     @FXML private VBox panelEstado;
     @FXML private ComboBox<String> cmbNuevoEstado;
     @FXML private TextField txtObservacion;
@@ -79,8 +81,10 @@ public class SeguimientoController {
         lblDescripcion.setText("");
         lblPesoBultos.setText("");
         lblCosto.setText("");
+        lblEstimada.setText("");
         Estados.colorear(lblEstado, null);
         tablaHistorial.getItems().clear();
+        mostrarPermiso("");
         ocultarPanelEstado();
         habilitarAcciones(false);
     }
@@ -89,6 +93,12 @@ public class SeguimientoController {
         btnCopiar.setDisable(!hayEnvio);
         btnPdf.setDisable(!hayEnvio);
         btnTicket.setDisable(!hayEnvio);
+    }
+
+    private void mostrarPermiso(String texto) {
+        lblPermiso.setText(texto);
+        lblPermiso.setVisible(!texto.isEmpty());
+        lblPermiso.setManaged(!texto.isEmpty());
     }
 
     private void ocultarPanelEstado() {
@@ -109,10 +119,12 @@ public class SeguimientoController {
         lblDescripcion.setText(e.getDescripcion());
         lblPesoBultos.setText(e.getPesoKg().toPlainString() + " kg  /  " + e.getCantidadBultos() + " bulto(s)");
         lblCosto.setText("S/ " + e.getCostoEnvio().toPlainString());
+        lblEstimada.setText(textoLlegada(e));
 
         tablaHistorial.setItems(FXCollections.observableArrayList(service.historial(e.getIdEnvio())));
 
         Empleado empleado = Sesion.getActual();
+        mostrarPermiso(service.avisoSoloConsulta(e, empleado));
         List<Integer> siguientes = service.estadosDisponibles(e, empleado);
         boolean mostrarPanel = !siguientes.isEmpty();
         panelEstado.setVisible(mostrarPanel);
@@ -123,6 +135,18 @@ public class SeguimientoController {
             cmbNuevoEstado.setValue(null);
             txtObservacion.clear();
         }
+    }
+
+    /** Fecha prometida al cliente, con el atraso o el manifiesto en que viaja. */
+    private String textoLlegada(Envio e) {
+        String texto = e.getFechaEstimadaTexto();
+        if (e.getDiasAtraso() > 0) {
+            texto += "  (" + e.getAlerta() + ")";
+        }
+        if (e.getManifiesto() != null) {
+            texto += "  -  manifiesto " + e.getManifiesto();
+        }
+        return texto;
     }
 
     @FXML

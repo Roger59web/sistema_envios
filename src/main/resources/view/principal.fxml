@@ -27,6 +27,7 @@
             <Button text="Inicio" maxWidth="Infinity" onAction="#onInicio"/>
 
             <Label text="OPERACIÓN" styleClass="seccion-menu"/>
+            <Button text="Bandeja de agencia" maxWidth="Infinity" onAction="#onBandeja"/>
             <Button fx:id="btnClientes" text="Clientes" maxWidth="Infinity" onAction="#onClientes"/>
             <Button fx:id="btnEnvio" text="Registrar envío" maxWidth="Infinity" onAction="#onRegistrarEnvio"/>
             <Button text="Seguimiento" maxWidth="Infinity" onAction="#onSeguimiento"/>

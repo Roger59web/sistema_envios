@@ -13,6 +13,7 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
    ```
 3. **Conéctate a `sistema_envios`** (no a `postgres`) y ejecuta completo `database/01_schema_y_datos.sql`.
    Comprueba con `SELECT * FROM empleado;` (deben aparecer 5 usuarios).
+   Después ejecuta, en orden, los scripts de `database/cambios/` (ej. `002_manifiesto_y_bandeja.sql`).
 4. Copia `db.properties.example` como `db.properties` en la raíz del proyecto y pon tu usuario y clave de PostgreSQL.
    La URL debe terminar en `/sistema_envios`.
 5. En IntelliJ: clic derecho en `Launcher.java` > *Run*. También sirve `mvn javafx:run`.
@@ -36,6 +37,8 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
 | Clientes | ✔ | ✔ | |
 | Registrar envío (y comprobante) | ✔ | ✔ | |
 | Seguimiento (consulta e historial) | ✔ | ✔ | ✔ |
+| Bandeja: por despachar / por recibir | ✔ | | ✔ |
+| Bandeja: por entregar | ✔ | ✔ | |
 | Despachar y confirmar llegada | ✔ | | ✔ |
 | Anular envío | ✔ | ✔ | |
 | Entregas | ✔ | ✔ | |
@@ -43,14 +46,36 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
 
 Cada acción se limita a la agencia que corresponde: se despacha y se anula en la agencia de **origen**,
 se confirma la llegada y se entrega en la agencia de **destino**. El administrador opera en cualquiera.
+Los empleados de otras agencias pueden **consultar** el envío en Seguimiento (por ejemplo, si el cliente
+pregunta en otra ciudad), pero no moverlo: la pantalla indica qué agencia se encarga del siguiente paso.
 
 ## Flujo de un envío (para probar)
 
-1. `cajero1` (Lima) → **Registrar envío** Lima → Arequipa. Anota el código `ENV-000001`.
-2. `almacen1` (Lima) → **Seguimiento** → *EN TRANSITO* (despacho).
-3. `almacen2` (Arequipa) → **Seguimiento** → *EN AGENCIA DESTINO* (llegada).
-4. `cajero2` (Arequipa) → **Entregas** → registra quién recoge (nombre y DNI).
+Los estados **no cambian solos con el tiempo**: cambian cuando el personal confirma un hecho físico
+(el paquete subió al vehículo, bajó en destino, se entregó). Lo que sí es automático es lo que se deriva
+de esos hechos: la llegada estimada, las alertas de atraso y los días en almacén.
+
+1. `cajero1` (Lima) → **Registrar envío** Lima → Arequipa (registra dos o tres para probar el lote).
+2. `almacen1` (Lima) → **Bandeja de agencia** → *Por despachar*: elige el destino, marca (o escanea) los
+   paquetes que suben al vehículo, pon placa y conductor y pulsa *Despachar*. Se genera un
+   **manifiesto** (`MAN-000001`) y todos pasan a *EN TRANSITO*.
+3. `almacen2` (Arequipa) → **Bandeja de agencia** → *Por recibir*: escanea cada paquete que baja y pulsa
+   *Confirmar llegada*. Los que no lleguen siguen *EN TRANSITO* y se marcan como atrasados.
+4. `cajero2` (Arequipa) → **Bandeja de agencia** → *Por entregar*: doble clic en el envío → se abre
+   **Entregas** con el envío cargado → registra quién recoge (nombre y DNI).
 5. `admin` → **Reportes** para ver envíos e ingresos por agencia y por estado, y exportar a CSV.
+
+Detalles del flujo:
+
+- **Escaneo:** en los campos de escaneo se puede usar una pistola de código de barras o escribir el código
+  (`ENV-000015` o solo `15`) y pulsar Enter.
+- **Llegada estimada** = fecha de registro + días estimados de la ruta. Si un envío no ha llegado a destino
+  después de esa fecha aparece como *ATRASADO* (en la bandeja y en Seguimiento).
+- **Almacenaje:** si un envío pasa más de 7 días en la agencia destino sin ser recogido se resalta.
+- **Recoge un tercero:** si el DNI de quien recoge no es el del destinatario, la observación es obligatoria
+  (parentesco, carta poder...).
+- Si dos empleados intentan mover el mismo envío a la vez, solo vale el primero; el otro recibe un aviso.
+- *Seguimiento* conserva el cambio de estado individual (útil para casos sueltos y para anular).
 
 ## Ticket y PDF
 

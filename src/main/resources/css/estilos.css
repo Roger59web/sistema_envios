@@ -49,6 +49,10 @@
 .estado-entregado { -fx-text-fill: #1e8449; }
 .estado-anulado { -fx-text-fill: #c0392b; }
 
+/* Filas atrasadas o con muchos días en almacén (Bandeja de la agencia) */
+.fila-alerta { -fx-background-color: #fdf2e9; }
+.fila-alerta:selected { -fx-background-color: #2c5282; }
+
 .login-box {
     -fx-background-color: #f4f6f9;
 }

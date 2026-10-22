@@ -77,9 +77,21 @@ public class EntregasController {
             lblAviso.setText("Este envío se entrega en la agencia " + e.getDestino() + ".");
             panelEntrega.setDisable(true);
         } else {
-            lblAviso.setText("Listo para entregar: verifica el documento de quien recoge.");
+            long dias = e.getDiasEnEstado();
+            String aviso = "Listo para entregar: verifica el documento de quien recoge. En agencia desde hace "
+                    + dias + (dias == 1 ? " día." : " días.");
+            if (dias > Envio.DIAS_ALMACEN_GRATIS) {
+                aviso += " Superó los " + Envio.DIAS_ALMACEN_GRATIS + " días de almacenaje gratuito.";
+            }
+            lblAviso.setText(aviso);
             panelEntrega.setDisable(false);
         }
+    }
+
+    /** Abre la pantalla con un envío ya buscado (se usa desde la bandeja de la agencia). */
+    public void cargar(String codigo) {
+        txtCodigo.setText(codigo);
+        onBuscar();
     }
 
     @FXML

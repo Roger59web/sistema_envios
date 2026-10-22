@@ -26,7 +26,9 @@ public class EnvioDAO {
                    des.telefono AS destinatario_tel,
                    e.id_empleado_registro, em.nombres || ' ' || em.apellidos AS empleado_registro,
                    e.id_estado_actual, es.nombre AS estado, e.fecha_registro,
-                   e.descripcion, e.cantidad_bultos, e.peso_kg, e.valor_declarado, e.costo_envio, e.observaciones
+                   e.descripcion, e.cantidad_bultos, e.peso_kg, e.valor_declarado, e.costo_envio, e.observaciones,
+                   ru.dias_estimados, man.codigo AS manifiesto,
+                   (SELECT MAX(h.fecha) FROM historial_envio h WHERE h.id_envio = e.id_envio) AS fecha_ultimo_mov
             FROM envio e
             JOIN ruta ru ON ru.id_ruta = e.id_ruta
             JOIN agencia ao ON ao.id_agencia = ru.id_agencia_origen
@@ -35,6 +37,7 @@ public class EnvioDAO {
             JOIN cliente des ON des.id_cliente = e.id_destinatario
             JOIN estado_envio es ON es.id_estado = e.id_estado_actual
             JOIN empleado em ON em.id_empleado = e.id_empleado_registro
+            LEFT JOIN manifiesto man ON man.id_manifiesto = e.id_manifiesto
             """;
 
     /** Reserva el siguiente id de envío (sirve para armar el código de seguimiento). */
@@ -70,13 +73,45 @@ public class EnvioDAO {
         }
     }
 
-    public void actualizarEstado(Connection cn, int idEnvio, int idEstado) throws SQLException {
-        try (PreparedStatement ps = cn.prepareStatement(
-                "UPDATE envio SET id_estado_actual = ? WHERE id_envio = ?")) {
-            ps.setInt(1, idEstado);
-            ps.setInt(2, idEnvio);
-            ps.executeUpdate();
+    /**
+     * Cambia el estado solo si el envío sigue en el estado esperado (evita que dos empleados
+     * muevan el mismo paquete a la vez). Devuelve false si otro ya lo cambió.
+     */
+    public boolean actualizarEstadoSi(Connection cn, int idEnvio, int estadoEsperado, int nuevoEstado,
+                                      Integer idManifiesto) throws SQLException {
+        String sql = "UPDATE envio SET id_estado_actual = ?, id_manifiesto = COALESCE(?, id_manifiesto) "
+                + "WHERE id_envio = ? AND id_estado_actual = ?";
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, nuevoEstado);
+            ps.setObject(2, idManifiesto);
+            ps.setInt(3, idEnvio);
+            ps.setInt(4, estadoEsperado);
+            return ps.executeUpdate() == 1;
         }
+    }
+
+    /**
+     * Envíos en un estado que pertenecen a una agencia, del más antiguo al más reciente
+     * (lo que lleva más tiempo esperando se atiende primero).
+     *
+     * @param comoOrigen true: la agencia es el origen (por despachar); false: es el destino
+     */
+    public List<Envio> listarPorEstadoYAgencia(int idEstado, int idAgencia, boolean comoOrigen) throws SQLException {
+        String sql = SELECT_BASE + " WHERE e.id_estado_actual = ? AND "
+                + (comoOrigen ? "ru.id_agencia_origen" : "ru.id_agencia_destino") + " = ? "
+                + "ORDER BY e.fecha_registro, e.id_envio";
+        List<Envio> lista = new ArrayList<>();
+        try (Connection cn = Conexion.obtener();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setInt(1, idEstado);
+            ps.setInt(2, idAgencia);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapear(rs));
+                }
+            }
+        }
+        return lista;
     }
 
     /** Devuelve el envío con ese código, o null si no existe. */
@@ -183,6 +218,10 @@ public class EnvioDAO {
         e.setValorDeclarado(rs.getBigDecimal("valor_declarado"));
         e.setCostoEnvio(rs.getBigDecimal("costo_envio"));
         e.setObservaciones(rs.getString("observaciones"));
+        e.setDiasEstimados(rs.getInt("dias_estimados"));
+        e.setManifiesto(rs.getString("manifiesto"));
+        Timestamp ultimo = rs.getTimestamp("fecha_ultimo_mov");
+        e.setFechaUltimoMovimiento(ultimo == null ? null : ultimo.toLocalDateTime());
         return e;
     }
 }

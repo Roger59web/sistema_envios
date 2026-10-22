@@ -49,6 +49,10 @@ public final class Alertas {
                 advertencia("Ya existe un registro con esos datos.");
             } else if ("23503".equals(estado)) {
                 advertencia("No se puede completar la operación: el registro está relacionado con otros datos.");
+            } else if ("42P01".equals(estado) || "42703".equals(estado)) {
+                // Falta una tabla o columna: la base no tiene aplicados los scripts de database/cambios.
+                error("La base de datos no está actualizada.\nEjecuta en orden los scripts de "
+                        + "database/cambios/ que falten.\n\nDetalle: " + t.getMessage());
             } else {
                 error("Error de base de datos:\n" + t.getMessage());
             }

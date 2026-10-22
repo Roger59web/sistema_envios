@@ -50,7 +50,7 @@
             <TextField fx:id="txtDniReceptor" promptText="DNI" prefWidth="120"/>
             <Button text="Usar datos del destinatario" onAction="#onUsarDestinatario"/>
         </HBox>
-        <TextField fx:id="txtObservacion" promptText="Observación (opcional)"/>
+        <TextField fx:id="txtObservacion" promptText="Observación (obligatoria si recoge otra persona: parentesco, carta poder...)"/>
         <HBox alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="6"/>
