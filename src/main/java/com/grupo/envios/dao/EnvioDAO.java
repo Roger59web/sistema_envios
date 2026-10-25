@@ -27,7 +27,8 @@ public class EnvioDAO {
                    e.id_empleado_registro, em.nombres || ' ' || em.apellidos AS empleado_registro,
                    e.id_estado_actual, es.nombre AS estado, e.fecha_registro,
                    e.descripcion, e.cantidad_bultos, e.peso_kg, e.valor_declarado, e.costo_envio, e.observaciones,
-                   ru.dias_estimados, man.codigo AS manifiesto,
+                   ru.dias_estimados, man.codigo AS manifiesto, man.placa AS manifiesto_placa,
+                   man.conductor AS manifiesto_conductor,
                    (SELECT MAX(h.fecha) FROM historial_envio h WHERE h.id_envio = e.id_envio) AS fecha_ultimo_mov
             FROM envio e
             JOIN ruta ru ON ru.id_ruta = e.id_ruta
@@ -281,6 +282,8 @@ public class EnvioDAO {
         dkprE.setObservaciones(dkprRs.getString("observaciones"));
         dkprE.setDiasEstimados(dkprRs.getInt("dias_estimados"));
         dkprE.setManifiesto(dkprRs.getString("manifiesto"));
+        dkprE.setPlaca(dkprRs.getString("manifiesto_placa"));
+        dkprE.setConductor(dkprRs.getString("manifiesto_conductor"));
         Timestamp dkprUltimo = dkprRs.getTimestamp("fecha_ultimo_mov");
         dkprE.setFechaUltimoMovimiento(dkprUltimo == null ? null : dkprUltimo.toLocalDateTime());
         return dkprE;

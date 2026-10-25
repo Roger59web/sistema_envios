@@ -1,7 +1,11 @@
 package com.grupo.envios.controller;
 
+import com.grupo.envios.dao.ManifiestoDAO;
 import com.grupo.envios.model.Agencia;
+import com.grupo.envios.model.Conductor;
 import com.grupo.envios.model.ControlCarga;
+import com.grupo.envios.model.Vehiculo;
+import com.grupo.envios.service.VehiculoService;
 import com.grupo.envios.model.Empleado;
 import com.grupo.envios.model.Envio;
 import com.grupo.envios.model.LecturaCarga;
@@ -45,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Control de carga por bulto: etiquetas con código de barras y QR, escaneo al cargar el vehículo
@@ -81,10 +87,11 @@ public class ControlCargaController {
     @FXML private Label dkprLblAvanceDespacho;
     @FXML private TableView<Envio> dkprTablaEspDespacho;
     @FXML private TableView<LecturaCarga> dkprTablaLecDespacho;
-    @FXML private TextField dkprTxtPlaca;
-    @FXML private TextField dkprTxtConductor;
+    @FXML private ComboBox<Vehiculo> dkprCmbVehiculo;
+    @FXML private ComboBox<Conductor> dkprCmbConductor;
     @FXML private TextField dkprTxtObsDespacho;
 
+    @FXML private TextField dkprTxtManifiesto;
     @FXML private ComboBox<Manifiesto> dkprCmbManifiesto;
     @FXML private Label dkprLblSesionRecepcion;
     @FXML private TextField dkprTxtEscanearRecepcion;
@@ -96,6 +103,7 @@ public class ControlCargaController {
 
     private final ControlCargaService dkprService = new ControlCargaService();
     private final AgenciaService dkprAgenciaService = new AgenciaService();
+    private final VehiculoService dkprVehiculoService = new VehiculoService();
 
     private PanelEscaneo dkprDespacho;
     private PanelEscaneo dkprRecepcion;
@@ -123,7 +131,10 @@ public class ControlCargaController {
         // Etiquetas las puede imprimir cualquiera; cargar y descargar es trabajo de almacén.
         if (!dkprService.puedeOperar(dkprEmpleado, dkprEmpleado.getIdAgencia())) {
             dkprTabs.getTabs().removeAll(dkprTabDespacho, dkprTabRecepcion);
+        } else {
+            cargarVehiculos();
         }
+        dkprTxtManifiesto.setOnAction(dkprE -> escanearManifiesto());
         // Al entrar a una pestaña de escaneo, el cursor queda listo para la pistola.
         dkprTabs.getSelectionModel().selectedItemProperty().addListener((dkprObs, dkprAntes, dkprAhora) -> {
             if (dkprAhora == dkprTabDespacho) {
@@ -336,11 +347,13 @@ public class ControlCargaController {
             if (!Alertas.confirmar(dkprMensaje)) {
                 return;
             }
-            ResultadoCierre dkprR = dkprService.cerrarDespacho(dkprSesion, dkprTxtPlaca.getText(), dkprTxtConductor.getText(),
+            ResultadoCierre dkprR = dkprService.cerrarDespacho(dkprSesion,
+                    dkprCmbVehiculo.getValue() == null ? null : dkprCmbVehiculo.getValue().getIdVehiculo(),
+                    dkprCmbConductor.getValue() == null ? null : dkprCmbConductor.getValue().getIdConductor(),
                     dkprTxtObsDespacho.getText(), Sesion.getActual());
             dkprUltimoManifiesto = dkprR.manifiesto();
-            dkprTxtPlaca.clear();
-            dkprTxtConductor.clear();
+            dkprCmbVehiculo.setValue(null);
+            dkprCmbConductor.setValue(null);
             dkprTxtObsDespacho.clear();
             dkprDespacho.limpiar();
             cargar(false);
@@ -385,7 +398,52 @@ public class ControlCargaController {
         GeneradorPdf.ofrecerAbrir(dkprArchivo);
     }
 
+    /** Vehículos y conductores activos para el manifiesto (se registran en Vehículos y conductores). */
+    private void cargarVehiculos() {
+        try {
+            dkprCmbVehiculo.setItems(FXCollections.observableArrayList(dkprVehiculoService.listarVehiculos(true)));
+            dkprCmbConductor.setItems(FXCollections.observableArrayList(dkprVehiculoService.listarConductores(true)));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
+        }
+    }
+
     // ---------------------------------------------------------- recepción
+
+    /**
+     * El conductor entrega el manifiesto impreso: al escanear su código de barras (o escribir MAN-000001 / 1)
+     * se elige ese manifiesto y empieza la descarga.
+     */
+    private void escanearManifiesto() {
+        String dkprTexto = dkprTxtManifiesto.getText() == null ? "" : dkprTxtManifiesto.getText().trim().toUpperCase();
+        dkprTxtManifiesto.clear();
+        Matcher dkprM = Pattern.compile("^(?:MAN)?[^A-Z0-9]*(\\d{1,6})$").matcher(dkprTexto);
+        if (!dkprM.matches()) {
+            Alertas.advertencia("Escanea el código de barras del manifiesto o escribe su número (ej: MAN-000001 o 1).");
+            return;
+        }
+        int dkprId = Integer.parseInt(dkprM.group(1));
+        Manifiesto dkprEnLista = dkprCmbManifiesto.getItems().stream()
+                .filter(dkprX -> dkprX.getIdManifiesto() == dkprId).findFirst().orElse(null);
+        if (dkprEnLista != null) {
+            dkprCmbManifiesto.setValue(dkprEnLista);
+            onIniciarRecepcion();
+            return;
+        }
+        // No está entre los que vienen hacia aquí: se explica por qué.
+        try {
+            Manifiesto dkprM2 = dkprService.buscarManifiesto(dkprId);
+            if (dkprM2 == null) {
+                Alertas.advertencia("No existe el manifiesto " + ManifiestoDAO.codigo(dkprId) + ".");
+            } else if (dkprM2.getIdAgenciaDestino() != dkprCmbAgencia.getValue().getIdAgencia()) {
+                Alertas.advertencia("El manifiesto " + dkprM2.getCodigo() + " va a " + dkprM2.getDestino() + ", no a esta agencia.");
+            } else {
+                Alertas.info("El manifiesto " + dkprM2.getCodigo() + " ya no tiene envíos en tránsito: ya se recibió todo.");
+            }
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
+        }
+    }
 
     @FXML
     private void onIniciarRecepcion() {

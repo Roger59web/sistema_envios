@@ -46,6 +46,7 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
 | Paquetes estancados (consulta) | ✔ | ✔ | ✔ |
 | Paquetes estancados: cambiar los días para todos | ✔ | | |
 | Cuadre de caja | ✔ | ✔ | |
+| Vehículos y conductores (registro) | ✔ | | |
 | Anular envío | ✔ | ✔ | |
 | Entregas | ✔ | ✔ | |
 | Reportes, agencias, rutas y tarifas, empleados | ✔ | | |
@@ -102,6 +103,27 @@ Menú **Control de carga**. Complementa la Bandeja: aquí se controla cada **bul
   *Iniciar / retomar* continúa la misma sesión, y dos computadoras pueden escanear el mismo vehículo.
 - El lector USB funciona como teclado + Enter. Si el teclado está en español y el lector escribe `'`
   en lugar de `-` (`ENV'000015'02`), el sistema lo entiende igual.
+
+## Vehículos y conductores
+
+Menú **Vehículos y conductores** (administrador), script `006_vehiculos.sql`. Se registran la placa
+(se normaliza a `ABC-123`), descripción y capacidad del vehículo, y DNI, nombre, licencia (brevete) y teléfono
+del conductor. Al **despachar** (Bandeja o Control de carga) se eligen de una lista: son obligatorios y solo
+aparecen los activos. El manifiesto guarda la placa y el conductor, que se muestran en **Seguimiento**,
+en el historial (*Despachado en MAN-000001 (placa ABC-123, conductor …)*), en el PDF del envío, en la
+Bandeja (*Por recibir*) y en Paquetes estancados.
+
+### ¿Cómo registro lo que llegó en el vehículo?
+
+En la agencia destino, con el usuario de almacén:
+
+1. **Control de carga → Recepción**: escanea el código de barras del **manifiesto** que entrega el conductor
+   (o elígelo de la lista: muestra placa y conductor) y empieza la descarga.
+2. Escanea **cada bulto** al bajarlo. Verde = correcto; rojo = no corresponde a este vehículo.
+3. **Cerrar recepción**: los envíos con todos sus bultos pasan a *EN AGENCIA DESTINO* y aparecen en
+   *Bandeja → Por entregar*. Si falta algún bulto, el envío sigue *EN TRANSITO* y se lista como faltante.
+
+Sin lector, **Bandeja → Por recibir** permite marcar los envíos que llegaron y *Confirmar llegada*.
 
 ## Lectura del DNI con el escáner
 

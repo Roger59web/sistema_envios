@@ -61,7 +61,9 @@ public class EstancadoService {
     public static String queFalta(Envio dkprE) {
         return switch (dkprE.getIdEstadoActual()) {
             case Estados.REGISTRADO -> "Despachar desde " + dkprE.getOrigen();
-            case Estados.EN_TRANSITO -> "Confirmar llegada en " + dkprE.getDestino() + " o ubicar el vehículo";
+            case Estados.EN_TRANSITO -> "Confirmar llegada en " + dkprE.getDestino() + " o ubicar el vehículo"
+                    + (dkprE.getPlaca() == null ? "" : " " + dkprE.getPlaca())
+                    + (dkprE.getConductor() == null ? "" : " - " + dkprE.getConductor());
             case Estados.EN_AGENCIA_DESTINO -> "Avisar al destinatario para que recoja en " + dkprE.getDestino();
             default -> "";
         };

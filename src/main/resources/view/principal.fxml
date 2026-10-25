@@ -41,6 +41,7 @@
                 <Button text="Reportes" maxWidth="Infinity" onAction="#onReportes"/>
                 <Button text="Agencias" maxWidth="Infinity" onAction="#onAgencias"/>
                 <Button text="Rutas y tarifas" maxWidth="Infinity" onAction="#onRutas"/>
+                <Button text="Vehículos y conductores" maxWidth="Infinity" onAction="#onVehiculos"/>
                 <Button text="Empleados" maxWidth="Infinity" onAction="#onEmpleados"/>
             </VBox>
         </VBox>

@@ -42,6 +42,8 @@ public class SeguimientoController {
     @FXML private Label dkprLblPesoBultos;
     @FXML private Label dkprLblCosto;
     @FXML private Label dkprLblEstimada;
+    @FXML private Label dkprLblVehiculo;
+    @FXML private Label dkprLblConductor;
 
     @FXML private TableView<HistorialEnvio> dkprTablaHistorial;
     @FXML private TableColumn<HistorialEnvio, String> dkprColFecha;
@@ -82,6 +84,8 @@ public class SeguimientoController {
         dkprLblPesoBultos.setText("");
         dkprLblCosto.setText("");
         dkprLblEstimada.setText("");
+        dkprLblVehiculo.setText("");
+        dkprLblConductor.setText("");
         Estados.colorear(dkprLblEstado, null);
         dkprTablaHistorial.getItems().clear();
         mostrarPermiso("");
@@ -120,6 +124,9 @@ public class SeguimientoController {
         dkprLblPesoBultos.setText(dkprE.getPesoKg().toPlainString() + " kg  /  " + dkprE.getCantidadBultos() + " bulto(s)");
         dkprLblCosto.setText("S/ " + dkprE.getCostoEnvio().toPlainString());
         dkprLblEstimada.setText(textoLlegada(dkprE));
+        // Vehículo y conductor del manifiesto con el que salió (vacío mientras está en la agencia de origen).
+        dkprLblVehiculo.setText(dkprE.getManifiesto() == null ? "Aún no sale de la agencia de origen" : dkprE.getVehiculoTexto());
+        dkprLblConductor.setText(dkprE.getConductor() == null || dkprE.getConductor().isBlank() ? "-" : dkprE.getConductor());
 
         dkprTablaHistorial.setItems(FXCollections.observableArrayList(dkprService.historial(dkprE.getIdEnvio())));
 

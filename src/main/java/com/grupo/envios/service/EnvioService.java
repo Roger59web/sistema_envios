@@ -8,6 +8,8 @@ import com.grupo.envios.dao.HistorialDAO;
 import com.grupo.envios.dao.ManifiestoDAO;
 import com.grupo.envios.model.Cliente;
 import com.grupo.envios.model.Comprobante;
+import com.grupo.envios.model.Conductor;
+import com.grupo.envios.model.Vehiculo;
 import com.grupo.envios.model.DetalleEnvio;
 import com.grupo.envios.model.Empleado;
 import com.grupo.envios.model.Envio;
@@ -27,7 +29,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /** Reglas de negocio de los envíos: tarifa, registro, cambios de estado, despacho en lote y entrega. */
@@ -43,6 +44,7 @@ public class EnvioService {
     private final EntregaDAO dkprEntregaDAO = new EntregaDAO();
     private final ManifiestoDAO dkprManifiestoDAO = new ManifiestoDAO();
     private final ClienteService dkprClienteService = new ClienteService();
+    private final VehiculoService dkprVehiculoService = new VehiculoService();
 
     // ------------------------------------------------------------------ tarifa
 
@@ -315,12 +317,12 @@ public class EnvioService {
      * Despacha varios envíos juntos: crea un manifiesto de carga (vehículo y conductor) y pasa
      * todos a EN TRANSITO. Todos deben ir por la misma ruta. Devuelve el código del manifiesto.
      */
-    public String despachar(List<Envio> dkprEnvios, String dkprPlaca, String dkprConductor, String dkprObservacion,
+    public String despachar(List<Envio> dkprEnvios, Integer dkprIdVehiculo, Integer dkprIdConductor, String dkprObservacion,
                             Empleado dkprEmpleado) throws SQLException {
         try (Connection dkprCn = Conexion.obtener()) {
             dkprCn.setAutoCommit(false);
             try {
-                int dkprIdManifiesto = despacharEn(dkprCn, dkprEnvios, dkprPlaca, dkprConductor, dkprObservacion, dkprEmpleado);
+                int dkprIdManifiesto = despacharEn(dkprCn, dkprEnvios, dkprIdVehiculo, dkprIdConductor, dkprObservacion, dkprEmpleado);
                 dkprCn.commit();
                 return ManifiestoDAO.codigo(dkprIdManifiesto);
             } catch (SQLException | RuntimeException dkprE) {
@@ -334,7 +336,7 @@ public class EnvioService {
      * Igual que {@link #despachar}, pero dentro de una transacción que maneja quien llama
      * (el control de carga cierra su sesión en la misma transacción). Devuelve el id del manifiesto.
      */
-    public int despacharEn(Connection dkprCn, List<Envio> dkprEnvios, String dkprPlaca, String dkprConductor,
+    public int despacharEn(Connection dkprCn, List<Envio> dkprEnvios, Integer dkprIdVehiculo, Integer dkprIdConductor,
                            String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         if (dkprEnvios == null || dkprEnvios.isEmpty()) {
             throw new NegocioException("Marca al menos un envío para despachar.");
@@ -350,17 +352,16 @@ public class EnvioService {
                         + dkprE.getCodigoSeguimiento() + " a " + dkprE.getDestino() + ". Filtra por destino.");
             }
         }
-        String dkprPlacaOk = Validaciones.opcional(dkprPlaca, "Placa", 10);
-        if (dkprPlacaOk != null) {
-            dkprPlacaOk = dkprPlacaOk.toUpperCase(Locale.ROOT);
-        }
-        String dkprConductorOk = Validaciones.opcional(dkprConductor, "Conductor", 100);
+        // Vehículo y conductor registrados; en el manifiesto se copian placa y nombre tal como están hoy.
+        Vehiculo dkprVehiculo = dkprVehiculoService.vehiculoParaDespacho(dkprIdVehiculo);
+        Conductor dkprConductor = dkprVehiculoService.conductorParaDespacho(dkprIdConductor);
         String dkprObs = Validaciones.opcional(dkprObservacion, "Observación", 200);
 
         int dkprIdManifiesto = dkprManifiestoDAO.insertar(dkprCn, dkprPrimero.getIdRuta(), dkprEmpleado.getIdEmpleado(),
-                dkprPlacaOk, dkprConductorOk, dkprObs);
+                dkprVehiculo, dkprConductor, dkprObs);
         String dkprCodigo = ManifiestoDAO.codigo(dkprIdManifiesto);
-        String dkprDetalle = "Despachado en " + dkprCodigo + (dkprPlacaOk == null ? "" : " (placa " + dkprPlacaOk + ")");
+        String dkprDetalle = "Despachado en " + dkprCodigo + " (placa " + dkprVehiculo.getPlaca()
+                + ", conductor " + dkprConductor.getNombreCompleto() + ")";
         for (Envio dkprE : dkprEnvios) {
             if (!dkprEnvioDAO.actualizarEstadoSi(dkprCn, dkprE.getIdEnvio(), Estados.REGISTRADO,
                     Estados.EN_TRANSITO, dkprIdManifiesto)) {

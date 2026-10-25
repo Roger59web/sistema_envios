@@ -50,8 +50,8 @@
                 <VBox spacing="6" styleClass="panel-form">
                     <Label text="Manifiesto de carga" styleClass="subtitulo"/>
                     <HBox spacing="8" alignment="CENTER_LEFT">
-                        <TextField fx:id="dkprTxtPlaca" promptText="Placa del vehículo" prefWidth="140"/>
-                        <TextField fx:id="dkprTxtConductor" promptText="Conductor" prefWidth="220"/>
+                        <ComboBox fx:id="dkprCmbVehiculo" promptText="Vehículo (placa)" prefWidth="190"/>
+                        <ComboBox fx:id="dkprCmbConductor" promptText="Conductor" prefWidth="220"/>
                         <TextField fx:id="dkprTxtObsDespacho" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
                         <Button fx:id="dkprBtnDespachar" text="Despachar" styleClass="boton-primario"
                                 onAction="#onDespachar"/>
@@ -77,6 +77,7 @@
                         <TableColumn fx:id="dkprColRecCodigo" text="Código" prefWidth="110"/>
                         <TableColumn fx:id="dkprColRecOrigen" text="Origen" prefWidth="160"/>
                         <TableColumn fx:id="dkprColRecManifiesto" text="Manifiesto" prefWidth="110"/>
+                        <TableColumn fx:id="dkprColRecVehiculo" text="Vehículo" prefWidth="90"/>
                         <TableColumn fx:id="dkprColRecBultos" text="Bultos" prefWidth="60"/>
                         <TableColumn fx:id="dkprColRecSalida" text="Salió" prefWidth="125"/>
                         <TableColumn fx:id="dkprColRecEstimada" text="Llegada estimada" prefWidth="120"/>

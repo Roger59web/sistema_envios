@@ -47,6 +47,8 @@ public class Envio {
     private int dkprDiasEstimados;
     private LocalDateTime dkprFechaUltimoMovimiento;
     private String dkprManifiesto;
+    private String dkprPlaca;
+    private String dkprConductor;
 
     public int getIdEnvio() { return dkprIdEnvio; }
     public void setIdEnvio(int dkprIdEnvio) { this.dkprIdEnvio = dkprIdEnvio; }
@@ -140,6 +142,22 @@ public class Envio {
 
     public String getManifiesto() { return dkprManifiesto; }
     public void setManifiesto(String dkprManifiesto) { this.dkprManifiesto = dkprManifiesto; }
+
+    /** Placa del vehículo en que salió (null mientras no se despacha). */
+    public String getPlaca() { return dkprPlaca; }
+    public void setPlaca(String dkprPlaca) { this.dkprPlaca = dkprPlaca; }
+
+    /** Conductor del vehículo en que salió (null mientras no se despacha). */
+    public String getConductor() { return dkprConductor; }
+    public void setConductor(String dkprConductor) { this.dkprConductor = dkprConductor; }
+
+    /** "ABC-123 (MAN-000001)", o "-" si todavía no salió. */
+    public String getVehiculoTexto() {
+        if (dkprManifiesto == null) {
+            return "-";
+        }
+        return (dkprPlaca == null || dkprPlaca.isBlank() ? "Sin placa" : dkprPlaca) + " (" + dkprManifiesto + ")";
+    }
 
     /** Texto "Origen → Destino" para mostrar en tablas. */
     public String getRuta() {

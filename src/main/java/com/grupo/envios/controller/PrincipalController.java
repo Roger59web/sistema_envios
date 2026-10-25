@@ -130,6 +130,7 @@ public class PrincipalController {
     @FXML private void onReportes() { mostrar("reportes.fxml"); }
     @FXML private void onAgencias() { mostrar("agencias.fxml"); }
     @FXML private void onRutas() { mostrar("rutas.fxml"); }
+    @FXML private void onVehiculos() { mostrar("vehiculos.fxml"); }
     @FXML private void onEmpleados() { mostrar("empleados.fxml"); }
 
     @FXML

@@ -53,6 +53,11 @@
         <Label fx:id="dkprLblCosto" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
         <Label text="Llegada estimada:" styleClass="etiqueta" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
         <Label fx:id="dkprLblEstimada" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+
+        <Label text="Vehículo:" styleClass="etiqueta" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <Label fx:id="dkprLblVehiculo" wrapText="true" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Conductor:" styleClass="etiqueta" GridPane.rowIndex="5" GridPane.columnIndex="2"/>
+        <Label fx:id="dkprLblConductor" wrapText="true" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
     </GridPane>
 
     <Label text="Historial de movimientos" styleClass="subtitulo"/>

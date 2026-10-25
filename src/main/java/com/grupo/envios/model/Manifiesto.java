@@ -68,7 +68,9 @@ public class Manifiesto {
 
     @Override
     public String toString() {
-        return dkprCodigo + "  ·  desde " + dkprOrigen + "  ·  salió " + getFechaSalidaTexto()
+        return dkprCodigo + "  ·  " + (dkprPlaca == null ? "sin placa" : dkprPlaca)
+                + (dkprConductor == null ? "" : "  ·  " + dkprConductor)
+                + "  ·  desde " + dkprOrigen + ", salió " + getFechaSalidaTexto()
                 + "  ·  " + dkprPendientes + " envío(s) en camino";
     }
 }

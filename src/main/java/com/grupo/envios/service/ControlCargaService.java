@@ -259,7 +259,7 @@ public class ControlCargaService {
      * Despacha los envíos con todos sus bultos escaneados (crea el manifiesto) y cierra la sesión,
      * todo en una transacción. Los incompletos se quedan en la agencia.
      */
-    public ResultadoCierre cerrarDespacho(ControlCarga dkprC, String dkprPlaca, String dkprConductor,
+    public ResultadoCierre cerrarDespacho(ControlCarga dkprC, Integer dkprIdVehiculo, Integer dkprIdConductor,
                                           String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         validarPermiso(dkprEmpleado, dkprC.getIdAgencia());
         List<Envio> dkprEsperados = esperados(dkprC);
@@ -274,7 +274,7 @@ public class ControlCargaService {
         try (Connection dkprCn = Conexion.obtener()) {
             dkprCn.setAutoCommit(false);
             try {
-                int dkprIdManifiesto = dkprEnvioService.despacharEn(dkprCn, dkprCompletos, dkprPlaca, dkprConductor, dkprObs,
+                int dkprIdManifiesto = dkprEnvioService.despacharEn(dkprCn, dkprCompletos, dkprIdVehiculo, dkprIdConductor, dkprObs,
                         dkprEmpleado);
                 if (!dkprControlDAO.cerrar(dkprCn, dkprC.getIdControl(), "CERRADO", dkprIdManifiesto, dkprObs)) {
                     throw new NegocioException("Esta carga ya fue cerrada por otra persona.");

@@ -138,6 +138,10 @@ public final class GeneradorPdf {
             par(dkprDatos, "Bultos / peso", dkprE.getCantidadBultos() + " bulto(s) / " + dkprE.getPesoKg().toPlainString() + " kg");
             par(dkprDatos, "Valor declarado", Formato.soles(dkprE.getValorDeclarado()));
             par(dkprDatos, "Atendido por", dkprE.getEmpleadoRegistro());
+            if (dkprE.getManifiesto() != null) {
+                par(dkprDatos, "Vehículo", dkprE.getVehiculoTexto());
+                par(dkprDatos, "Conductor", dkprE.getConductor());
+            }
             if (dkprE.getObservaciones() != null && !dkprE.getObservaciones().isBlank()) {
                 dkprDatos.addCell(celdaEtiqueta("Observaciones"));
                 PdfPCell dkprObs = celdaValor(dkprE.getObservaciones());

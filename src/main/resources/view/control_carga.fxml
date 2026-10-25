@@ -66,6 +66,8 @@
                 <padding>
                     <Insets top="10"/>
                 </padding>
+                <Label wrapText="true" minHeight="-Infinity"
+                       text="1. Elige el destino y pulsa Iniciar carga.  2. Escanea cada bulto al subirlo al vehículo.  3. Elige vehículo y conductor.  4. Cerrar carga: se genera el manifiesto; imprímelo y entrégalo al conductor."/>
                 <HBox spacing="8" alignment="CENTER_LEFT">
                     <Label text="Destino:" styleClass="etiqueta"/>
                     <ComboBox fx:id="dkprCmbRuta" promptText="Elige el destino del vehículo" prefWidth="320"/>
@@ -73,7 +75,7 @@
                     <Region HBox.hgrow="ALWAYS"/>
                     <Button text="Imprimir manifiesto…" onAction="#onImprimirManifiesto"/>
                 </HBox>
-                <Label fx:id="dkprLblSesionDespacho" styleClass="aviso" wrapText="true"/>
+                <Label fx:id="dkprLblSesionDespacho" styleClass="aviso" wrapText="true" minHeight="-Infinity"/>
                 <TextField fx:id="dkprTxtEscanearDespacho" style="-fx-font-size: 18px;"
                            promptText="Escanea cada bulto que sube al vehículo (el lector envía Enter)"/>
                 <Label fx:id="dkprLblAvisoDespacho" maxWidth="Infinity" wrapText="true"/>
@@ -93,8 +95,8 @@
                 <VBox spacing="6" styleClass="panel-form">
                     <Label text="Cierre de carga y manifiesto" styleClass="subtitulo"/>
                     <HBox spacing="8" alignment="CENTER_LEFT">
-                        <TextField fx:id="dkprTxtPlaca" promptText="Placa del vehículo" prefWidth="140"/>
-                        <TextField fx:id="dkprTxtConductor" promptText="Conductor" prefWidth="220"/>
+                        <ComboBox fx:id="dkprCmbVehiculo" promptText="Vehículo (placa)" prefWidth="190"/>
+                        <ComboBox fx:id="dkprCmbConductor" promptText="Conductor" prefWidth="220"/>
                         <TextField fx:id="dkprTxtObsDespacho" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
                         <Button text="Cancelar carga" minWidth="-Infinity" onAction="#onCancelarDespacho"/>
                         <Button fx:id="dkprBtnCerrarDespacho" text="Cerrar carga y despachar" minWidth="-Infinity" styleClass="boton-primario"
@@ -110,12 +112,15 @@
                 <padding>
                     <Insets top="10"/>
                 </padding>
+                <Label wrapText="true" minHeight="-Infinity"
+                       text="Cuando llega el vehículo:  1. Escanea el manifiesto que trae el conductor (o elígelo de la lista).  2. Escanea cada bulto al bajarlo.  3. Cerrar recepción: los envíos completos quedan listos para entregar."/>
                 <HBox spacing="8" alignment="CENTER_LEFT">
-                    <Label text="Manifiesto:" styleClass="etiqueta"/>
-                    <ComboBox fx:id="dkprCmbManifiesto" promptText="Elige el manifiesto que llega" prefWidth="460"/>
-                    <Button text="Iniciar / retomar descarga" onAction="#onIniciarRecepcion"/>
+                    <TextField fx:id="dkprTxtManifiesto" promptText="Escanea el manifiesto (MAN-000001)" prefWidth="240" minWidth="240"/>
+                    <Label text="o elige:" styleClass="etiqueta" minWidth="-Infinity"/>
+                    <ComboBox fx:id="dkprCmbManifiesto" promptText="Manifiesto que llega" prefWidth="300" minWidth="200" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button text="Iniciar / retomar descarga" minWidth="-Infinity" onAction="#onIniciarRecepcion"/>
                 </HBox>
-                <Label fx:id="dkprLblSesionRecepcion" styleClass="aviso" wrapText="true"/>
+                <Label fx:id="dkprLblSesionRecepcion" styleClass="aviso" wrapText="true" minHeight="-Infinity"/>
                 <TextField fx:id="dkprTxtEscanearRecepcion" style="-fx-font-size: 18px;"
                            promptText="Escanea cada bulto que baja del vehículo (el lector envía Enter)"/>
                 <Label fx:id="dkprLblAvisoRecepcion" maxWidth="Infinity" wrapText="true"/>

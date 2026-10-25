@@ -1,10 +1,13 @@
 package com.grupo.envios.controller;
 
 import com.grupo.envios.model.Agencia;
+import com.grupo.envios.model.Conductor;
 import com.grupo.envios.model.Empleado;
 import com.grupo.envios.model.Envio;
+import com.grupo.envios.model.Vehiculo;
 import com.grupo.envios.service.AgenciaService;
 import com.grupo.envios.service.EnvioService;
+import com.grupo.envios.service.VehiculoService;
 import com.grupo.envios.util.Alertas;
 import com.grupo.envios.util.CodigosBarras;
 import com.grupo.envios.util.Roles;
@@ -59,8 +62,8 @@ public class BandejaController {
     @FXML private TableColumn<Envio, String> dkprColDespPeso;
     @FXML private TableColumn<Envio, String> dkprColDespFecha;
     @FXML private TableColumn<Envio, String> dkprColDespAlerta;
-    @FXML private TextField dkprTxtPlaca;
-    @FXML private TextField dkprTxtConductor;
+    @FXML private ComboBox<Vehiculo> dkprCmbVehiculo;
+    @FXML private ComboBox<Conductor> dkprCmbConductor;
     @FXML private TextField dkprTxtObsDespacho;
     @FXML private Button dkprBtnDespachar;
 
@@ -70,6 +73,7 @@ public class BandejaController {
     @FXML private TableColumn<Envio, String> dkprColRecCodigo;
     @FXML private TableColumn<Envio, String> dkprColRecOrigen;
     @FXML private TableColumn<Envio, String> dkprColRecManifiesto;
+    @FXML private TableColumn<Envio, String> dkprColRecVehiculo;
     @FXML private TableColumn<Envio, String> dkprColRecBultos;
     @FXML private TableColumn<Envio, String> dkprColRecSalida;
     @FXML private TableColumn<Envio, String> dkprColRecEstimada;
@@ -88,6 +92,7 @@ public class BandejaController {
 
     private final EnvioService dkprService = new EnvioService();
     private final AgenciaService dkprAgenciaService = new AgenciaService();
+    private final VehiculoService dkprVehiculoService = new VehiculoService();
 
     /** Casilla marcada de cada envío (por id), compartida por las tablas con selección en lote. */
     private final Map<Integer, BooleanProperty> dkprMarcas = new HashMap<>();
@@ -132,7 +137,20 @@ public class BandejaController {
         }
         // Solo el administrador puede ver la bandeja de otra agencia.
         dkprCmbAgencia.setDisable(!dkprAdmin);
+        if (dkprTabs.getTabs().contains(dkprTabDespachar)) {
+            cargarVehiculos();
+        }
         cargar();
+    }
+
+    /** Vehículos y conductores activos para el manifiesto (se registran en Vehículos y conductores). */
+    private void cargarVehiculos() {
+        try {
+            dkprCmbVehiculo.setItems(FXCollections.observableArrayList(dkprVehiculoService.listarVehiculos(true)));
+            dkprCmbConductor.setItems(FXCollections.observableArrayList(dkprVehiculoService.listarConductores(true)));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
+        }
     }
 
     private void configurarColumnas() {
@@ -151,6 +169,7 @@ public class BandejaController {
         texto(dkprColRecCodigo, Envio::getCodigoSeguimiento);
         texto(dkprColRecOrigen, Envio::getOrigen);
         texto(dkprColRecManifiesto, dkprE -> dkprE.getManifiesto() == null ? "-" : dkprE.getManifiesto());
+        texto(dkprColRecVehiculo, dkprE -> dkprE.getPlaca() == null ? "-" : dkprE.getPlaca());
         texto(dkprColRecBultos, dkprE -> String.valueOf(dkprE.getCantidadBultos()));
         texto(dkprColRecSalida, Envio::getUltimoMovimientoTexto);
         texto(dkprColRecEstimada, Envio::getFechaEstimadaTexto);
@@ -324,12 +343,14 @@ public class BandejaController {
             return;
         }
         try {
-            String dkprManifiesto = dkprService.despachar(dkprSeleccion, dkprTxtPlaca.getText(), dkprTxtConductor.getText(),
+            String dkprManifiesto = dkprService.despachar(dkprSeleccion,
+                    dkprCmbVehiculo.getValue() == null ? null : dkprCmbVehiculo.getValue().getIdVehiculo(),
+                    dkprCmbConductor.getValue() == null ? null : dkprCmbConductor.getValue().getIdConductor(),
                     dkprTxtObsDespacho.getText(), Sesion.getActual());
             Alertas.info("Manifiesto " + dkprManifiesto + " generado: " + dkprSeleccion.size()
                     + " envío(s) EN TRANSITO hacia " + dkprDestino + ".");
-            dkprTxtPlaca.clear();
-            dkprTxtConductor.clear();
+            dkprCmbVehiculo.setValue(null);
+            dkprCmbConductor.setValue(null);
             dkprTxtObsDespacho.clear();
             cargar();
         } catch (Exception dkprE) {

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.VehiculosController">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <Label text="Vehículos y conductores" styleClass="titulo"/>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <Tab text="Vehículos">
+            <HBox spacing="16">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <TableView fx:id="dkprTablaVehiculos" HBox.hgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="dkprColPlaca" text="Placa" prefWidth="100"/>
+                        <TableColumn fx:id="dkprColDescripcion" text="Descripción" prefWidth="220"/>
+                        <TableColumn fx:id="dkprColCapacidad" text="Capacidad" prefWidth="100"/>
+                        <TableColumn fx:id="dkprColEstadoVehiculo" text="Estado" prefWidth="80"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Aún no hay vehículos registrados."/>
+                    </placeholder>
+                </TableView>
+
+                <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
+                    <Label fx:id="dkprLblModoVehiculo" styleClass="subtitulo"/>
+                    <Label text="Placa" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtPlaca" promptText="ABC-123"/>
+                    <Label text="Descripción (opcional)" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtDescripcion" promptText="Marca, modelo o tipo (ej: Furgón Hyundai HD78)"/>
+                    <Label text="Capacidad en kg (opcional)" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtCapacidad" promptText="Ej: 3500"/>
+                    <CheckBox fx:id="dkprChkVehiculoActivo" text="Vehículo activo (aparece al despachar)"/>
+                    <HBox spacing="8" alignment="CENTER_RIGHT">
+                        <padding>
+                            <Insets top="10"/>
+                        </padding>
+                        <Button text="Nuevo" onAction="#onNuevoVehiculo"/>
+                        <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardarVehiculo"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </Tab>
+
+        <Tab text="Conductores">
+            <HBox spacing="16">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <TableView fx:id="dkprTablaConductores" HBox.hgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="dkprColNombre" text="Nombre" prefWidth="190"/>
+                        <TableColumn fx:id="dkprColDni" text="DNI" prefWidth="90"/>
+                        <TableColumn fx:id="dkprColLicencia" text="Licencia" prefWidth="100"/>
+                        <TableColumn fx:id="dkprColTelefono" text="Teléfono" prefWidth="100"/>
+                        <TableColumn fx:id="dkprColEstadoConductor" text="Estado" prefWidth="80"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Aún no hay conductores registrados."/>
+                    </placeholder>
+                </TableView>
+
+                <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
+                    <Label fx:id="dkprLblModoConductor" styleClass="subtitulo"/>
+                    <Label text="DNI" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtDni" promptText="8 dígitos (se puede escanear)"/>
+                    <Label text="Nombre completo" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtNombre"/>
+                    <Label text="Licencia de conducir (brevete)" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtLicencia" promptText="Ej: Q12345678"/>
+                    <Label text="Teléfono (opcional)" styleClass="etiqueta"/>
+                    <TextField fx:id="dkprTxtTelefono"/>
+                    <CheckBox fx:id="dkprChkConductorActivo" text="Conductor activo (aparece al despachar)"/>
+                    <HBox spacing="8" alignment="CENTER_RIGHT">
+                        <padding>
+                            <Insets top="10"/>
+                        </padding>
+                        <Button text="Nuevo" onAction="#onNuevoConductor"/>
+                        <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardarConductor"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </Tab>
+    </TabPane>
+</VBox>
