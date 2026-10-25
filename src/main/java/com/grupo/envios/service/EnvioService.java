@@ -315,6 +315,25 @@ public class EnvioService {
      */
     public String despachar(List<Envio> dkprEnvios, String dkprPlaca, String dkprConductor, String dkprObservacion,
                             Empleado dkprEmpleado) throws SQLException {
+        try (Connection dkprCn = Conexion.obtener()) {
+            dkprCn.setAutoCommit(false);
+            try {
+                int dkprIdManifiesto = despacharEn(dkprCn, dkprEnvios, dkprPlaca, dkprConductor, dkprObservacion, dkprEmpleado);
+                dkprCn.commit();
+                return ManifiestoDAO.codigo(dkprIdManifiesto);
+            } catch (SQLException | RuntimeException dkprE) {
+                dkprCn.rollback();
+                throw dkprE;
+            }
+        }
+    }
+
+    /**
+     * Igual que {@link #despachar}, pero dentro de una transacción que maneja quien llama
+     * (el control de carga cierra su sesión en la misma transacción). Devuelve el id del manifiesto.
+     */
+    public int despacharEn(Connection dkprCn, List<Envio> dkprEnvios, String dkprPlaca, String dkprConductor,
+                           String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         if (dkprEnvios == null || dkprEnvios.isEmpty()) {
             throw new NegocioException("Marca al menos un envío para despachar.");
         }
@@ -336,29 +355,20 @@ public class EnvioService {
         String dkprConductorOk = Validaciones.opcional(dkprConductor, "Conductor", 100);
         String dkprObs = Validaciones.opcional(dkprObservacion, "Observación", 200);
 
-        try (Connection dkprCn = Conexion.obtener()) {
-            dkprCn.setAutoCommit(false);
-            try {
-                int dkprIdManifiesto = dkprManifiestoDAO.insertar(dkprCn, dkprPrimero.getIdRuta(), dkprEmpleado.getIdEmpleado(),
-                        dkprPlacaOk, dkprConductorOk, dkprObs);
-                String dkprCodigo = ManifiestoDAO.codigo(dkprIdManifiesto);
-                String dkprDetalle = "Despachado en " + dkprCodigo + (dkprPlacaOk == null ? "" : " (placa " + dkprPlacaOk + ")");
-                for (Envio dkprE : dkprEnvios) {
-                    if (!dkprEnvioDAO.actualizarEstadoSi(dkprCn, dkprE.getIdEnvio(), Estados.REGISTRADO,
-                            Estados.EN_TRANSITO, dkprIdManifiesto)) {
-                        throw new NegocioException(dkprE.getCodigoSeguimiento()
-                                + " ya no está pendiente de despacho. Actualiza la bandeja.");
-                    }
-                    dkprHistorialDAO.insertar(dkprCn, dkprE.getIdEnvio(), Estados.EN_TRANSITO, dkprE.getIdAgenciaOrigen(),
-                            dkprEmpleado.getIdEmpleado(), dkprDetalle);
-                }
-                dkprCn.commit();
-                return dkprCodigo;
-            } catch (SQLException | RuntimeException dkprE) {
-                dkprCn.rollback();
-                throw dkprE;
+        int dkprIdManifiesto = dkprManifiestoDAO.insertar(dkprCn, dkprPrimero.getIdRuta(), dkprEmpleado.getIdEmpleado(),
+                dkprPlacaOk, dkprConductorOk, dkprObs);
+        String dkprCodigo = ManifiestoDAO.codigo(dkprIdManifiesto);
+        String dkprDetalle = "Despachado en " + dkprCodigo + (dkprPlacaOk == null ? "" : " (placa " + dkprPlacaOk + ")");
+        for (Envio dkprE : dkprEnvios) {
+            if (!dkprEnvioDAO.actualizarEstadoSi(dkprCn, dkprE.getIdEnvio(), Estados.REGISTRADO,
+                    Estados.EN_TRANSITO, dkprIdManifiesto)) {
+                throw new NegocioException(dkprE.getCodigoSeguimiento()
+                        + " ya no está pendiente de despacho. Actualiza la bandeja.");
             }
+            dkprHistorialDAO.insertar(dkprCn, dkprE.getIdEnvio(), Estados.EN_TRANSITO, dkprE.getIdAgenciaOrigen(),
+                    dkprEmpleado.getIdEmpleado(), dkprDetalle);
         }
+        return dkprIdManifiesto;
     }
 
     /**
@@ -366,6 +376,21 @@ public class EnvioService {
      * físicamente llegaron: los que falten siguen EN TRANSITO y aparecen como atrasados.
      */
     public void recibir(List<Envio> dkprEnvios, String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
+        try (Connection dkprCn = Conexion.obtener()) {
+            dkprCn.setAutoCommit(false);
+            try {
+                recibirEn(dkprCn, dkprEnvios, dkprObservacion, dkprEmpleado);
+                dkprCn.commit();
+            } catch (SQLException | RuntimeException dkprE) {
+                dkprCn.rollback();
+                throw dkprE;
+            }
+        }
+    }
+
+    /** Igual que {@link #recibir}, pero dentro de una transacción que maneja quien llama. */
+    public void recibirEn(Connection dkprCn, List<Envio> dkprEnvios, String dkprObservacion, Empleado dkprEmpleado)
+            throws SQLException {
         if (dkprEnvios == null || dkprEnvios.isEmpty()) {
             throw new NegocioException("Marca al menos un envío que haya llegado.");
         }
@@ -376,25 +401,16 @@ public class EnvioService {
         }
         String dkprObs = Validaciones.opcional(dkprObservacion, "Observación", 200);
 
-        try (Connection dkprCn = Conexion.obtener()) {
-            dkprCn.setAutoCommit(false);
-            try {
-                for (Envio dkprE : dkprEnvios) {
-                    if (!dkprEnvioDAO.actualizarEstadoSi(dkprCn, dkprE.getIdEnvio(), Estados.EN_TRANSITO,
-                            Estados.EN_AGENCIA_DESTINO, null)) {
-                        throw new NegocioException(dkprE.getCodigoSeguimiento()
-                                + " ya no está en tránsito. Actualiza la bandeja.");
-                    }
-                    String dkprDetalle = dkprObs != null ? dkprObs : "Llegó a agencia destino"
-                            + (dkprE.getManifiesto() == null ? "" : " (" + dkprE.getManifiesto() + ")");
-                    dkprHistorialDAO.insertar(dkprCn, dkprE.getIdEnvio(), Estados.EN_AGENCIA_DESTINO, dkprE.getIdAgenciaDestino(),
-                            dkprEmpleado.getIdEmpleado(), dkprDetalle);
-                }
-                dkprCn.commit();
-            } catch (SQLException | RuntimeException dkprE) {
-                dkprCn.rollback();
-                throw dkprE;
+        for (Envio dkprE : dkprEnvios) {
+            if (!dkprEnvioDAO.actualizarEstadoSi(dkprCn, dkprE.getIdEnvio(), Estados.EN_TRANSITO,
+                    Estados.EN_AGENCIA_DESTINO, null)) {
+                throw new NegocioException(dkprE.getCodigoSeguimiento()
+                        + " ya no está en tránsito. Actualiza la bandeja.");
             }
+            String dkprDetalle = dkprObs != null ? dkprObs : "Llegó a agencia destino"
+                    + (dkprE.getManifiesto() == null ? "" : " (" + dkprE.getManifiesto() + ")");
+            dkprHistorialDAO.insertar(dkprCn, dkprE.getIdEnvio(), Estados.EN_AGENCIA_DESTINO, dkprE.getIdAgenciaDestino(),
+                    dkprEmpleado.getIdEmpleado(), dkprDetalle);
         }
     }
 

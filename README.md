@@ -13,7 +13,8 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
    ```
 3. **Conéctate a `sistema_envios`** (no a `postgres`) y ejecuta completo `database/01_schema_y_datos.sql`.
    Comprueba con `SELECT * FROM empleado;` (deben aparecer 5 usuarios).
-   Después ejecuta, en orden, los scripts de `database/cambios/` (ej. `002_manifiesto_y_bandeja.sql`).
+   Después ejecuta, en orden, los scripts de `database/cambios/` (`002_manifiesto_y_bandeja.sql`,
+   `003_control_carga.sql`, ...). Solo agregan tablas y columnas: se pueden correr sobre una base con datos.
 4. Copia `db.properties.example` como `db.properties` en la raíz del proyecto y pon tu usuario y clave de PostgreSQL.
    La URL debe terminar en `/sistema_envios`.
 5. En IntelliJ: clic derecho en `Launcher.java` > *Run*. También sirve `mvn javafx:run`.
@@ -40,6 +41,8 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
 | Bandeja: por despachar / por recibir | ✔ | | ✔ |
 | Bandeja: por entregar | ✔ | ✔ | |
 | Despachar y confirmar llegada | ✔ | | ✔ |
+| Control de carga: etiquetas de bultos | ✔ | ✔ | ✔ |
+| Control de carga: despacho y recepción por bulto | ✔ | | ✔ |
 | Anular envío | ✔ | ✔ | |
 | Entregas | ✔ | ✔ | |
 | Reportes, agencias, rutas y tarifas, empleados | ✔ | | |
@@ -76,6 +79,26 @@ Detalles del flujo:
   (parentesco, carta poder...).
 - Si dos empleados intentan mover el mismo envío a la vez, solo vale el primero; el otro recibe un aviso.
 - *Seguimiento* conserva el cambio de estado individual (útil para casos sueltos y para anular).
+
+## Control de carga (etiquetas y escaneo por bulto)
+
+Menú **Control de carga**. Complementa la Bandeja: aquí se controla cada **bulto**, no solo el envío.
+
+- **Etiquetas:** una por bulto, con código de barras (Code128) y QR con el mismo contenido:
+  `ENV-000015-02` = bulto 2 del envío ENV-000015. *Imprimir etiquetas* manda una etiqueta por página
+  (impresora de etiquetas o térmica); *Guardar PDF* acomoda 8 por hoja A4 para recortar.
+- **Despacho:** se elige el destino, *Iniciar carga* y se escanea cada bulto que sube al vehículo.
+  Cada lectura muestra un aviso en verde o en rojo (con pitido) **sin ventanas emergentes**, para no
+  interrumpir el escaneo: otro destino (*¡NO CARGAR!*), duplicado, código inexistente, bulto que no existe,
+  ticket escaneado en lugar de la etiqueta de un envío con varios bultos. Al **cerrar** se listan los faltantes,
+  se despachan solo los envíos con **todos** sus bultos (los incompletos se quedan en la agencia) y se
+  genera el **manifiesto** en PDF, con firmas. *Imprimir manifiesto…* lo vuelve a generar.
+- **Recepción:** en la agencia destino se elige el manifiesto que llega y se escanea cada bulto al descargar.
+  Al cerrar, los envíos completos pasan a *EN AGENCIA DESTINO*; los incompletos siguen *EN TRANSITO*.
+- Cada lectura (también las rechazadas) queda guardada. Si se cierra el programa o se corta la luz,
+  *Iniciar / retomar* continúa la misma sesión, y dos computadoras pueden escanear el mismo vehículo.
+- El lector USB funciona como teclado + Enter. Si el teclado está en español y el lector escribe `'`
+  en lugar de `-` (`ENV'000015'02`), el sistema lo entiende igual.
 
 ## Ticket y PDF
 

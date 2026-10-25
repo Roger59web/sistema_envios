@@ -126,6 +126,34 @@ public class EnvioDAO {
         }
     }
 
+    /** Devuelve el envío con ese id, o null si no existe. */
+    public Envio buscarPorId(int dkprIdEnvio) throws SQLException {
+        String dkprSql = SELECT_BASE + " WHERE e.id_envio = ?";
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprIdEnvio);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                return dkprRs.next() ? mapear(dkprRs) : null;
+            }
+        }
+    }
+
+    /** Envíos que salieron con un manifiesto (en cualquier estado), en el orden en que se registraron. */
+    public List<Envio> listarPorManifiesto(int dkprIdManifiesto) throws SQLException {
+        String dkprSql = SELECT_BASE + " WHERE e.id_manifiesto = ? ORDER BY e.id_envio";
+        List<Envio> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprIdManifiesto);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                while (dkprRs.next()) {
+                    dkprLista.add(mapear(dkprRs));
+                }
+            }
+        }
+        return dkprLista;
+    }
+
     /** Envíos registrados entre dos fechas (ambas incluidas), del más reciente al más antiguo. */
     public List<Envio> listarPorFechas(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.fecha_registro >= ? AND e.fecha_registro < ? "

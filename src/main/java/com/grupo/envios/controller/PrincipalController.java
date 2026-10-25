@@ -74,6 +74,7 @@ public class PrincipalController {
 
     @FXML private void onInicio() { mostrarInicio(Sesion.getActual()); }
     @FXML private void onBandeja() { mostrar("bandeja.fxml"); }
+    @FXML private void onControlCarga() { mostrar("control_carga.fxml"); }
     @FXML private void onClientes() { mostrar("clientes.fxml"); }
     @FXML private void onRegistrarEnvio() { mostrar("registrar_envio.fxml"); }
     @FXML private void onSeguimiento() { mostrar("seguimiento.fxml"); }

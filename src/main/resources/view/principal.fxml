@@ -28,6 +28,7 @@
 
             <Label text="OPERACIÓN" styleClass="seccion-menu"/>
             <Button text="Bandeja de agencia" maxWidth="Infinity" onAction="#onBandeja"/>
+            <Button text="Control de carga" maxWidth="Infinity" onAction="#onControlCarga"/>
             <Button fx:id="dkprBtnClientes" text="Clientes" maxWidth="Infinity" onAction="#onClientes"/>
             <Button fx:id="dkprBtnEnvio" text="Registrar envío" maxWidth="Infinity" onAction="#onRegistrarEnvio"/>
             <Button text="Seguimiento" maxWidth="Infinity" onAction="#onSeguimiento"/>

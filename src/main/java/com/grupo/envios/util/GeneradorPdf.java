@@ -4,6 +4,7 @@ import com.grupo.envios.model.Comprobante;
 import com.grupo.envios.model.DetalleEnvio;
 import com.grupo.envios.model.Envio;
 import com.grupo.envios.model.HistorialEnvio;
+import com.grupo.envios.model.Manifiesto;
 import com.grupo.envios.model.ResumenFila;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -31,7 +32,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/** Genera los documentos PDF del sistema: detalle de un envío y reporte de envíos. */
+/** Genera los documentos PDF del sistema: detalle de un envío, reporte, etiquetas de bultos y manifiesto. */
 public final class GeneradorPdf {
 
     private static final Color AZUL = new Color(0x1f, 0x3a, 0x5f);
@@ -254,6 +255,181 @@ public final class GeneradorPdf {
                 dkprAlterna = !dkprAlterna;
             }
             dkprDoc.add(dkprTabla);
+
+            pie(dkprDoc);
+            dkprDoc.close();
+        } catch (DocumentException dkprEx) {
+            throw new IOException("No se pudo generar el PDF: " + dkprEx.getMessage(), dkprEx);
+        }
+    }
+
+    // -------------------------------------------------------- etiquetas de bultos
+
+    /** Etiquetas de bultos en hojas A4: 8 por hoja (2 × 4), con líneas para recortar. */
+    public static void etiquetas(List<Envio> dkprEnvios, File dkprArchivo) throws IOException {
+        Document dkprDoc = new Document(PageSize.A4, 20, 20, 20, 20);
+        try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
+            PdfWriter.getInstance(dkprDoc, dkprOut);
+            dkprDoc.addTitle("Etiquetas de bultos");
+            dkprDoc.open();
+
+            PdfPTable dkprHoja = new PdfPTable(2);
+            dkprHoja.setWidthPercentage(100);
+            int dkprCantidad = 0;
+            for (Envio dkprE : dkprEnvios) {
+                for (int dkprN = 1; dkprN <= dkprE.getCantidadBultos(); dkprN++) {
+                    dkprHoja.addCell(etiqueta(dkprE, dkprN));
+                    dkprCantidad++;
+                }
+            }
+            if (dkprCantidad % 2 == 1) {
+                dkprHoja.addCell(contenedor(null));
+            }
+            dkprDoc.add(dkprHoja);
+            dkprDoc.close();
+        } catch (DocumentException dkprEx) {
+            throw new IOException("No se pudo generar el PDF: " + dkprEx.getMessage(), dkprEx);
+        }
+    }
+
+    private static PdfPCell etiqueta(Envio dkprE, int dkprNroBulto) throws IOException {
+        String dkprCodigo = CodigosBarras.codigoBulto(dkprE, dkprNroBulto);
+
+        PdfPTable dkprArriba = new PdfPTable(new float[]{3, 1.1f});
+        dkprArriba.setWidthPercentage(100);
+        PdfPCell dkprDatos = new PdfPCell();
+        dkprDatos.setBorder(Rectangle.NO_BORDER);
+        dkprDatos.addElement(new Paragraph("SISTEMA DE ENVÍOS", ETIQUETA));
+        dkprDatos.addElement(new Paragraph("DESTINO", PEQUENA));
+        dkprDatos.addElement(new Paragraph(dkprE.getDestino(), SUBTITULO));
+        dkprDatos.addElement(new Paragraph("Para: " + dkprE.getDestinatario(), NORMAL));
+        dkprDatos.addElement(new Paragraph("De: " + dkprE.getOrigen(), PEQUENA));
+        dkprArriba.addCell(dkprDatos);
+        PdfPCell dkprQr = new PdfPCell(imagen(CodigosBarras.imagenQR(dkprCodigo, 8), 68, 68));
+        dkprQr.setBorder(Rectangle.NO_BORDER);
+        dkprQr.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        dkprArriba.addCell(dkprQr);
+
+        PdfPTable dkprAbajo = new PdfPTable(2);
+        dkprAbajo.setWidthPercentage(100);
+        PdfPCell dkprTextoCodigo = new PdfPCell(new Phrase(dkprCodigo, ETIQUETA));
+        PdfPCell dkprTextoBulto = new PdfPCell(new Phrase("Bulto " + dkprNroBulto + " de " + dkprE.getCantidadBultos(), ETIQUETA));
+        dkprTextoBulto.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        for (PdfPCell dkprC : List.of(dkprTextoCodigo, dkprTextoBulto)) {
+            dkprC.setBorder(Rectangle.NO_BORDER);
+            dkprAbajo.addCell(dkprC);
+        }
+
+        PdfPCell dkprCelda = new PdfPCell();
+        dkprCelda.addElement(dkprArriba);
+        dkprCelda.addElement(imagen(CodigosBarras.imagenBarras(dkprCodigo, 3, 60), 245, 38));
+        dkprCelda.addElement(dkprAbajo);
+        dkprCelda.setFixedHeight(196);
+        dkprCelda.setPadding(8);
+        dkprCelda.setBorderColor(GRIS_TEXTO);
+        dkprCelda.setBorderWidth(0.5f);
+        return dkprCelda;
+    }
+
+    private static com.lowagie.text.Image imagen(java.awt.image.BufferedImage dkprImg, float dkprAncho, float dkprAlto)
+            throws IOException {
+        com.lowagie.text.Image dkprI = com.lowagie.text.Image.getInstance(dkprImg, null);
+        dkprI.scaleAbsolute(dkprAncho, dkprAlto);
+        return dkprI;
+    }
+
+    // ------------------------------------------------------- manifiesto de carga
+
+    /** Manifiesto de carga (lo que lleva el conductor): envíos, bultos, peso y firmas. */
+    public static void manifiesto(Manifiesto dkprM, List<Envio> dkprEnvios, File dkprArchivo) throws IOException {
+        Document dkprDoc = new Document(PageSize.A4, 40, 40, 36, 36);
+        try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
+            PdfWriter.getInstance(dkprDoc, dkprOut);
+            dkprDoc.addTitle("Manifiesto " + dkprM.getCodigo());
+            dkprDoc.open();
+
+            encabezado(dkprDoc, "Manifiesto de carga", dkprM.getOrigen() + " → " + dkprM.getDestino());
+
+            int dkprBultos = dkprEnvios.stream().mapToInt(Envio::getCantidadBultos).sum();
+            BigDecimal dkprPeso = dkprEnvios.stream().map(Envio::getPesoKg).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            PdfPTable dkprCodigo = new PdfPTable(new float[]{3, 2});
+            dkprCodigo.setWidthPercentage(100);
+            PdfPCell dkprCeldaCodigo = new PdfPCell();
+            dkprCeldaCodigo.addElement(new Paragraph("MANIFIESTO", ETIQUETA));
+            dkprCeldaCodigo.addElement(new Paragraph(dkprM.getCodigo(), CODIGO));
+            dkprCeldaCodigo.addElement(imagen(CodigosBarras.imagenBarras(dkprM.getCodigo(), 3, 60), 190, 34));
+            PdfPCell dkprCeldaTotales = new PdfPCell();
+            dkprCeldaTotales.addElement(new Paragraph("CARGA", ETIQUETA));
+            dkprCeldaTotales.addElement(new Paragraph(dkprEnvios.size() + " envío(s)  ·  " + dkprBultos + " bulto(s)", SUBTITULO));
+            dkprCeldaTotales.addElement(new Paragraph("Peso total: " + dkprPeso.toPlainString() + " kg", NORMAL));
+            for (PdfPCell dkprCelda : List.of(dkprCeldaCodigo, dkprCeldaTotales)) {
+                dkprCelda.setBackgroundColor(GRIS_FONDO);
+                dkprCelda.setBorder(Rectangle.NO_BORDER);
+                dkprCelda.setPadding(10);
+                dkprCodigo.addCell(dkprCelda);
+            }
+            dkprCodigo.setSpacingAfter(12);
+            dkprDoc.add(dkprCodigo);
+
+            seccion(dkprDoc, "Datos del viaje");
+            PdfPTable dkprDatos = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
+            dkprDatos.setWidthPercentage(100);
+            par(dkprDatos, "Origen", dkprM.getOrigen());
+            par(dkprDatos, "Destino", dkprM.getDestino());
+            par(dkprDatos, "Salida", dkprM.getFechaSalidaTexto());
+            par(dkprDatos, "Despachado por", dkprM.getEmpleado());
+            par(dkprDatos, "Placa", dkprM.getPlaca());
+            par(dkprDatos, "Conductor", dkprM.getConductor());
+            if (dkprM.getObservacion() != null && !dkprM.getObservacion().isBlank()) {
+                dkprDatos.addCell(celdaEtiqueta("Observación"));
+                PdfPCell dkprObs = celdaValor(dkprM.getObservacion());
+                dkprObs.setColspan(3);
+                dkprDatos.addCell(dkprObs);
+            }
+            dkprDatos.setSpacingAfter(12);
+            dkprDoc.add(dkprDatos);
+
+            seccion(dkprDoc, "Envíos");
+            PdfPTable dkprTabla = new PdfPTable(new float[]{0.4f, 1.3f, 2.4f, 1.2f, 2.4f, 0.7f, 0.8f, 1.5f});
+            dkprTabla.setWidthPercentage(100);
+            dkprTabla.setHeaderRows(1);
+            for (String dkprTitulo : List.of("N°", "Código", "Destinatario", "Documento", "Contenido", "Bultos",
+                    "Peso kg", "Estado")) {
+                dkprTabla.addCell(celdaCabecera(dkprTitulo));
+            }
+            boolean dkprAlterna = false;
+            int dkprN = 1;
+            for (Envio dkprE : dkprEnvios) {
+                dkprTabla.addCell(celdaTabla(String.valueOf(dkprN++), dkprAlterna, Element.ALIGN_RIGHT));
+                for (String dkprValor : List.of(dkprE.getCodigoSeguimiento(), dkprE.getDestinatario(),
+                        dkprE.getDestinatarioDocumento(), dkprE.getDescripcion())) {
+                    dkprTabla.addCell(celdaTabla(dkprValor, dkprAlterna, Element.ALIGN_LEFT));
+                }
+                dkprTabla.addCell(celdaTabla(String.valueOf(dkprE.getCantidadBultos()), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprTabla.addCell(celdaTabla(dkprE.getPesoKg().toPlainString(), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprTabla.addCell(celdaTabla(dkprE.getEstado(), dkprAlterna, Element.ALIGN_LEFT));
+                dkprAlterna = !dkprAlterna;
+            }
+            dkprTabla.setSpacingAfter(36);
+            dkprDoc.add(dkprTabla);
+
+            PdfPTable dkprFirmas = new PdfPTable(3);
+            dkprFirmas.setWidthPercentage(100);
+            for (String dkprFirma : List.of("Despachado por (almacén origen)", "Conductor", "Recibido por (almacén destino)")) {
+                PdfPCell dkprC = new PdfPCell(new Phrase(dkprFirma, PEQUENA));
+                dkprC.setBorder(Rectangle.TOP);
+                dkprC.setBorderColor(GRIS_TEXTO);
+                dkprC.setHorizontalAlignment(Element.ALIGN_CENTER);
+                dkprC.setPaddingTop(4);
+                PdfPCell dkprEspacio = contenedor(null);
+                PdfPTable dkprBloque = new PdfPTable(new float[]{0.1f, 1, 0.1f});
+                dkprBloque.addCell(dkprEspacio);
+                dkprBloque.addCell(dkprC);
+                dkprBloque.addCell(contenedor(null));
+                dkprFirmas.addCell(contenedor(dkprBloque));
+            }
+            dkprDoc.add(dkprFirmas);
 
             pie(dkprDoc);
             dkprDoc.close();

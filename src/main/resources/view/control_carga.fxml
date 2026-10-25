@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.ControlCargaController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Control de carga" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="Agencia:" styleClass="etiqueta"/>
+        <ComboBox fx:id="dkprCmbAgencia" prefWidth="240"/>
+        <Button text="Actualizar" onAction="#onActualizar"/>
+    </HBox>
+
+    <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- 1. Etiquetas con código de barras y QR, una por bulto -->
+        <Tab fx:id="dkprTabEtiquetas" text="Etiquetas">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <TextField fx:id="dkprTxtBuscarEtiqueta" HBox.hgrow="ALWAYS"
+                               promptText="Escanea el ticket o escribe el código del envío (ENV-000015 o 15) y pulsa Enter"/>
+                    <Button text="Agregar" onAction="#onAgregarEtiqueta"/>
+                </HBox>
+                <HBox spacing="12" VBox.vgrow="ALWAYS">
+                    <VBox spacing="6" HBox.hgrow="ALWAYS">
+                        <Label text="Envíos por despachar (Ctrl o Shift para elegir varios)" styleClass="etiqueta"/>
+                        <TableView fx:id="dkprTablaEtiquetas" VBox.vgrow="ALWAYS">
+                            <placeholder>
+                                <Label text="No hay envíos pendientes de despacho."/>
+                            </placeholder>
+                        </TableView>
+                    </VBox>
+                    <VBox spacing="6">
+                        <Label text="Vista previa" styleClass="etiqueta"/>
+                        <ScrollPane fitToWidth="true" minWidth="335" prefWidth="335" VBox.vgrow="ALWAYS">
+                            <VBox fx:id="dkprPreviaEtiquetas" spacing="10" style="-fx-background-color: #d5dbe3;">
+                                <padding>
+                                    <Insets top="12" right="12" bottom="12" left="12"/>
+                                </padding>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </HBox>
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
+                    <Label fx:id="dkprLblEtiquetas" styleClass="etiqueta"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Guardar PDF (hojas A4)" onAction="#onEtiquetasPdf"/>
+                    <Button text="Imprimir etiquetas" styleClass="boton-primario" onAction="#onImprimirEtiquetas"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <!-- 2. Carga del vehículo en la agencia de origen -->
+        <Tab fx:id="dkprTabDespacho" text="Despacho">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Destino:" styleClass="etiqueta"/>
+                    <ComboBox fx:id="dkprCmbRuta" promptText="Elige el destino del vehículo" prefWidth="320"/>
+                    <Button text="Iniciar / retomar carga" onAction="#onIniciarDespacho"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Imprimir manifiesto…" onAction="#onImprimirManifiesto"/>
+                </HBox>
+                <Label fx:id="dkprLblSesionDespacho" styleClass="aviso" wrapText="true"/>
+                <TextField fx:id="dkprTxtEscanearDespacho" style="-fx-font-size: 18px;"
+                           promptText="Escanea cada bulto que sube al vehículo (el lector envía Enter)"/>
+                <Label fx:id="dkprLblAvisoDespacho" maxWidth="Infinity" wrapText="true"/>
+                <Label fx:id="dkprLblAvanceDespacho" styleClass="etiqueta"/>
+                <HBox spacing="12" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="dkprTablaEspDespacho" HBox.hgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="Elige el destino e inicia la carga para ver los envíos esperados."/>
+                        </placeholder>
+                    </TableView>
+                    <TableView fx:id="dkprTablaLecDespacho" HBox.hgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="Aún no se escaneó ningún bulto."/>
+                        </placeholder>
+                    </TableView>
+                </HBox>
+                <VBox spacing="6" styleClass="panel-form">
+                    <Label text="Cierre de carga y manifiesto" styleClass="subtitulo"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="dkprTxtPlaca" promptText="Placa del vehículo" prefWidth="140"/>
+                        <TextField fx:id="dkprTxtConductor" promptText="Conductor" prefWidth="220"/>
+                        <TextField fx:id="dkprTxtObsDespacho" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
+                        <Button text="Cancelar carga" minWidth="-Infinity" onAction="#onCancelarDespacho"/>
+                        <Button fx:id="dkprBtnCerrarDespacho" text="Cerrar carga y despachar" minWidth="-Infinity" styleClass="boton-primario"
+                                onAction="#onCerrarDespacho"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <!-- 3. Descarga del vehículo en la agencia destino -->
+        <Tab fx:id="dkprTabRecepcion" text="Recepción">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Manifiesto:" styleClass="etiqueta"/>
+                    <ComboBox fx:id="dkprCmbManifiesto" promptText="Elige el manifiesto que llega" prefWidth="460"/>
+                    <Button text="Iniciar / retomar descarga" onAction="#onIniciarRecepcion"/>
+                </HBox>
+                <Label fx:id="dkprLblSesionRecepcion" styleClass="aviso" wrapText="true"/>
+                <TextField fx:id="dkprTxtEscanearRecepcion" style="-fx-font-size: 18px;"
+                           promptText="Escanea cada bulto que baja del vehículo (el lector envía Enter)"/>
+                <Label fx:id="dkprLblAvisoRecepcion" maxWidth="Infinity" wrapText="true"/>
+                <Label fx:id="dkprLblAvanceRecepcion" styleClass="etiqueta"/>
+                <HBox spacing="12" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="dkprTablaEspRecepcion" HBox.hgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="Elige el manifiesto e inicia la descarga para ver lo que debe llegar."/>
+                        </placeholder>
+                    </TableView>
+                    <TableView fx:id="dkprTablaLecRecepcion" HBox.hgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="Aún no se escaneó ningún bulto."/>
+                        </placeholder>
+                    </TableView>
+                </HBox>
+                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
+                    <TextField fx:id="dkprTxtObsRecepcion" promptText="Observación (ej: caja golpeada)" HBox.hgrow="ALWAYS"/>
+                    <Button text="Cancelar descarga" minWidth="-Infinity" onAction="#onCancelarRecepcion"/>
+                    <Button fx:id="dkprBtnCerrarRecepcion" text="Cerrar recepción" minWidth="-Infinity" styleClass="boton-primario"
+                            onAction="#onCerrarRecepcion"/>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>
