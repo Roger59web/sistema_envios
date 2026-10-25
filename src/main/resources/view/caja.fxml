@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.CajaController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <Label text="Cuadre de caja" styleClass="titulo"/>
+
+    <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <!-- 1. Turno del cajero: apertura, cobros del turno y cierre con lo contado -->
+        <Tab text="Mi turno">
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <VBox fx:id="dkprPanelApertura" spacing="8" styleClass="panel-form">
+                    <Label text="Abrir turno" styleClass="subtitulo"/>
+                    <Label text="No tienes un turno de caja abierto. Cuenta el efectivo con el que empiezas (fondo de caja) y abre el turno."
+                           wrapText="true"/>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Fondo inicial (S/):" styleClass="etiqueta"/>
+                        <TextField fx:id="dkprTxtFondo" promptText="0.00" prefWidth="120"/>
+                        <Button text="Abrir turno" styleClass="boton-primario" onAction="#onAbrir"/>
+                    </HBox>
+                </VBox>
+
+                <VBox fx:id="dkprPanelTurno" spacing="10" VBox.vgrow="ALWAYS">
+                    <Label fx:id="dkprLblTurno" styleClass="etiqueta" wrapText="true"/>
+                    <GridPane fx:id="dkprGrid" hgap="18" vgap="8" styleClass="panel-form"/>
+                    <Label fx:id="dkprLblAnulados" styleClass="aviso"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Resultado:" styleClass="subtitulo"/>
+                        <Label fx:id="dkprLblResultado" styleClass="costo"/>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
+                        <TextField fx:id="dkprTxtObservacion" promptText="Observación (obligatoria si hay faltante o sobrante)"
+                                   HBox.hgrow="ALWAYS"/>
+                        <Button text="Actualizar cobros" minWidth="-Infinity" onAction="#onActualizar"/>
+                        <Button text="Cerrar turno" minWidth="-Infinity" styleClass="boton-primario" onAction="#onCerrar"/>
+                    </HBox>
+                    <Label text="Cobros del turno" styleClass="etiqueta"/>
+                    <TableView fx:id="dkprTablaCobros" VBox.vgrow="ALWAYS">
+                        <placeholder>
+                            <Label text="Aún no hay cobros en este turno."/>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <!-- 2. Turnos anteriores y su reporte imprimible -->
+        <Tab text="Historial">
+            <VBox spacing="8">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <Label text="Desde:" styleClass="etiqueta"/>
+                    <DatePicker fx:id="dkprDpDesde" prefWidth="140"/>
+                    <Label text="Hasta:" styleClass="etiqueta"/>
+                    <DatePicker fx:id="dkprDpHasta" prefWidth="140"/>
+                    <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscarHistorial"/>
+                </HBox>
+                <TableView fx:id="dkprTablaHistorial" VBox.vgrow="ALWAYS">
+                    <placeholder>
+                        <Label text="No hay turnos en esas fechas."/>
+                    </placeholder>
+                </TableView>
+                <HBox spacing="8" alignment="CENTER_RIGHT">
+                    <Label text="Doble clic o selecciona un turno para su reporte." styleClass="aviso"/>
+                    <Button text="Reporte PDF" styleClass="boton-primario" onAction="#onReporte"/>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+</VBox>

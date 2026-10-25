@@ -1,5 +1,7 @@
 package com.grupo.envios.util;
 
+import com.grupo.envios.model.CajaTurno;
+import com.grupo.envios.model.CobroCaja;
 import com.grupo.envios.model.Comprobante;
 import com.grupo.envios.model.DetalleEnvio;
 import com.grupo.envios.model.Envio;
@@ -32,7 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/** Genera los documentos PDF del sistema: detalle de un envío, reporte, etiquetas de bultos y manifiesto. */
+/** Genera los documentos PDF del sistema: detalle de un envío, reporte, etiquetas, manifiesto y cuadre de caja. */
 public final class GeneradorPdf {
 
     private static final Color AZUL = new Color(0x1f, 0x3a, 0x5f);
@@ -391,11 +393,11 @@ public final class GeneradorPdf {
             dkprDoc.add(dkprDatos);
 
             seccion(dkprDoc, "Envíos");
-            PdfPTable dkprTabla = new PdfPTable(new float[]{0.4f, 1.3f, 2.4f, 1.2f, 2.4f, 0.7f, 0.8f, 1.5f});
+            PdfPTable dkprTabla = new PdfPTable(new float[]{0.45f, 1.4f, 2.3f, 1.35f, 2.1f, 0.95f, 0.8f, 1.6f});
             dkprTabla.setWidthPercentage(100);
             dkprTabla.setHeaderRows(1);
-            for (String dkprTitulo : List.of("N°", "Código", "Destinatario", "Documento", "Contenido", "Bultos",
-                    "Peso kg", "Estado")) {
+            for (String dkprTitulo : List.of("#", "Código", "Destinatario", "Documento", "Contenido", "Bultos",
+                    "Kg", "Estado")) {
                 dkprTabla.addCell(celdaCabecera(dkprTitulo));
             }
             boolean dkprAlterna = false;
@@ -428,6 +430,121 @@ public final class GeneradorPdf {
                 dkprBloque.addCell(dkprC);
                 dkprBloque.addCell(contenedor(null));
                 dkprFirmas.addCell(contenedor(dkprBloque));
+            }
+            dkprDoc.add(dkprFirmas);
+
+            pie(dkprDoc);
+            dkprDoc.close();
+        } catch (DocumentException dkprEx) {
+            throw new IOException("No se pudo generar el PDF: " + dkprEx.getMessage(), dkprEx);
+        }
+    }
+
+    // ------------------------------------------------------------ cuadre de caja
+
+    /** Reporte del turno de caja: esperado vs. contado por método de pago, diferencia, cobros y firmas. */
+    public static void cuadreCaja(CajaTurno dkprT, List<CobroCaja> dkprCobros, File dkprArchivo) throws IOException {
+        Document dkprDoc = new Document(PageSize.A4, 40, 40, 36, 36);
+        try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
+            PdfWriter.getInstance(dkprDoc, dkprOut);
+            dkprDoc.addTitle("Cuadre de caja " + dkprT.getFechaAperturaTexto());
+            dkprDoc.open();
+
+            encabezado(dkprDoc, "Cuadre de caja", dkprT.getAgencia());
+
+            BigDecimal dkprDiferencia = dkprT.getDiferenciaTotal();
+            PdfPTable dkprResumen = new PdfPTable(new float[]{3, 2});
+            dkprResumen.setWidthPercentage(100);
+            PdfPCell dkprCeldaResultado = new PdfPCell();
+            dkprCeldaResultado.addElement(new Paragraph("RESULTADO", ETIQUETA));
+            dkprCeldaResultado.addElement(new Paragraph(CajaTurno.resultado(dkprDiferencia),
+                    dkprDiferencia != null && dkprDiferencia.signum() == 0 ? TOTAL : ANULADO));
+            dkprCeldaResultado.addElement(new Paragraph(dkprT.isAbierto() ? "Turno ABIERTO (arqueo parcial)" : "Turno cerrado", PEQUENA));
+            PdfPCell dkprCeldaTotales = new PdfPCell();
+            dkprCeldaTotales.addElement(new Paragraph("TOTALES", ETIQUETA));
+            dkprCeldaTotales.addElement(new Paragraph("Esperado: " + Formato.soles(dkprT.getTotalEsperado()), NORMAL));
+            dkprCeldaTotales.addElement(new Paragraph("Contado: " + (dkprT.getTotalContado() == null ? "-"
+                    : Formato.soles(dkprT.getTotalContado())), NORMAL));
+            for (PdfPCell dkprCelda : List.of(dkprCeldaResultado, dkprCeldaTotales)) {
+                dkprCelda.setBackgroundColor(GRIS_FONDO);
+                dkprCelda.setBorder(Rectangle.NO_BORDER);
+                dkprCelda.setPadding(10);
+                dkprResumen.addCell(dkprCelda);
+            }
+            dkprResumen.setSpacingAfter(12);
+            dkprDoc.add(dkprResumen);
+
+            seccion(dkprDoc, "Datos del turno");
+            PdfPTable dkprDatos = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
+            dkprDatos.setWidthPercentage(100);
+            par(dkprDatos, "Cajero", dkprT.getEmpleado());
+            par(dkprDatos, "Agencia", dkprT.getAgencia());
+            par(dkprDatos, "Apertura", dkprT.getFechaAperturaTexto());
+            par(dkprDatos, "Cierre", dkprT.getFechaCierreTexto());
+            par(dkprDatos, "Fondo inicial", Formato.soles(dkprT.getMontoInicial()));
+            par(dkprDatos, "Anulados", dkprT.getAnuladosCantidad() + " (" + Formato.soles(dkprT.getAnuladosMonto()) + ", no se cuentan)");
+            if (dkprT.getObservacion() != null && !dkprT.getObservacion().isBlank()) {
+                dkprDatos.addCell(celdaEtiqueta("Observación"));
+                PdfPCell dkprObs = celdaValor(dkprT.getObservacion());
+                dkprObs.setColspan(3);
+                dkprDatos.addCell(dkprObs);
+            }
+            dkprDatos.setSpacingAfter(12);
+            dkprDoc.add(dkprDatos);
+
+            seccion(dkprDoc, "Por método de pago");
+            PdfPTable dkprMetodos = new PdfPTable(new float[]{2, 1, 1.6f, 1.6f, 2});
+            dkprMetodos.setWidthPercentage(100);
+            for (String dkprTitulo : List.of("Método", "Cobros", "Esperado (S/)", "Contado (S/)", "Diferencia")) {
+                dkprMetodos.addCell(celdaCabecera(dkprTitulo));
+            }
+            boolean dkprAlterna = false;
+            for (String dkprM : CajaTurno.METODOS) {
+                long dkprCantidad = dkprCobros.stream().filter(dkprC -> !dkprC.isAnulado() && dkprM.equals(dkprC.getMetodoPago())).count();
+                dkprMetodos.addCell(celdaTabla("EFECTIVO".equals(dkprM) ? "EFECTIVO (incl. fondo)" : dkprM, dkprAlterna, Element.ALIGN_LEFT));
+                dkprMetodos.addCell(celdaTabla(String.valueOf(dkprCantidad), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprMetodos.addCell(celdaTabla(dkprT.getEsperado(dkprM).setScale(2).toPlainString(), dkprAlterna, Element.ALIGN_RIGHT));
+                BigDecimal dkprContado = dkprT.getContado(dkprM);
+                dkprMetodos.addCell(celdaTabla(dkprContado == null ? "-" : dkprContado.setScale(2).toPlainString(), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprMetodos.addCell(celdaTabla(CajaTurno.resultado(dkprT.getDiferencia(dkprM)), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprAlterna = !dkprAlterna;
+            }
+            dkprMetodos.addCell(celdaEtiqueta("TOTAL"));
+            dkprMetodos.addCell(celdaTabla(String.valueOf(dkprCobros.stream().filter(dkprC -> !dkprC.isAnulado()).count()), false, Element.ALIGN_RIGHT));
+            dkprMetodos.addCell(celdaTabla(dkprT.getTotalEsperado().setScale(2).toPlainString(), false, Element.ALIGN_RIGHT));
+            dkprMetodos.addCell(celdaTabla(dkprT.getTotalContado() == null ? "-" : dkprT.getTotalContado().setScale(2).toPlainString(), false, Element.ALIGN_RIGHT));
+            dkprMetodos.addCell(celdaTabla(CajaTurno.resultado(dkprDiferencia), false, Element.ALIGN_RIGHT));
+            dkprMetodos.setSpacingAfter(12);
+            dkprDoc.add(dkprMetodos);
+
+            seccion(dkprDoc, "Cobros del turno (" + dkprCobros.size() + ")");
+            PdfPTable dkprDetalle = new PdfPTable(new float[]{1.2f, 1.8f, 1.5f, 1.3f, 1.2f, 2});
+            dkprDetalle.setWidthPercentage(100);
+            dkprDetalle.setHeaderRows(1);
+            for (String dkprTitulo : List.of("Hora", "Comprobante", "Envío", "Método", "Total (S/)", "Estado")) {
+                dkprDetalle.addCell(celdaCabecera(dkprTitulo));
+            }
+            dkprAlterna = false;
+            for (CobroCaja dkprC : dkprCobros) {
+                for (String dkprValor : List.of(dkprC.getFechaTexto(), dkprC.getComprobante(), dkprC.getCodigoEnvio(), dkprC.getMetodoPago())) {
+                    dkprDetalle.addCell(celdaTabla(dkprValor, dkprAlterna, Element.ALIGN_LEFT));
+                }
+                dkprDetalle.addCell(celdaTabla(dkprC.getTotal().toPlainString(), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprDetalle.addCell(celdaTabla(dkprC.getEstadoTexto(), dkprAlterna, Element.ALIGN_LEFT));
+                dkprAlterna = !dkprAlterna;
+            }
+            dkprDetalle.setSpacingAfter(36);
+            dkprDoc.add(dkprDetalle);
+
+            PdfPTable dkprFirmas = new PdfPTable(new float[]{1, 0.3f, 1});
+            dkprFirmas.setWidthPercentage(80);
+            for (String dkprFirma : List.of("Cajero", "", "Supervisor / administrador")) {
+                PdfPCell dkprC = new PdfPCell(new Phrase(dkprFirma, PEQUENA));
+                dkprC.setBorder(dkprFirma.isEmpty() ? Rectangle.NO_BORDER : Rectangle.TOP);
+                dkprC.setBorderColor(GRIS_TEXTO);
+                dkprC.setHorizontalAlignment(Element.ALIGN_CENTER);
+                dkprC.setPaddingTop(4);
+                dkprFirmas.addCell(dkprC);
             }
             dkprDoc.add(dkprFirmas);
 

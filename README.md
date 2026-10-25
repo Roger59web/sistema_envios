@@ -43,6 +43,9 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
 | Despachar y confirmar llegada | ✔ | | ✔ |
 | Control de carga: etiquetas de bultos | ✔ | ✔ | ✔ |
 | Control de carga: despacho y recepción por bulto | ✔ | | ✔ |
+| Paquetes estancados (consulta) | ✔ | ✔ | ✔ |
+| Paquetes estancados: cambiar los días para todos | ✔ | | |
+| Cuadre de caja | ✔ | ✔ | |
 | Anular envío | ✔ | ✔ | |
 | Entregas | ✔ | ✔ | |
 | Reportes, agencias, rutas y tarifas, empleados | ✔ | | |
@@ -121,6 +124,22 @@ para que avance; doble clic lo abre en Seguimiento.
   lo guarda para todos (*Guardar días para todos*, tabla `configuracion`, script `004_configuracion.sql`).
 - El administrador ve todas las agencias; los demás, los envíos en los que participa su agencia.
 - Se resaltan los que ya duplican el límite.
+
+## Cuadre de caja
+
+Menú **Cuadre de caja** (cajero y administrador), script `005_caja.sql`.
+
+1. **Abrir turno:** se cuenta el efectivo con el que se empieza (fondo inicial).
+2. Durante el turno la pantalla muestra lo **esperado por método de pago** (efectivo, tarjeta, Yape, Plin):
+   la suma de los comprobantes que emitió ese cajero desde la apertura. En efectivo se suma el fondo.
+   Los envíos **anulados** se muestran aparte y no se cuentan (se asume que se devolvió el dinero).
+3. **Cerrar turno:** se escribe lo contado en cada método y el sistema muestra al instante la diferencia
+   (*Cuadra*, *Faltante S/ x* o *Sobrante S/ x*). Si no cuadra, la observación es obligatoria. Al cerrar se
+   guardan lo esperado y lo contado (ya no cambian) y se ofrece el **reporte PDF** con firmas.
+4. **Historial:** turnos por fechas (el cajero ve los suyos; el administrador, los de todos) y su reporte PDF.
+
+Registrar envíos no exige tener la caja abierta (el flujo de ventanilla no cambia); lo cobrado fuera de
+un turno simplemente no entra en ningún cuadre.
 
 ## Ticket y PDF
 

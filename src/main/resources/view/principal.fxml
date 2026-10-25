@@ -34,6 +34,7 @@
             <Button fx:id="dkprBtnEnvio" text="Registrar envío" maxWidth="Infinity" onAction="#onRegistrarEnvio"/>
             <Button text="Seguimiento" maxWidth="Infinity" onAction="#onSeguimiento"/>
             <Button fx:id="dkprBtnEntregas" text="Entregas" maxWidth="Infinity" onAction="#onEntregas"/>
+            <Button fx:id="dkprBtnCaja" text="Cuadre de caja" maxWidth="Infinity" onAction="#onCaja"/>
 
             <VBox fx:id="dkprSeccionAdmin" spacing="6">
                 <Label text="ADMINISTRACIÓN" styleClass="seccion-menu"/>

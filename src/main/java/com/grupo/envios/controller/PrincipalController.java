@@ -33,6 +33,7 @@ public class PrincipalController {
     @FXML private Button dkprBtnEntregas;
     @FXML private VBox dkprSeccionAdmin;
     @FXML private Button dkprBtnEstancados;
+    @FXML private Button dkprBtnCaja;
 
     /** Cada cuánto se vuelve a contar los paquetes estancados del menú. */
     private static final Duration INTERVALO_ESTANCADOS = Duration.minutes(5);
@@ -87,6 +88,7 @@ public class PrincipalController {
         mostrarNodo(dkprBtnClientes, dkprAdmin || dkprCajero);
         mostrarNodo(dkprBtnEnvio, dkprAdmin || dkprCajero);
         mostrarNodo(dkprBtnEntregas, dkprAdmin || dkprCajero);
+        mostrarNodo(dkprBtnCaja, dkprAdmin || dkprCajero);
         mostrarNodo(dkprSeccionAdmin, dkprAdmin);
     }
 
@@ -120,6 +122,7 @@ public class PrincipalController {
     @FXML private void onBandeja() { mostrar("bandeja.fxml"); }
     @FXML private void onControlCarga() { mostrar("control_carga.fxml"); }
     @FXML private void onEstancados() { mostrar("estancados.fxml"); }
+    @FXML private void onCaja() { mostrar("caja.fxml"); }
     @FXML private void onClientes() { mostrar("clientes.fxml"); }
     @FXML private void onRegistrarEnvio() { mostrar("registrar_envio.fxml"); }
     @FXML private void onSeguimiento() { mostrar("seguimiento.fxml"); }
