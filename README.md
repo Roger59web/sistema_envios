@@ -110,6 +110,18 @@ Reconoce 8 dígitos solos, la zona MRZ del DNI electrónico (`I<PER70000001<…`
 datos (se toma el primer grupo de 8 dígitos). El código del reverso del DNI suele ser **PDF417 (2D)**: necesita
 un lector 2D. Un RUC o CE escrito a mano no se modifica.
 
+## Paquetes estancados
+
+El botón **Paquetes estancados** del menú muestra en rojo cuántos envíos llevan más de *X* días sin ningún
+movimiento (registrado sin despachar, en tránsito sin llegar o en agencia sin recoger). Se recuenta cada
+5 minutos y al cambiar de pantalla. La pantalla lista cada envío con los días sin moverse y **qué falta**
+para que avance; doble clic lo abre en Seguimiento.
+
+- *X* es 3 por defecto. Cualquiera puede cambiarlo en la pantalla para consultar; solo el administrador
+  lo guarda para todos (*Guardar días para todos*, tabla `configuracion`, script `004_configuracion.sql`).
+- El administrador ve todas las agencias; los demás, los envíos en los que participa su agencia.
+- Se resaltan los que ya duplican el límite.
+
 ## Ticket y PDF
 
 - Al **registrar un envío** se abre la vista previa del ticket (formato de impresora térmica de 80 mm).

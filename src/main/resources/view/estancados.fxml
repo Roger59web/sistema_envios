@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.grupo.envios.controller.EstancadosController">
+    <padding>
+        <Insets top="16" right="20" bottom="16" left="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Paquetes estancados" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="Actualizar" onAction="#onActualizar"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel-form">
+        <Label fx:id="dkprLblContador" styleClass="costo"/>
+        <Label text="envío(s) llevan más de" styleClass="etiqueta"/>
+        <Spinner fx:id="dkprSpnDias" editable="true" prefWidth="80"/>
+        <Label text="días sin moverse." styleClass="etiqueta"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="dkprBtnGuardarDias" text="Guardar días para todos" onAction="#onGuardarDias"/>
+    </HBox>
+
+    <Label fx:id="dkprLblAmbito" styleClass="aviso"/>
+
+    <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
+        <placeholder>
+            <Label text="No hay paquetes estancados. Todo se está moviendo."/>
+        </placeholder>
+    </TableView>
+</VBox>

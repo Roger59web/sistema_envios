@@ -154,6 +154,39 @@ public class EnvioDAO {
         return dkprLista;
     }
 
+    /**
+     * Envíos sin terminar (registrado, en tránsito o en agencia destino) cuyo último movimiento fue
+     * hace más de {@code dias} días, del más antiguo al más reciente.
+     *
+     * @param idAgencia 0 = todas; si no, los envíos en los que la agencia tiene que actuar o esperar
+     *                  (origen mientras no sale, origen o destino en camino, destino al llegar)
+     */
+    public List<Envio> listarEstancados(int dkprDias, int dkprIdAgencia) throws SQLException {
+        String dkprSql = "SELECT * FROM (" + SELECT_BASE + """
+                 WHERE e.id_estado_actual IN (1, 2, 3)) x
+                WHERE COALESCE(x.fecha_ultimo_mov, x.fecha_registro)::date < CURRENT_DATE - ?
+                  AND (? = 0
+                       OR (x.id_estado_actual = 1 AND x.id_agencia_origen = ?)
+                       OR (x.id_estado_actual = 2 AND ? IN (x.id_agencia_origen, x.id_agencia_destino))
+                       OR (x.id_estado_actual = 3 AND x.id_agencia_destino = ?))
+                ORDER BY COALESCE(x.fecha_ultimo_mov, x.fecha_registro), x.id_envio
+                """;
+        List<Envio> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprDias);
+            for (int dkprI = 2; dkprI <= 5; dkprI++) {
+                dkprPs.setInt(dkprI, dkprIdAgencia);
+            }
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                while (dkprRs.next()) {
+                    dkprLista.add(mapear(dkprRs));
+                }
+            }
+        }
+        return dkprLista;
+    }
+
     /** Envíos registrados entre dos fechas (ambas incluidas), del más reciente al más antiguo. */
     public List<Envio> listarPorFechas(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.fecha_registro >= ? AND e.fecha_registro < ? "

@@ -1,10 +1,15 @@
 package com.grupo.envios.controller;
 
 import com.grupo.envios.model.Empleado;
+import com.grupo.envios.service.EstancadoService;
 import com.grupo.envios.util.Alertas;
 import com.grupo.envios.util.Navegador;
 import com.grupo.envios.util.Roles;
 import com.grupo.envios.util.Sesion;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -13,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -26,6 +32,13 @@ public class PrincipalController {
     @FXML private Button dkprBtnEnvio;
     @FXML private Button dkprBtnEntregas;
     @FXML private VBox dkprSeccionAdmin;
+    @FXML private Button dkprBtnEstancados;
+
+    /** Cada cuánto se vuelve a contar los paquetes estancados del menú. */
+    private static final Duration INTERVALO_ESTANCADOS = Duration.minutes(5);
+
+    private final EstancadoService dkprEstancadoService = new EstancadoService();
+    private Timeline dkprRelojEstancados;
 
     @FXML
     private void initialize() {
@@ -36,6 +49,35 @@ public class PrincipalController {
         dkprLblUsuario.setText(dkprE.getNombreCompleto() + "  |  " + dkprE.getRol() + "  |  " + dkprE.getAgencia());
         aplicarPermisos(dkprE);
         mostrarInicio(dkprE);
+
+        actualizarEstancados();
+        dkprRelojEstancados = new Timeline(new KeyFrame(INTERVALO_ESTANCADOS, dkprEv -> actualizarEstancados()));
+        dkprRelojEstancados.setCycleCount(Animation.INDEFINITE);
+        dkprRelojEstancados.play();
+    }
+
+    /** Cuenta los paquetes estancados en segundo plano y lo muestra en el botón del menú. */
+    private void actualizarEstancados() {
+        Empleado dkprE = Sesion.getActual();
+        if (dkprE == null) {
+            return;
+        }
+        Thread dkprHilo = new Thread(() -> {
+            int dkprCantidad;
+            try {
+                dkprCantidad = dkprEstancadoService.contar(dkprE);
+            } catch (Exception dkprEx) {
+                // Sin la tabla configuracion (script 004 sin aplicar) o sin conexión: el menú queda normal.
+                dkprCantidad = 0;
+            }
+            int dkprTotal = dkprCantidad;
+            Platform.runLater(() -> {
+                dkprBtnEstancados.setText(dkprTotal == 0 ? "Paquetes estancados" : "Paquetes estancados (" + dkprTotal + ")");
+                dkprBtnEstancados.setStyle(dkprTotal == 0 ? "" : "-fx-text-fill: #c0392b; -fx-font-weight: bold;");
+            });
+        });
+        dkprHilo.setDaemon(true);
+        dkprHilo.start();
     }
 
     /** Oculta del menú lo que el rol del empleado no puede usar. */
@@ -66,6 +108,8 @@ public class PrincipalController {
         try {
             Node dkprVista = FXMLLoader.load(getClass().getResource("/view/" + dkprFxml));
             dkprContenido.getChildren().setAll(dkprVista);
+            // Al cambiar de pantalla pudo haberse despachado o recibido algo: se recuenta.
+            actualizarEstancados();
         } catch (IOException dkprEx) {
             dkprEx.printStackTrace();
             Alertas.error("No se pudo abrir la pantalla: " + dkprEx.getMessage());
@@ -75,6 +119,7 @@ public class PrincipalController {
     @FXML private void onInicio() { mostrarInicio(Sesion.getActual()); }
     @FXML private void onBandeja() { mostrar("bandeja.fxml"); }
     @FXML private void onControlCarga() { mostrar("control_carga.fxml"); }
+    @FXML private void onEstancados() { mostrar("estancados.fxml"); }
     @FXML private void onClientes() { mostrar("clientes.fxml"); }
     @FXML private void onRegistrarEnvio() { mostrar("registrar_envio.fxml"); }
     @FXML private void onSeguimiento() { mostrar("seguimiento.fxml"); }
@@ -86,6 +131,9 @@ public class PrincipalController {
 
     @FXML
     private void onCerrarSesion() throws IOException {
+        if (dkprRelojEstancados != null) {
+            dkprRelojEstancados.stop();
+        }
         Sesion.cerrar();
         Navegador.ir(dkprBtnCerrarSesion, "login.fxml", "Sistema de Envíos - Iniciar sesión");
     }
