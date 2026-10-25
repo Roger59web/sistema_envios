@@ -13,6 +13,8 @@
 
         <Label text="Registrar envío" styleClass="titulo"/>
         <Label fx:id="dkprLblOrigen" styleClass="etiqueta"/>
+        <Label fx:id="dkprLblCaja" styleClass="aviso" wrapText="true" visible="false" managed="false"
+               text="No tienes un turno de caja abierto: lo que cobres no entrará en ningún cuadre. Ábrelo en Cuadre de caja."/>
 
         <HBox spacing="8" alignment="CENTER_LEFT">
             <Label text="Destino (ruta):" styleClass="etiqueta"/>

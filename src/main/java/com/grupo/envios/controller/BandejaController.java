@@ -6,6 +6,7 @@ import com.grupo.envios.model.Envio;
 import com.grupo.envios.service.AgenciaService;
 import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.util.Alertas;
+import com.grupo.envios.util.CodigosBarras;
 import com.grupo.envios.util.Roles;
 import com.grupo.envios.util.Sesion;
 import javafx.beans.property.BooleanProperty;
@@ -30,7 +31,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -262,13 +262,9 @@ public class BandejaController {
 
     // ------------------------------------------------------------ escaneo
 
-    /** Acepta el código completo (ENV-000015) o solo el número (15). */
+    /** Acepta el código completo (ENV-000015), solo el número (15) o la etiqueta de un bulto (ENV-000015-02). */
     private static String normalizarCodigo(String dkprTexto) {
-        String dkprT = dkprTexto == null ? "" : dkprTexto.trim().toUpperCase(Locale.ROOT);
-        if (dkprT.matches("\\d{1,6}")) {
-            return String.format("ENV-%06d", Integer.parseInt(dkprT));
-        }
-        return dkprT;
+        return CodigosBarras.normalizarEnvio(dkprTexto);
     }
 
     /** Marca en la tabla el envío leído por la pistola de código de barras (o tipeado). */

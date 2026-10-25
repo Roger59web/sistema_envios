@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.util.List;
 
 /** Ventana de vista previa del ticket, con las opciones de imprimir y guardar en PDF. */
 public final class VistaTicket {
@@ -55,9 +56,15 @@ public final class VistaTicket {
         dkprBtnCerrar.setCancelButton(true);
         dkprBtnCerrar.setOnAction(dkprE -> dkprVentana.close());
 
+        // Las etiquetas de los bultos salen desde aquí mismo: no hace falta ir a Control de carga.
+        int dkprBultos = dkprD.envio().getCantidadBultos();
+        Button dkprBtnEtiquetas = new Button("Etiquetas (" + dkprBultos + ")");
+        dkprBtnEtiquetas.setOnAction(dkprE -> Etiqueta.imprimir(List.of(dkprD.envio()), dkprVentana));
+        dkprBtnEtiquetas.setDisable(dkprD.envio().getIdEstadoActual() == Estados.ANULADO);
+
         Region dkprEspacio = new Region();
         HBox.setHgrow(dkprEspacio, Priority.ALWAYS);
-        HBox dkprBarra = new HBox(8, dkprBtnPdf, dkprEspacio, dkprBtnCerrar, dkprBtnImprimir);
+        HBox dkprBarra = new HBox(8, dkprBtnPdf, dkprBtnEtiquetas, dkprEspacio, dkprBtnCerrar, dkprBtnImprimir);
         dkprBarra.setAlignment(Pos.CENTER_RIGHT);
         dkprBarra.setPadding(new Insets(10, 12, 10, 12));
         dkprBarra.getStyleClass().add("panel-form");
@@ -72,7 +79,7 @@ public final class VistaTicket {
             dkprRaiz.setTop(dkprAviso);
         }
 
-        Scene dkprScene = new Scene(dkprRaiz, 360, 660);
+        Scene dkprScene = new Scene(dkprRaiz, 440, 700);
         dkprScene.getStylesheets().add(VistaTicket.class.getResource("/css/estilos.css").toExternalForm());
         dkprScene.setOnKeyPressed(dkprE -> {
             if (dkprE.isControlDown() && dkprE.getCode() == KeyCode.P) {

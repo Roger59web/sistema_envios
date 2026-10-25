@@ -15,6 +15,7 @@ import com.grupo.envios.model.HistorialEnvio;
 import com.grupo.envios.model.ResultadoRegistro;
 import com.grupo.envios.model.Ruta;
 import com.grupo.envios.model.SolicitudEnvio;
+import com.grupo.envios.util.CodigosBarras;
 import com.grupo.envios.util.Estados;
 import com.grupo.envios.util.NegocioException;
 import com.grupo.envios.util.Roles;
@@ -158,8 +159,9 @@ public class EnvioService {
 
     // ------------------------------------------------------------- seguimiento
 
+    /** Acepta el código del ticket, la etiqueta de un bulto o solo el número (ver CodigosBarras.normalizarEnvio). */
     public Envio buscar(String dkprCodigo) throws SQLException {
-        String dkprC = Validaciones.requerido(dkprCodigo, "Código de seguimiento", 15).toUpperCase();
+        String dkprC = CodigosBarras.normalizarEnvio(Validaciones.requerido(dkprCodigo, "Código de seguimiento", 60));
         Envio dkprEnvio = dkprEnvioDAO.buscarPorCodigo(dkprC);
         if (dkprEnvio == null) {
             throw new NegocioException("No se encontró ningún envío con el código " + dkprC + ".");

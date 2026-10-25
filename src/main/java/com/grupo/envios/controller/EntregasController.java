@@ -5,6 +5,7 @@ import com.grupo.envios.model.Envio;
 import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.util.Alertas;
 import com.grupo.envios.util.Estados;
+import com.grupo.envios.util.LectorDni;
 import com.grupo.envios.util.Roles;
 import com.grupo.envios.util.Sesion;
 import javafx.fxml.FXML;
@@ -35,7 +36,23 @@ public class EntregasController {
     @FXML
     private void initialize() {
         dkprTxtCodigo.setOnAction(dkprE -> onBuscar());
+        // El DNI de quien recoge también se puede escanear: se deja solo el número.
+        dkprTxtDniReceptor.setOnAction(dkprE -> leerDniReceptor());
         limpiar();
+    }
+
+    private void leerDniReceptor() {
+        String dkprTexto = dkprTxtDniReceptor.getText();
+        if (LectorDni.pareceEscaneado(dkprTexto)) {
+            String dkprDni = LectorDni.extraer(dkprTexto);
+            if (dkprDni == null) {
+                Alertas.advertencia("No se encontró un número de DNI en lo que leyó el escáner. Escríbelo a mano.");
+                dkprTxtDniReceptor.clear();
+                return;
+            }
+            dkprTxtDniReceptor.setText(dkprDni);
+        }
+        dkprTxtObservacion.requestFocus();
     }
 
     private void limpiar() {

@@ -5,6 +5,7 @@ import com.grupo.envios.model.Empleado;
 import com.grupo.envios.model.ResultadoRegistro;
 import com.grupo.envios.model.Ruta;
 import com.grupo.envios.model.SolicitudEnvio;
+import com.grupo.envios.service.CajaService;
 import com.grupo.envios.service.ClienteService;
 import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.service.RutaService;
@@ -25,6 +26,7 @@ import java.math.BigDecimal;
 public class RegistrarEnvioController {
 
     @FXML private Label dkprLblOrigen;
+    @FXML private Label dkprLblCaja;
     @FXML private Label dkprLblCosto;
     @FXML private ComboBox<Ruta> dkprCmbRuta;
 
@@ -50,11 +52,13 @@ public class RegistrarEnvioController {
     private final EnvioService dkprEnvioService = new EnvioService();
     private final ClienteService dkprClienteService = new ClienteService();
     private final RutaService dkprRutaService = new RutaService();
+    private final CajaService dkprCajaService = new CajaService();
 
     @FXML
     private void initialize() {
         Empleado dkprEmpleado = Sesion.getActual();
         dkprLblOrigen.setText("Agencia de origen: " + dkprEmpleado.getAgencia());
+        avisarCaja(dkprEmpleado);
 
         try {
             var dkprRutas = dkprRutaService.listarPorOrigen(dkprEmpleado.getIdAgencia());
@@ -91,6 +95,18 @@ public class RegistrarEnvioController {
         });
 
         limpiar();
+    }
+
+    /** Registrar sin caja abierta está permitido, pero se avisa: ese cobro no entrará en ningún cuadre. */
+    private void avisarCaja(Empleado dkprEmpleado) {
+        boolean dkprSinTurno;
+        try {
+            dkprSinTurno = !dkprCajaService.tieneTurnoAbierto(dkprEmpleado);
+        } catch (Exception dkprE) {
+            dkprSinTurno = false; // sin la tabla de caja (script 005 sin aplicar) no se avisa
+        }
+        dkprLblCaja.setVisible(dkprSinTurno);
+        dkprLblCaja.setManaged(dkprSinTurno);
     }
 
     private void actualizarCosto() {
@@ -214,7 +230,8 @@ public class RegistrarEnvioController {
         String dkprResumen = "Envío registrado correctamente.\n"
                 + "Código: " + dkprResultado.codigoSeguimiento()
                 + "   |   Comprobante: " + dkprResultado.comprobante()
-                + "\nTotal cobrado: " + Formato.soles(dkprResultado.total());
+                + "\nTotal cobrado: " + Formato.soles(dkprResultado.total())
+                + "\nImprime el ticket para el cliente y las etiquetas para pegar en cada bulto.";
         try {
             VistaTicket.mostrar(dkprEnvioService.detalle(dkprResultado.codigoSeguimiento()),
                     dkprLblCosto.getScene().getWindow(), dkprResumen);

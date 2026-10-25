@@ -144,7 +144,14 @@ un turno simplemente no entra en ningún cuadre.
 ## Ticket y PDF
 
 - Al **registrar un envío** se abre la vista previa del ticket (formato de impresora térmica de 80 mm).
-  Desde ahí se puede **imprimir** (botón o `Ctrl+P`) o **guardar el detalle en PDF** (A4, con comprobante e historial).
+  Desde ahí se puede **imprimir** (botón o `Ctrl+P`), **guardar el detalle en PDF** (A4, con comprobante e historial)
+  e imprimir las **etiquetas de los bultos** (*Etiquetas (N)*), sin tener que ir a Control de carga.
+- El ticket lleva el **código de barras** del envío bajo el código de seguimiento y un **QR** al pie; el PDF de
+  detalle también lleva el código de barras.
+- En todas las búsquedas por código (Seguimiento, Entregas, Bandeja) se puede escanear el ticket o la etiqueta
+  de un bulto, o escribir solo el número (`15`): el sistema lo convierte en `ENV-000015`.
+- En **Entregas**, el DNI de quien recoge también se puede escanear.
+- En **Registrar envío** aparece un aviso si el cajero no tiene un turno de caja abierto (no bloquea el registro).
 - En **Seguimiento**, con un envío cargado: *Imprimir ticket*, *Guardar PDF* y *Copiar código*.
 - En **Reportes**: *Exportar a PDF* (resumen + detalle) además de CSV, y doble clic en un envío para ver su ticket.
 - Para obtener el ticket como PDF también se puede elegir la impresora *Microsoft Print to PDF*.

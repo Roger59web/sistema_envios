@@ -46,6 +46,11 @@ public class CajaService {
         return dkprT;
     }
 
+    /** Consulta rápida (sin calcular cobros) para avisar en ventanilla si se cobra sin turno. */
+    public boolean tieneTurnoAbierto(Empleado dkprE) throws SQLException {
+        return dkprDao.buscarAbierto(dkprE.getIdEmpleado()) != null;
+    }
+
     public CajaTurno abrir(Empleado dkprE, BigDecimal dkprMontoInicial) throws SQLException {
         if (!puedeUsar(dkprE)) {
             throw new NegocioException("Solo el cajero o el administrador maneja caja.");

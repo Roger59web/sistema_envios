@@ -70,6 +70,8 @@ public final class Ticket {
         // Código de seguimiento
         dkprT.getChildren().add(centrado("CÓDIGO DE SEGUIMIENTO", 10, false));
         dkprT.getChildren().add(centrado(dkprE.getCodigoSeguimiento(), 22, true));
+        // Se escanea en Seguimiento, Entregas, Bandeja y Control de carga (envíos de un solo bulto).
+        dkprT.getChildren().add(centrar(CodigosBarras.barras(dkprE.getCodigoSeguimiento(), ANCHO - 40, 44)));
         if (dkprE.getIdEstadoActual() == Estados.ANULADO) {
             dkprT.getChildren().add(centrado("*** ENVÍO ANULADO ***", 13, true));
         }
@@ -108,6 +110,10 @@ public final class Ticket {
         dkprT.getChildren().add(fila("Estado:", dkprE.getEstado()));
         dkprT.getChildren().add(texto("Atendido por: " + Formato.texto(dkprE.getEmpleadoRegistro()), 11, false));
         dkprT.getChildren().add(separador());
+        // El QR necesita un margen blanco alrededor (≈ 4 módulos) para que los lectores lo encuentren.
+        Node dkprQr = centrar(CodigosBarras.qr(dkprE.getCodigoSeguimiento(), 84));
+        VBox.setMargin(dkprQr, new Insets(16, 0, 16, 0));
+        dkprT.getChildren().add(dkprQr);
         dkprT.getChildren().add(centrado("Consulte el estado de su envío", 10, false));
         dkprT.getChildren().add(centrado("con el código de seguimiento.", 10, false));
         dkprT.getChildren().add(centrado("¡Gracias por su preferencia!", 11, true));
@@ -193,6 +199,13 @@ public final class Ticket {
         HBox dkprFila = new HBox(6, dkprEtiqueta, dkprValor);
         dkprFila.setAlignment(Pos.TOP_LEFT);
         return dkprFila;
+    }
+
+    private static Node centrar(Node dkprNodo) {
+        HBox dkprCaja = new HBox(dkprNodo);
+        dkprCaja.setAlignment(Pos.CENTER);
+        VBox.setMargin(dkprCaja, new Insets(4, 0, 2, 0));
+        return dkprCaja;
     }
 
     private static Node separador() {

@@ -107,6 +107,7 @@ public final class GeneradorPdf {
             PdfPCell dkprCeldaCodigo = new PdfPCell();
             dkprCeldaCodigo.addElement(new Paragraph("CÓDIGO DE SEGUIMIENTO", ETIQUETA));
             dkprCeldaCodigo.addElement(new Paragraph(dkprE.getCodigoSeguimiento(), CODIGO));
+            dkprCeldaCodigo.addElement(imagen(CodigosBarras.imagenBarras(dkprE.getCodigoSeguimiento(), 3, 60), 180, 34));
             PdfPCell dkprCeldaEstado = new PdfPCell();
             dkprCeldaEstado.addElement(new Paragraph("ESTADO ACTUAL", ETIQUETA));
             dkprCeldaEstado.addElement(new Paragraph(dkprE.getEstado(),

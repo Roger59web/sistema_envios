@@ -58,6 +58,19 @@ public final class CodigosBarras {
         return new CodigoBulto(dkprIdEnvio, dkprM.group(2) == null ? null : Integer.parseInt(dkprM.group(2)));
     }
 
+    /**
+     * Código de seguimiento del envío a partir de lo escaneado o escrito: el ticket (ENV-000015),
+     * la etiqueta de un bulto (ENV-000015-02), solo el número (15) o con otros separadores.
+     * Si no se reconoce, devuelve el texto en mayúsculas (para que el mensaje de "no existe" lo muestre).
+     */
+    public static String normalizarEnvio(String dkprTexto) {
+        if (dkprTexto == null || dkprTexto.isBlank()) {
+            return "";
+        }
+        CodigoBulto dkprC = leer(dkprTexto);
+        return dkprC == null ? dkprTexto.trim().toUpperCase(Locale.ROOT) : String.format("ENV-%06d", dkprC.idEnvio());
+    }
+
     // ------------------------------------------------------------ módulos
 
     /** Módulos en blanco a cada lado del Code128: sin este margen muchos lectores no lo leen. */
