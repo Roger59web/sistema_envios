@@ -22,96 +22,96 @@ public class EmpleadoDAO {
             """;
 
     /** Devuelve el empleado activo con ese usuario, o null si no existe. */
-    public Empleado buscarPorUsuario(String usuario) throws SQLException {
-        String sql = SELECT_BASE + " WHERE e.usuario = ? AND e.activo = TRUE";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, usuario);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? mapear(rs) : null;
+    public Empleado buscarPorUsuario(String dkprUsuario) throws SQLException {
+        String dkprSql = SELECT_BASE + " WHERE e.usuario = ? AND e.activo = TRUE";
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setString(1, dkprUsuario);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                return dkprRs.next() ? mapear(dkprRs) : null;
             }
         }
     }
 
     public List<Empleado> listar() throws SQLException {
-        String sql = SELECT_BASE + " ORDER BY e.apellidos, e.nombres";
-        List<Empleado> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                lista.add(mapear(rs));
+        String dkprSql = SELECT_BASE + " ORDER BY e.apellidos, e.nombres";
+        List<Empleado> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql);
+             ResultSet dkprRs = dkprPs.executeQuery()) {
+            while (dkprRs.next()) {
+                dkprLista.add(mapear(dkprRs));
             }
         }
-        return lista;
+        return dkprLista;
     }
 
     public List<Rol> listarRoles() throws SQLException {
-        List<Rol> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement("SELECT id_rol, nombre FROM rol ORDER BY id_rol");
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                lista.add(new Rol(rs.getInt("id_rol"), rs.getString("nombre")));
+        List<Rol> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement("SELECT id_rol, nombre FROM rol ORDER BY id_rol");
+             ResultSet dkprRs = dkprPs.executeQuery()) {
+            while (dkprRs.next()) {
+                dkprLista.add(new Rol(dkprRs.getInt("id_rol"), dkprRs.getString("nombre")));
             }
         }
-        return lista;
+        return dkprLista;
     }
 
-    public void insertar(Empleado e) throws SQLException {
-        String sql = "INSERT INTO empleado (id_agencia, id_rol, dni, nombres, apellidos, usuario, clave_hash, activo) "
+    public void insertar(Empleado dkprE) throws SQLException {
+        String dkprSql = "INSERT INTO empleado (id_agencia, id_rol, dni, nombres, apellidos, usuario, clave_hash, activo) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, e.getIdAgencia());
-            ps.setInt(2, e.getIdRol());
-            ps.setString(3, e.getDni());
-            ps.setString(4, e.getNombres());
-            ps.setString(5, e.getApellidos());
-            ps.setString(6, e.getUsuario());
-            ps.setString(7, e.getClaveHash());
-            ps.setBoolean(8, e.isActivo());
-            ps.executeUpdate();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprE.getIdAgencia());
+            dkprPs.setInt(2, dkprE.getIdRol());
+            dkprPs.setString(3, dkprE.getDni());
+            dkprPs.setString(4, dkprE.getNombres());
+            dkprPs.setString(5, dkprE.getApellidos());
+            dkprPs.setString(6, dkprE.getUsuario());
+            dkprPs.setString(7, dkprE.getClaveHash());
+            dkprPs.setBoolean(8, dkprE.isActivo());
+            dkprPs.executeUpdate();
         }
     }
 
     /** Si claveHash es null, la contraseña actual no se modifica. */
-    public void actualizar(Empleado e) throws SQLException {
-        boolean cambiaClave = e.getClaveHash() != null;
-        String sql = "UPDATE empleado SET id_agencia = ?, id_rol = ?, dni = ?, nombres = ?, apellidos = ?, "
-                + "usuario = ?, activo = ?" + (cambiaClave ? ", clave_hash = ?" : "")
+    public void actualizar(Empleado dkprE) throws SQLException {
+        boolean dkprCambiaClave = dkprE.getClaveHash() != null;
+        String dkprSql = "UPDATE empleado SET id_agencia = ?, id_rol = ?, dni = ?, nombres = ?, apellidos = ?, "
+                + "usuario = ?, activo = ?" + (dkprCambiaClave ? ", clave_hash = ?" : "")
                 + " WHERE id_empleado = ?";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            int i = 1;
-            ps.setInt(i++, e.getIdAgencia());
-            ps.setInt(i++, e.getIdRol());
-            ps.setString(i++, e.getDni());
-            ps.setString(i++, e.getNombres());
-            ps.setString(i++, e.getApellidos());
-            ps.setString(i++, e.getUsuario());
-            ps.setBoolean(i++, e.isActivo());
-            if (cambiaClave) {
-                ps.setString(i++, e.getClaveHash());
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            int dkprI = 1;
+            dkprPs.setInt(dkprI++, dkprE.getIdAgencia());
+            dkprPs.setInt(dkprI++, dkprE.getIdRol());
+            dkprPs.setString(dkprI++, dkprE.getDni());
+            dkprPs.setString(dkprI++, dkprE.getNombres());
+            dkprPs.setString(dkprI++, dkprE.getApellidos());
+            dkprPs.setString(dkprI++, dkprE.getUsuario());
+            dkprPs.setBoolean(dkprI++, dkprE.isActivo());
+            if (dkprCambiaClave) {
+                dkprPs.setString(dkprI++, dkprE.getClaveHash());
             }
-            ps.setInt(i, e.getIdEmpleado());
-            ps.executeUpdate();
+            dkprPs.setInt(dkprI, dkprE.getIdEmpleado());
+            dkprPs.executeUpdate();
         }
     }
 
-    private Empleado mapear(ResultSet rs) throws SQLException {
-        Empleado e = new Empleado();
-        e.setIdEmpleado(rs.getInt("id_empleado"));
-        e.setIdAgencia(rs.getInt("id_agencia"));
-        e.setAgencia(rs.getString("agencia"));
-        e.setIdRol(rs.getInt("id_rol"));
-        e.setRol(rs.getString("rol"));
-        e.setDni(rs.getString("dni"));
-        e.setNombres(rs.getString("nombres"));
-        e.setApellidos(rs.getString("apellidos"));
-        e.setUsuario(rs.getString("usuario"));
-        e.setClaveHash(rs.getString("clave_hash"));
-        e.setActivo(rs.getBoolean("activo"));
-        return e;
+    private Empleado mapear(ResultSet dkprRs) throws SQLException {
+        Empleado dkprE = new Empleado();
+        dkprE.setIdEmpleado(dkprRs.getInt("id_empleado"));
+        dkprE.setIdAgencia(dkprRs.getInt("id_agencia"));
+        dkprE.setAgencia(dkprRs.getString("agencia"));
+        dkprE.setIdRol(dkprRs.getInt("id_rol"));
+        dkprE.setRol(dkprRs.getString("rol"));
+        dkprE.setDni(dkprRs.getString("dni"));
+        dkprE.setNombres(dkprRs.getString("nombres"));
+        dkprE.setApellidos(dkprRs.getString("apellidos"));
+        dkprE.setUsuario(dkprRs.getString("usuario"));
+        dkprE.setClaveHash(dkprRs.getString("clave_hash"));
+        dkprE.setActivo(dkprRs.getBoolean("activo"));
+        return dkprE;
     }
 }

@@ -7,28 +7,28 @@ public class HistorialEnvio {
 
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    private LocalDateTime fecha;
-    private String estado;
-    private String agencia;
-    private String empleado;
-    private String observacion;
+    private LocalDateTime dkprFecha;
+    private String dkprEstado;
+    private String dkprAgencia;
+    private String dkprEmpleado;
+    private String dkprObservacion;
 
-    public LocalDateTime getFecha() { return fecha; }
-    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+    public LocalDateTime getFecha() { return dkprFecha; }
+    public void setFecha(LocalDateTime dkprFecha) { this.dkprFecha = dkprFecha; }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public String getEstado() { return dkprEstado; }
+    public void setEstado(String dkprEstado) { this.dkprEstado = dkprEstado; }
 
-    public String getAgencia() { return agencia; }
-    public void setAgencia(String agencia) { this.agencia = agencia; }
+    public String getAgencia() { return dkprAgencia; }
+    public void setAgencia(String dkprAgencia) { this.dkprAgencia = dkprAgencia; }
 
-    public String getEmpleado() { return empleado; }
-    public void setEmpleado(String empleado) { this.empleado = empleado; }
+    public String getEmpleado() { return dkprEmpleado; }
+    public void setEmpleado(String dkprEmpleado) { this.dkprEmpleado = dkprEmpleado; }
 
-    public String getObservacion() { return observacion; }
-    public void setObservacion(String observacion) { this.observacion = observacion; }
+    public String getObservacion() { return dkprObservacion; }
+    public void setObservacion(String dkprObservacion) { this.dkprObservacion = dkprObservacion; }
 
     public String getFechaTexto() {
-        return fecha == null ? "" : fecha.format(FORMATO);
+        return dkprFecha == null ? "" : dkprFecha.format(FORMATO);
     }
 }

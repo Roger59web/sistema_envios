@@ -28,159 +28,159 @@ import java.util.List;
 
 public class ReportesController {
 
-    @FXML private DatePicker dpDesde;
-    @FXML private DatePicker dpHasta;
-    @FXML private Label lblTotalEnvios;
-    @FXML private Label lblIngresos;
+    @FXML private DatePicker dkprDpDesde;
+    @FXML private DatePicker dkprDpHasta;
+    @FXML private Label dkprLblTotalEnvios;
+    @FXML private Label dkprLblIngresos;
 
-    @FXML private TableView<ResumenFila> tablaAgencias;
-    @FXML private TableColumn<ResumenFila, String> colAgEtiqueta;
-    @FXML private TableColumn<ResumenFila, Integer> colAgCantidad;
-    @FXML private TableColumn<ResumenFila, BigDecimal> colAgMonto;
+    @FXML private TableView<ResumenFila> dkprTablaAgencias;
+    @FXML private TableColumn<ResumenFila, String> dkprColAgEtiqueta;
+    @FXML private TableColumn<ResumenFila, Integer> dkprColAgCantidad;
+    @FXML private TableColumn<ResumenFila, BigDecimal> dkprColAgMonto;
 
-    @FXML private TableView<ResumenFila> tablaEstados;
-    @FXML private TableColumn<ResumenFila, String> colEstEtiqueta;
-    @FXML private TableColumn<ResumenFila, Integer> colEstCantidad;
-    @FXML private TableColumn<ResumenFila, BigDecimal> colEstMonto;
+    @FXML private TableView<ResumenFila> dkprTablaEstados;
+    @FXML private TableColumn<ResumenFila, String> dkprColEstEtiqueta;
+    @FXML private TableColumn<ResumenFila, Integer> dkprColEstCantidad;
+    @FXML private TableColumn<ResumenFila, BigDecimal> dkprColEstMonto;
 
-    @FXML private TableView<Envio> tablaDetalle;
-    @FXML private TableColumn<Envio, String> colCodigo;
-    @FXML private TableColumn<Envio, String> colFecha;
-    @FXML private TableColumn<Envio, String> colRuta;
-    @FXML private TableColumn<Envio, String> colRemitente;
-    @FXML private TableColumn<Envio, String> colDestinatario;
-    @FXML private TableColumn<Envio, String> colEstado;
-    @FXML private TableColumn<Envio, BigDecimal> colCosto;
+    @FXML private TableView<Envio> dkprTablaDetalle;
+    @FXML private TableColumn<Envio, String> dkprColCodigo;
+    @FXML private TableColumn<Envio, String> dkprColFecha;
+    @FXML private TableColumn<Envio, String> dkprColRuta;
+    @FXML private TableColumn<Envio, String> dkprColRemitente;
+    @FXML private TableColumn<Envio, String> dkprColDestinatario;
+    @FXML private TableColumn<Envio, String> dkprColEstado;
+    @FXML private TableColumn<Envio, BigDecimal> dkprColCosto;
 
-    private final ReporteService service = new ReporteService();
-    private final EnvioService envioService = new EnvioService();
+    private final ReporteService dkprService = new ReporteService();
+    private final EnvioService dkprEnvioService = new EnvioService();
 
     @FXML
     private void initialize() {
-        colAgEtiqueta.setCellValueFactory(new PropertyValueFactory<>("etiqueta"));
-        colAgCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        colAgMonto.setCellValueFactory(new PropertyValueFactory<>("monto"));
-        colEstEtiqueta.setCellValueFactory(new PropertyValueFactory<>("etiqueta"));
-        colEstCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-        colEstMonto.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        dkprColAgEtiqueta.setCellValueFactory(new PropertyValueFactory<>("etiqueta"));
+        dkprColAgCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+        dkprColAgMonto.setCellValueFactory(new PropertyValueFactory<>("monto"));
+        dkprColEstEtiqueta.setCellValueFactory(new PropertyValueFactory<>("etiqueta"));
+        dkprColEstCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+        dkprColEstMonto.setCellValueFactory(new PropertyValueFactory<>("monto"));
 
-        colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigoSeguimiento"));
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaTexto"));
-        colRuta.setCellValueFactory(new PropertyValueFactory<>("ruta"));
-        colRemitente.setCellValueFactory(new PropertyValueFactory<>("remitente"));
-        colDestinatario.setCellValueFactory(new PropertyValueFactory<>("destinatario"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        colCosto.setCellValueFactory(new PropertyValueFactory<>("costoEnvio"));
+        dkprColCodigo.setCellValueFactory(new PropertyValueFactory<>("codigoSeguimiento"));
+        dkprColFecha.setCellValueFactory(new PropertyValueFactory<>("fechaTexto"));
+        dkprColRuta.setCellValueFactory(new PropertyValueFactory<>("ruta"));
+        dkprColRemitente.setCellValueFactory(new PropertyValueFactory<>("remitente"));
+        dkprColDestinatario.setCellValueFactory(new PropertyValueFactory<>("destinatario"));
+        dkprColEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        dkprColCosto.setCellValueFactory(new PropertyValueFactory<>("costoEnvio"));
 
-        tablaDetalle.setRowFactory(tabla -> {
-            TableRow<Envio> fila = new TableRow<>();
-            fila.setOnMouseClicked(ev -> {
-                if (ev.getClickCount() == 2 && !fila.isEmpty()) {
-                    verTicket(fila.getItem());
+        dkprTablaDetalle.setRowFactory(dkprTabla -> {
+            TableRow<Envio> dkprFila = new TableRow<>();
+            dkprFila.setOnMouseClicked(dkprEv -> {
+                if (dkprEv.getClickCount() == 2 && !dkprFila.isEmpty()) {
+                    verTicket(dkprFila.getItem());
                 }
             });
-            return fila;
+            return dkprFila;
         });
 
-        LocalDate hoy = LocalDate.now();
-        dpDesde.setValue(hoy.withDayOfMonth(1));
-        dpHasta.setValue(hoy);
+        LocalDate dkprHoy = LocalDate.now();
+        dkprDpDesde.setValue(dkprHoy.withDayOfMonth(1));
+        dkprDpHasta.setValue(dkprHoy);
         onGenerar();
     }
 
     @FXML
     private void onGenerar() {
         try {
-            LocalDate desde = dpDesde.getValue();
-            LocalDate hasta = dpHasta.getValue();
+            LocalDate dkprDesde = dkprDpDesde.getValue();
+            LocalDate dkprHasta = dkprDpHasta.getValue();
 
-            List<ResumenFila> porAgencia = service.porAgencia(desde, hasta);
-            List<ResumenFila> porEstado = service.porEstado(desde, hasta);
-            List<Envio> detalle = service.detalle(desde, hasta);
+            List<ResumenFila> dkprPorAgencia = dkprService.porAgencia(dkprDesde, dkprHasta);
+            List<ResumenFila> dkprPorEstado = dkprService.porEstado(dkprDesde, dkprHasta);
+            List<Envio> dkprDetalle = dkprService.detalle(dkprDesde, dkprHasta);
 
-            tablaAgencias.setItems(FXCollections.observableArrayList(porAgencia));
-            tablaEstados.setItems(FXCollections.observableArrayList(porEstado));
-            tablaDetalle.setItems(FXCollections.observableArrayList(detalle));
+            dkprTablaAgencias.setItems(FXCollections.observableArrayList(dkprPorAgencia));
+            dkprTablaEstados.setItems(FXCollections.observableArrayList(dkprPorEstado));
+            dkprTablaDetalle.setItems(FXCollections.observableArrayList(dkprDetalle));
 
-            BigDecimal ingresos = porAgencia.stream()
+            BigDecimal dkprIngresos = dkprPorAgencia.stream()
                     .map(ResumenFila::getMonto)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            lblTotalEnvios.setText(String.valueOf(detalle.size()));
-            lblIngresos.setText("S/ " + ingresos.setScale(2).toPlainString());
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            dkprLblTotalEnvios.setText(String.valueOf(dkprDetalle.size()));
+            dkprLblIngresos.setText("S/ " + dkprIngresos.setScale(2).toPlainString());
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onExportar() {
-        List<Envio> detalle = new ArrayList<>(tablaDetalle.getItems());
-        if (detalle.isEmpty()) {
+        List<Envio> dkprDetalle = new ArrayList<>(dkprTablaDetalle.getItems());
+        if (dkprDetalle.isEmpty()) {
             Alertas.advertencia("No hay envíos en el reporte para exportar.");
             return;
         }
 
-        FileChooser selector = new FileChooser();
-        selector.setTitle("Guardar reporte de envíos");
-        selector.setInitialFileName("reporte_envios_" + dpDesde.getValue() + "_" + dpHasta.getValue() + ".csv");
-        selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo CSV (*.csv)", "*.csv"));
-        File archivo = selector.showSaveDialog(tablaDetalle.getScene().getWindow());
-        if (archivo == null) {
+        FileChooser dkprSelector = new FileChooser();
+        dkprSelector.setTitle("Guardar reporte de envíos");
+        dkprSelector.setInitialFileName("reporte_envios_" + dkprDpDesde.getValue() + "_" + dkprDpHasta.getValue() + ".csv");
+        dkprSelector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo CSV (*.csv)", "*.csv"));
+        File dkprArchivo = dkprSelector.showSaveDialog(dkprTablaDetalle.getScene().getWindow());
+        if (dkprArchivo == null) {
             return;
         }
 
-        try (BufferedWriter w = Files.newBufferedWriter(archivo.toPath(), StandardCharsets.UTF_8)) {
-            w.write('﻿'); // para que Excel reconozca las tildes
-            w.write("Codigo,Fecha,Origen,Destino,Remitente,Destinatario,Estado,Costo (S/)\n");
-            for (Envio e : detalle) {
-                w.write(String.join(",",
-                        csv(e.getCodigoSeguimiento()), csv(e.getFechaTexto()), csv(e.getOrigen()),
-                        csv(e.getDestino()), csv(e.getRemitente()), csv(e.getDestinatario()),
-                        csv(e.getEstado()), csv(e.getCostoEnvio().toPlainString())));
-                w.write("\n");
+        try (BufferedWriter dkprW = Files.newBufferedWriter(dkprArchivo.toPath(), StandardCharsets.UTF_8)) {
+            dkprW.write('﻿'); // para que Excel reconozca las tildes
+            dkprW.write("Codigo,Fecha,Origen,Destino,Remitente,Destinatario,Estado,Costo (S/)\n");
+            for (Envio dkprE : dkprDetalle) {
+                dkprW.write(String.join(",",
+                        csv(dkprE.getCodigoSeguimiento()), csv(dkprE.getFechaTexto()), csv(dkprE.getOrigen()),
+                        csv(dkprE.getDestino()), csv(dkprE.getRemitente()), csv(dkprE.getDestinatario()),
+                        csv(dkprE.getEstado()), csv(dkprE.getCostoEnvio().toPlainString())));
+                dkprW.write("\n");
             }
-            Alertas.info("Reporte guardado en:\n" + archivo.getAbsolutePath());
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            Alertas.info("Reporte guardado en:\n" + dkprArchivo.getAbsolutePath());
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onExportarPdf() {
-        List<Envio> detalle = new ArrayList<>(tablaDetalle.getItems());
-        if (detalle.isEmpty()) {
+        List<Envio> dkprDetalle = new ArrayList<>(dkprTablaDetalle.getItems());
+        if (dkprDetalle.isEmpty()) {
             Alertas.advertencia("No hay envíos en el reporte para exportar.");
             return;
         }
-        File archivo = GeneradorPdf.elegirDestino(tablaDetalle.getScene().getWindow(), "Guardar reporte de envíos",
-                "reporte_envios_" + dpDesde.getValue() + "_" + dpHasta.getValue() + ".pdf");
-        if (archivo == null) {
+        File dkprArchivo = GeneradorPdf.elegirDestino(dkprTablaDetalle.getScene().getWindow(), "Guardar reporte de envíos",
+                "reporte_envios_" + dkprDpDesde.getValue() + "_" + dkprDpHasta.getValue() + ".pdf");
+        if (dkprArchivo == null) {
             return;
         }
         try {
-            GeneradorPdf.reporte(dpDesde.getValue(), dpHasta.getValue(),
-                    new ArrayList<>(tablaAgencias.getItems()), new ArrayList<>(tablaEstados.getItems()),
-                    detalle, archivo);
-            GeneradorPdf.ofrecerAbrir(archivo);
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            GeneradorPdf.reporte(dkprDpDesde.getValue(), dkprDpHasta.getValue(),
+                    new ArrayList<>(dkprTablaAgencias.getItems()), new ArrayList<>(dkprTablaEstados.getItems()),
+                    dkprDetalle, dkprArchivo);
+            GeneradorPdf.ofrecerAbrir(dkprArchivo);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
-    private void verTicket(Envio envio) {
+    private void verTicket(Envio dkprEnvio) {
         try {
-            VistaTicket.mostrar(envioService.detalle(envio.getCodigoSeguimiento()),
-                    tablaDetalle.getScene().getWindow());
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            VistaTicket.mostrar(dkprEnvioService.detalle(dkprEnvio.getCodigoSeguimiento()),
+                    dkprTablaDetalle.getScene().getWindow());
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
-    private String csv(String valor) {
-        String v = valor == null ? "" : valor;
-        if (v.contains(",") || v.contains("\"") || v.contains("\n")) {
-            return "\"" + v.replace("\"", "\"\"") + "\"";
+    private String csv(String dkprValor) {
+        String dkprV = dkprValor == null ? "" : dkprValor;
+        if (dkprV.contains(",") || dkprV.contains("\"") || dkprV.contains("\n")) {
+            return "\"" + dkprV.replace("\"", "\"\"") + "\"";
         }
-        return v;
+        return dkprV;
     }
 }

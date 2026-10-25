@@ -19,15 +19,15 @@ public final class Navegador {
      * @param fxml   nombre del archivo en resources/view, ej: "principal.fxml"
      * @param titulo título de la ventana
      */
-    public static void ir(Node origen, String fxml, String titulo) throws IOException {
-        Parent root = FXMLLoader.load(Navegador.class.getResource("/view/" + fxml));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(Navegador.class.getResource("/css/estilos.css").toExternalForm());
-        Stage stage = (Stage) origen.getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle(titulo);
-        stage.setResizable(!"login.fxml".equals(fxml));
-        stage.sizeToScene();
-        stage.centerOnScreen();
+    public static void ir(Node dkprOrigen, String dkprFxml, String dkprTitulo) throws IOException {
+        Parent dkprRoot = FXMLLoader.load(Navegador.class.getResource("/view/" + dkprFxml));
+        Scene dkprScene = new Scene(dkprRoot);
+        dkprScene.getStylesheets().add(Navegador.class.getResource("/css/estilos.css").toExternalForm());
+        Stage dkprStage = (Stage) dkprOrigen.getScene().getWindow();
+        dkprStage.setScene(dkprScene);
+        dkprStage.setTitle(dkprTitulo);
+        dkprStage.setResizable(!"login.fxml".equals(dkprFxml));
+        dkprStage.sizeToScene();
+        dkprStage.centerOnScreen();
     }
 }

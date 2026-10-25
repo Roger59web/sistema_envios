@@ -5,17 +5,17 @@ import java.math.BigDecimal;
 /** Fila de un resumen de reportes (por agencia o por estado). */
 public class ResumenFila {
 
-    private final String etiqueta;
-    private final int cantidad;
-    private final BigDecimal monto;
+    private final String dkprEtiqueta;
+    private final int dkprCantidad;
+    private final BigDecimal dkprMonto;
 
-    public ResumenFila(String etiqueta, int cantidad, BigDecimal monto) {
-        this.etiqueta = etiqueta;
-        this.cantidad = cantidad;
-        this.monto = monto;
+    public ResumenFila(String dkprEtiqueta, int dkprCantidad, BigDecimal dkprMonto) {
+        this.dkprEtiqueta = dkprEtiqueta;
+        this.dkprCantidad = dkprCantidad;
+        this.dkprMonto = dkprMonto;
     }
 
-    public String getEtiqueta() { return etiqueta; }
-    public int getCantidad() { return cantidad; }
-    public BigDecimal getMonto() { return monto; }
+    public String getEtiqueta() { return dkprEtiqueta; }
+    public int getCantidad() { return dkprCantidad; }
+    public BigDecimal getMonto() { return dkprMonto; }
 }

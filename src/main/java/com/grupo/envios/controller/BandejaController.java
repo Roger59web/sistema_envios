@@ -42,171 +42,171 @@ public class BandejaController {
 
     private static final String TODOS_LOS_DESTINOS = "Todos los destinos";
 
-    @FXML private ComboBox<Agencia> cmbAgencia;
-    @FXML private TabPane tabs;
-    @FXML private Tab tabDespachar;
-    @FXML private Tab tabRecibir;
-    @FXML private Tab tabEntregar;
+    @FXML private ComboBox<Agencia> dkprCmbAgencia;
+    @FXML private TabPane dkprTabs;
+    @FXML private Tab dkprTabDespachar;
+    @FXML private Tab dkprTabRecibir;
+    @FXML private Tab dkprTabEntregar;
 
-    @FXML private ComboBox<String> cmbDestino;
-    @FXML private TextField txtEscanearDespacho;
-    @FXML private TableView<Envio> tablaDespachar;
-    @FXML private TableColumn<Envio, Boolean> colDespMarca;
-    @FXML private TableColumn<Envio, String> colDespCodigo;
-    @FXML private TableColumn<Envio, String> colDespDestino;
-    @FXML private TableColumn<Envio, String> colDespDestinatario;
-    @FXML private TableColumn<Envio, String> colDespBultos;
-    @FXML private TableColumn<Envio, String> colDespPeso;
-    @FXML private TableColumn<Envio, String> colDespFecha;
-    @FXML private TableColumn<Envio, String> colDespAlerta;
-    @FXML private TextField txtPlaca;
-    @FXML private TextField txtConductor;
-    @FXML private TextField txtObsDespacho;
-    @FXML private Button btnDespachar;
+    @FXML private ComboBox<String> dkprCmbDestino;
+    @FXML private TextField dkprTxtEscanearDespacho;
+    @FXML private TableView<Envio> dkprTablaDespachar;
+    @FXML private TableColumn<Envio, Boolean> dkprColDespMarca;
+    @FXML private TableColumn<Envio, String> dkprColDespCodigo;
+    @FXML private TableColumn<Envio, String> dkprColDespDestino;
+    @FXML private TableColumn<Envio, String> dkprColDespDestinatario;
+    @FXML private TableColumn<Envio, String> dkprColDespBultos;
+    @FXML private TableColumn<Envio, String> dkprColDespPeso;
+    @FXML private TableColumn<Envio, String> dkprColDespFecha;
+    @FXML private TableColumn<Envio, String> dkprColDespAlerta;
+    @FXML private TextField dkprTxtPlaca;
+    @FXML private TextField dkprTxtConductor;
+    @FXML private TextField dkprTxtObsDespacho;
+    @FXML private Button dkprBtnDespachar;
 
-    @FXML private TextField txtEscanearRecibir;
-    @FXML private TableView<Envio> tablaRecibir;
-    @FXML private TableColumn<Envio, Boolean> colRecMarca;
-    @FXML private TableColumn<Envio, String> colRecCodigo;
-    @FXML private TableColumn<Envio, String> colRecOrigen;
-    @FXML private TableColumn<Envio, String> colRecManifiesto;
-    @FXML private TableColumn<Envio, String> colRecBultos;
-    @FXML private TableColumn<Envio, String> colRecSalida;
-    @FXML private TableColumn<Envio, String> colRecEstimada;
-    @FXML private TableColumn<Envio, String> colRecAlerta;
-    @FXML private TextField txtObsRecepcion;
-    @FXML private Button btnRecibir;
+    @FXML private TextField dkprTxtEscanearRecibir;
+    @FXML private TableView<Envio> dkprTablaRecibir;
+    @FXML private TableColumn<Envio, Boolean> dkprColRecMarca;
+    @FXML private TableColumn<Envio, String> dkprColRecCodigo;
+    @FXML private TableColumn<Envio, String> dkprColRecOrigen;
+    @FXML private TableColumn<Envio, String> dkprColRecManifiesto;
+    @FXML private TableColumn<Envio, String> dkprColRecBultos;
+    @FXML private TableColumn<Envio, String> dkprColRecSalida;
+    @FXML private TableColumn<Envio, String> dkprColRecEstimada;
+    @FXML private TableColumn<Envio, String> dkprColRecAlerta;
+    @FXML private TextField dkprTxtObsRecepcion;
+    @FXML private Button dkprBtnRecibir;
 
-    @FXML private TableView<Envio> tablaEntregar;
-    @FXML private TableColumn<Envio, String> colEntCodigo;
-    @FXML private TableColumn<Envio, String> colEntDestinatario;
-    @FXML private TableColumn<Envio, String> colEntDocumento;
-    @FXML private TableColumn<Envio, String> colEntTelefono;
-    @FXML private TableColumn<Envio, String> colEntOrigen;
-    @FXML private TableColumn<Envio, String> colEntLlego;
-    @FXML private TableColumn<Envio, String> colEntAlerta;
+    @FXML private TableView<Envio> dkprTablaEntregar;
+    @FXML private TableColumn<Envio, String> dkprColEntCodigo;
+    @FXML private TableColumn<Envio, String> dkprColEntDestinatario;
+    @FXML private TableColumn<Envio, String> dkprColEntDocumento;
+    @FXML private TableColumn<Envio, String> dkprColEntTelefono;
+    @FXML private TableColumn<Envio, String> dkprColEntOrigen;
+    @FXML private TableColumn<Envio, String> dkprColEntLlego;
+    @FXML private TableColumn<Envio, String> dkprColEntAlerta;
 
-    private final EnvioService service = new EnvioService();
-    private final AgenciaService agenciaService = new AgenciaService();
+    private final EnvioService dkprService = new EnvioService();
+    private final AgenciaService dkprAgenciaService = new AgenciaService();
 
     /** Casilla marcada de cada envío (por id), compartida por las tablas con selección en lote. */
-    private final Map<Integer, BooleanProperty> marcas = new HashMap<>();
-    private FilteredList<Envio> despachoFiltrado = new FilteredList<>(FXCollections.observableArrayList());
+    private final Map<Integer, BooleanProperty> dkprMarcas = new HashMap<>();
+    private FilteredList<Envio> dkprDespachoFiltrado = new FilteredList<>(FXCollections.observableArrayList());
 
     @FXML
     private void initialize() {
         configurarColumnas();
-        tablaDespachar.setRowFactory(t -> filaConAlerta());
-        tablaRecibir.setRowFactory(t -> filaConAlerta());
-        tablaEntregar.setRowFactory(t -> {
-            TableRow<Envio> fila = filaConAlerta();
-            fila.setOnMouseClicked(ev -> {
-                if (ev.getClickCount() == 2 && !fila.isEmpty()) {
-                    abrirEntrega(fila.getItem());
+        dkprTablaDespachar.setRowFactory(dkprT -> filaConAlerta());
+        dkprTablaRecibir.setRowFactory(dkprT -> filaConAlerta());
+        dkprTablaEntregar.setRowFactory(dkprT -> {
+            TableRow<Envio> dkprFila = filaConAlerta();
+            dkprFila.setOnMouseClicked(dkprEv -> {
+                if (dkprEv.getClickCount() == 2 && !dkprFila.isEmpty()) {
+                    abrirEntrega(dkprFila.getItem());
                 }
             });
-            return fila;
+            return dkprFila;
         });
 
-        cmbDestino.setOnAction(e -> filtrarDestino());
-        txtEscanearDespacho.setOnAction(e -> escanear(txtEscanearDespacho, tablaDespachar));
-        txtEscanearRecibir.setOnAction(e -> escanear(txtEscanearRecibir, tablaRecibir));
-        cmbAgencia.setOnAction(e -> cargar());
+        dkprCmbDestino.setOnAction(dkprE -> filtrarDestino());
+        dkprTxtEscanearDespacho.setOnAction(dkprE -> escanear(dkprTxtEscanearDespacho, dkprTablaDespachar));
+        dkprTxtEscanearRecibir.setOnAction(dkprE -> escanear(dkprTxtEscanearRecibir, dkprTablaRecibir));
+        dkprCmbAgencia.setOnAction(dkprE -> cargar());
 
-        Empleado empleado = Sesion.getActual();
-        boolean admin = Roles.ADMINISTRADOR.equals(empleado.getRol());
-        if (!service.puedeOperarAlmacen(empleado, empleado.getIdAgencia())) {
-            tabs.getTabs().removeAll(tabDespachar, tabRecibir);
+        Empleado dkprEmpleado = Sesion.getActual();
+        boolean dkprAdmin = Roles.ADMINISTRADOR.equals(dkprEmpleado.getRol());
+        if (!dkprService.puedeOperarAlmacen(dkprEmpleado, dkprEmpleado.getIdAgencia())) {
+            dkprTabs.getTabs().removeAll(dkprTabDespachar, dkprTabRecibir);
         }
-        if (!service.puedeEntregarEn(empleado, empleado.getIdAgencia())) {
-            tabs.getTabs().remove(tabEntregar);
+        if (!dkprService.puedeEntregarEn(dkprEmpleado, dkprEmpleado.getIdAgencia())) {
+            dkprTabs.getTabs().remove(dkprTabEntregar);
         }
 
         try {
-            List<Agencia> agencias = agenciaService.listar(true);
-            cmbAgencia.setItems(FXCollections.observableArrayList(agencias));
-            agencias.stream().filter(a -> a.getIdAgencia() == empleado.getIdAgencia())
-                    .findFirst().ifPresent(cmbAgencia::setValue);
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            List<Agencia> dkprAgencias = dkprAgenciaService.listar(true);
+            dkprCmbAgencia.setItems(FXCollections.observableArrayList(dkprAgencias));
+            dkprAgencias.stream().filter(dkprA -> dkprA.getIdAgencia() == dkprEmpleado.getIdAgencia())
+                    .findFirst().ifPresent(dkprCmbAgencia::setValue);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
         // Solo el administrador puede ver la bandeja de otra agencia.
-        cmbAgencia.setDisable(!admin);
+        dkprCmbAgencia.setDisable(!dkprAdmin);
         cargar();
     }
 
     private void configurarColumnas() {
-        colDespMarca.setCellValueFactory(c -> marca(c.getValue()));
-        colDespMarca.setCellFactory(CheckBoxTableCell.forTableColumn(colDespMarca));
-        texto(colDespCodigo, Envio::getCodigoSeguimiento);
-        texto(colDespDestino, Envio::getDestino);
-        texto(colDespDestinatario, Envio::getDestinatario);
-        texto(colDespBultos, e -> String.valueOf(e.getCantidadBultos()));
-        texto(colDespPeso, e -> e.getPesoKg().toPlainString());
-        texto(colDespFecha, Envio::getFechaTexto);
-        texto(colDespAlerta, Envio::getAlerta);
+        dkprColDespMarca.setCellValueFactory(dkprC -> marca(dkprC.getValue()));
+        dkprColDespMarca.setCellFactory(CheckBoxTableCell.forTableColumn(dkprColDespMarca));
+        texto(dkprColDespCodigo, Envio::getCodigoSeguimiento);
+        texto(dkprColDespDestino, Envio::getDestino);
+        texto(dkprColDespDestinatario, Envio::getDestinatario);
+        texto(dkprColDespBultos, dkprE -> String.valueOf(dkprE.getCantidadBultos()));
+        texto(dkprColDespPeso, dkprE -> dkprE.getPesoKg().toPlainString());
+        texto(dkprColDespFecha, Envio::getFechaTexto);
+        texto(dkprColDespAlerta, Envio::getAlerta);
 
-        colRecMarca.setCellValueFactory(c -> marca(c.getValue()));
-        colRecMarca.setCellFactory(CheckBoxTableCell.forTableColumn(colRecMarca));
-        texto(colRecCodigo, Envio::getCodigoSeguimiento);
-        texto(colRecOrigen, Envio::getOrigen);
-        texto(colRecManifiesto, e -> e.getManifiesto() == null ? "-" : e.getManifiesto());
-        texto(colRecBultos, e -> String.valueOf(e.getCantidadBultos()));
-        texto(colRecSalida, Envio::getUltimoMovimientoTexto);
-        texto(colRecEstimada, Envio::getFechaEstimadaTexto);
-        texto(colRecAlerta, Envio::getAlerta);
+        dkprColRecMarca.setCellValueFactory(dkprC -> marca(dkprC.getValue()));
+        dkprColRecMarca.setCellFactory(CheckBoxTableCell.forTableColumn(dkprColRecMarca));
+        texto(dkprColRecCodigo, Envio::getCodigoSeguimiento);
+        texto(dkprColRecOrigen, Envio::getOrigen);
+        texto(dkprColRecManifiesto, dkprE -> dkprE.getManifiesto() == null ? "-" : dkprE.getManifiesto());
+        texto(dkprColRecBultos, dkprE -> String.valueOf(dkprE.getCantidadBultos()));
+        texto(dkprColRecSalida, Envio::getUltimoMovimientoTexto);
+        texto(dkprColRecEstimada, Envio::getFechaEstimadaTexto);
+        texto(dkprColRecAlerta, Envio::getAlerta);
 
-        texto(colEntCodigo, Envio::getCodigoSeguimiento);
-        texto(colEntDestinatario, Envio::getDestinatario);
-        texto(colEntDocumento, Envio::getDestinatarioDocumento);
-        texto(colEntTelefono, e -> e.getDestinatarioTelefono() == null ? "-" : e.getDestinatarioTelefono());
-        texto(colEntOrigen, Envio::getOrigen);
-        texto(colEntLlego, Envio::getUltimoMovimientoTexto);
-        texto(colEntAlerta, Envio::getAlerta);
+        texto(dkprColEntCodigo, Envio::getCodigoSeguimiento);
+        texto(dkprColEntDestinatario, Envio::getDestinatario);
+        texto(dkprColEntDocumento, Envio::getDestinatarioDocumento);
+        texto(dkprColEntTelefono, dkprE -> dkprE.getDestinatarioTelefono() == null ? "-" : dkprE.getDestinatarioTelefono());
+        texto(dkprColEntOrigen, Envio::getOrigen);
+        texto(dkprColEntLlego, Envio::getUltimoMovimientoTexto);
+        texto(dkprColEntAlerta, Envio::getAlerta);
     }
 
-    private void texto(TableColumn<Envio, String> col, Function<Envio, String> valor) {
-        col.setCellValueFactory(c -> new SimpleStringProperty(valor.apply(c.getValue())));
+    private void texto(TableColumn<Envio, String> dkprCol, Function<Envio, String> dkprValor) {
+        dkprCol.setCellValueFactory(dkprC -> new SimpleStringProperty(dkprValor.apply(dkprC.getValue())));
     }
 
     /** Pinta la fila cuando el envío está atrasado o lleva demasiado tiempo en la agencia. */
     private TableRow<Envio> filaConAlerta() {
         return new TableRow<>() {
             @Override
-            protected void updateItem(Envio envio, boolean vacia) {
-                super.updateItem(envio, vacia);
+            protected void updateItem(Envio dkprEnvio, boolean dkprVacia) {
+                super.updateItem(dkprEnvio, dkprVacia);
                 getStyleClass().remove("fila-alerta");
-                if (!vacia && envio != null && !envio.getAlerta().isEmpty()) {
+                if (!dkprVacia && dkprEnvio != null && !dkprEnvio.getAlerta().isEmpty()) {
                     getStyleClass().add("fila-alerta");
                 }
             }
         };
     }
 
-    private BooleanProperty marca(Envio e) {
-        return marcas.computeIfAbsent(e.getIdEnvio(), id -> {
-            BooleanProperty p = new SimpleBooleanProperty(false);
-            p.addListener((obs, antes, ahora) -> actualizarBotones());
-            return p;
+    private BooleanProperty marca(Envio dkprE) {
+        return dkprMarcas.computeIfAbsent(dkprE.getIdEnvio(), dkprId -> {
+            BooleanProperty dkprP = new SimpleBooleanProperty(false);
+            dkprP.addListener((dkprObs, dkprAntes, dkprAhora) -> actualizarBotones());
+            return dkprP;
         });
     }
 
-    private boolean marcado(Envio e) {
-        BooleanProperty p = marcas.get(e.getIdEnvio());
-        return p != null && p.get();
+    private boolean marcado(Envio dkprE) {
+        BooleanProperty dkprP = dkprMarcas.get(dkprE.getIdEnvio());
+        return dkprP != null && dkprP.get();
     }
 
-    private List<Envio> marcados(List<Envio> filas) {
-        return filas.stream().filter(this::marcado).toList();
+    private List<Envio> marcados(List<Envio> dkprFilas) {
+        return dkprFilas.stream().filter(this::marcado).toList();
     }
 
     private void actualizarBotones() {
-        int despacho = marcados(despachoFiltrado).size();
-        int recepcion = marcados(tablaRecibir.getItems()).size();
-        btnDespachar.setText(despacho == 0 ? "Despachar" : "Despachar " + despacho + " envío(s)");
-        btnDespachar.setDisable(despacho == 0);
-        btnRecibir.setText(recepcion == 0 ? "Confirmar llegada" : "Confirmar llegada de " + recepcion);
-        btnRecibir.setDisable(recepcion == 0);
+        int dkprDespacho = marcados(dkprDespachoFiltrado).size();
+        int dkprRecepcion = marcados(dkprTablaRecibir.getItems()).size();
+        dkprBtnDespachar.setText(dkprDespacho == 0 ? "Despachar" : "Despachar " + dkprDespacho + " envío(s)");
+        dkprBtnDespachar.setDisable(dkprDespacho == 0);
+        dkprBtnRecibir.setText(dkprRecepcion == 0 ? "Confirmar llegada" : "Confirmar llegada de " + dkprRecepcion);
+        dkprBtnRecibir.setDisable(dkprRecepcion == 0);
     }
 
     // -------------------------------------------------------------- carga
@@ -217,175 +217,175 @@ public class BandejaController {
     }
 
     private void cargar() {
-        Agencia agencia = cmbAgencia.getValue();
-        marcas.clear();
-        if (agencia == null) {
+        Agencia dkprAgencia = dkprCmbAgencia.getValue();
+        dkprMarcas.clear();
+        if (dkprAgencia == null) {
             return;
         }
-        int id = agencia.getIdAgencia();
+        int dkprId = dkprAgencia.getIdAgencia();
         try {
-            if (tabs.getTabs().contains(tabDespachar)) {
-                List<Envio> pendientes = service.porDespachar(id);
-                despachoFiltrado = new FilteredList<>(FXCollections.observableArrayList(pendientes));
-                tablaDespachar.setItems(despachoFiltrado);
-                List<String> destinos = pendientes.stream().map(Envio::getDestino).distinct().sorted().toList();
-                cmbDestino.getItems().setAll(TODOS_LOS_DESTINOS);
-                cmbDestino.getItems().addAll(destinos);
+            if (dkprTabs.getTabs().contains(dkprTabDespachar)) {
+                List<Envio> dkprPendientes = dkprService.porDespachar(dkprId);
+                dkprDespachoFiltrado = new FilteredList<>(FXCollections.observableArrayList(dkprPendientes));
+                dkprTablaDespachar.setItems(dkprDespachoFiltrado);
+                List<String> dkprDestinos = dkprPendientes.stream().map(Envio::getDestino).distinct().sorted().toList();
+                dkprCmbDestino.getItems().setAll(TODOS_LOS_DESTINOS);
+                dkprCmbDestino.getItems().addAll(dkprDestinos);
                 // Con un solo destino ya queda listo para armar el manifiesto.
-                cmbDestino.setValue(destinos.size() == 1 ? destinos.get(0) : TODOS_LOS_DESTINOS);
+                dkprCmbDestino.setValue(dkprDestinos.size() == 1 ? dkprDestinos.get(0) : TODOS_LOS_DESTINOS);
                 filtrarDestino();
-                tabDespachar.setText("Por despachar (" + pendientes.size() + ")");
+                dkprTabDespachar.setText("Por despachar (" + dkprPendientes.size() + ")");
 
-                List<Envio> enCamino = service.porRecibir(id);
-                tablaRecibir.setItems(FXCollections.observableArrayList(enCamino));
-                tabRecibir.setText("Por recibir (" + enCamino.size() + ")");
+                List<Envio> dkprEnCamino = dkprService.porRecibir(dkprId);
+                dkprTablaRecibir.setItems(FXCollections.observableArrayList(dkprEnCamino));
+                dkprTabRecibir.setText("Por recibir (" + dkprEnCamino.size() + ")");
             }
-            if (tabs.getTabs().contains(tabEntregar)) {
-                List<Envio> enAgencia = service.porEntregar(id);
-                tablaEntregar.setItems(FXCollections.observableArrayList(enAgencia));
-                tabEntregar.setText("Por entregar (" + enAgencia.size() + ")");
+            if (dkprTabs.getTabs().contains(dkprTabEntregar)) {
+                List<Envio> dkprEnAgencia = dkprService.porEntregar(dkprId);
+                dkprTablaEntregar.setItems(FXCollections.observableArrayList(dkprEnAgencia));
+                dkprTabEntregar.setText("Por entregar (" + dkprEnAgencia.size() + ")");
             }
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
         actualizarBotones();
     }
 
     private void filtrarDestino() {
-        String destino = cmbDestino.getValue();
+        String dkprDestino = dkprCmbDestino.getValue();
         // Al cambiar de destino se desmarca todo: un manifiesto va a un solo destino.
-        despachoFiltrado.getSource().forEach(e -> marca(e).set(false));
-        despachoFiltrado.setPredicate(e -> destino == null || TODOS_LOS_DESTINOS.equals(destino)
-                || destino.equals(e.getDestino()));
+        dkprDespachoFiltrado.getSource().forEach(dkprE -> marca(dkprE).set(false));
+        dkprDespachoFiltrado.setPredicate(dkprE -> dkprDestino == null || TODOS_LOS_DESTINOS.equals(dkprDestino)
+                || dkprDestino.equals(dkprE.getDestino()));
         actualizarBotones();
     }
 
     // ------------------------------------------------------------ escaneo
 
     /** Acepta el código completo (ENV-000015) o solo el número (15). */
-    private static String normalizarCodigo(String texto) {
-        String t = texto == null ? "" : texto.trim().toUpperCase(Locale.ROOT);
-        if (t.matches("\\d{1,6}")) {
-            return String.format("ENV-%06d", Integer.parseInt(t));
+    private static String normalizarCodigo(String dkprTexto) {
+        String dkprT = dkprTexto == null ? "" : dkprTexto.trim().toUpperCase(Locale.ROOT);
+        if (dkprT.matches("\\d{1,6}")) {
+            return String.format("ENV-%06d", Integer.parseInt(dkprT));
         }
-        return t;
+        return dkprT;
     }
 
     /** Marca en la tabla el envío leído por la pistola de código de barras (o tipeado). */
-    private void escanear(TextField campo, TableView<Envio> tabla) {
-        String codigo = normalizarCodigo(campo.getText());
-        campo.clear();
-        if (codigo.isEmpty()) {
+    private void escanear(TextField dkprCampo, TableView<Envio> dkprTabla) {
+        String dkprCodigo = normalizarCodigo(dkprCampo.getText());
+        dkprCampo.clear();
+        if (dkprCodigo.isEmpty()) {
             return;
         }
-        for (Envio e : tabla.getItems()) {
-            if (e.getCodigoSeguimiento().equals(codigo)) {
-                marca(e).set(true);
-                tabla.getSelectionModel().select(e);
-                tabla.scrollTo(e);
+        for (Envio dkprE : dkprTabla.getItems()) {
+            if (dkprE.getCodigoSeguimiento().equals(dkprCodigo)) {
+                marca(dkprE).set(true);
+                dkprTabla.getSelectionModel().select(dkprE);
+                dkprTabla.scrollTo(dkprE);
                 return;
             }
         }
-        String detalle;
+        String dkprDetalle;
         try {
-            Envio e = service.buscar(codigo);
-            detalle = codigo + " no está en esta lista (estado: " + e.getEstado() + ", ruta " + e.getRuta() + ").";
-            if (tabla == tablaDespachar && despachoFiltrado.getSource().stream().anyMatch(x -> x.getIdEnvio() == e.getIdEnvio())) {
-                detalle = codigo + " va a " + e.getDestino() + ": cambia el filtro de destino.";
+            Envio dkprE = dkprService.buscar(dkprCodigo);
+            dkprDetalle = dkprCodigo + " no está en esta lista (estado: " + dkprE.getEstado() + ", ruta " + dkprE.getRuta() + ").";
+            if (dkprTabla == dkprTablaDespachar && dkprDespachoFiltrado.getSource().stream().anyMatch(dkprX -> dkprX.getIdEnvio() == dkprE.getIdEnvio())) {
+                dkprDetalle = dkprCodigo + " va a " + dkprE.getDestino() + ": cambia el filtro de destino.";
             }
-        } catch (Exception ex) {
-            detalle = "No existe ningún envío con el código " + codigo + ".";
+        } catch (Exception dkprEx) {
+            dkprDetalle = "No existe ningún envío con el código " + dkprCodigo + ".";
         }
-        Alertas.advertencia(detalle);
+        Alertas.advertencia(dkprDetalle);
     }
 
     @FXML
     private void onMarcarTodosDespacho() {
-        String destino = cmbDestino.getValue();
-        if (destino == null || TODOS_LOS_DESTINOS.equals(destino)) {
+        String dkprDestino = dkprCmbDestino.getValue();
+        if (dkprDestino == null || TODOS_LOS_DESTINOS.equals(dkprDestino)) {
             Alertas.advertencia("Elige primero el destino: un manifiesto agrupa envíos de un solo destino.");
             return;
         }
-        despachoFiltrado.forEach(e -> marca(e).set(true));
+        dkprDespachoFiltrado.forEach(dkprE -> marca(dkprE).set(true));
     }
 
     @FXML
     private void onMarcarTodosRecibir() {
-        tablaRecibir.getItems().forEach(e -> marca(e).set(true));
+        dkprTablaRecibir.getItems().forEach(dkprE -> marca(dkprE).set(true));
     }
 
     // ------------------------------------------------------------ acciones
 
     @FXML
     private void onDespachar() {
-        List<Envio> seleccion = marcados(despachoFiltrado);
-        if (seleccion.isEmpty()) {
+        List<Envio> dkprSeleccion = marcados(dkprDespachoFiltrado);
+        if (dkprSeleccion.isEmpty()) {
             Alertas.advertencia("Marca los envíos que suben al vehículo.");
             return;
         }
-        String destino = seleccion.get(0).getDestino();
-        if (!Alertas.confirmar("¿Despachar " + seleccion.size() + " envío(s) hacia " + destino + "?")) {
+        String dkprDestino = dkprSeleccion.get(0).getDestino();
+        if (!Alertas.confirmar("¿Despachar " + dkprSeleccion.size() + " envío(s) hacia " + dkprDestino + "?")) {
             return;
         }
         try {
-            String manifiesto = service.despachar(seleccion, txtPlaca.getText(), txtConductor.getText(),
-                    txtObsDespacho.getText(), Sesion.getActual());
-            Alertas.info("Manifiesto " + manifiesto + " generado: " + seleccion.size()
-                    + " envío(s) EN TRANSITO hacia " + destino + ".");
-            txtPlaca.clear();
-            txtConductor.clear();
-            txtObsDespacho.clear();
+            String dkprManifiesto = dkprService.despachar(dkprSeleccion, dkprTxtPlaca.getText(), dkprTxtConductor.getText(),
+                    dkprTxtObsDespacho.getText(), Sesion.getActual());
+            Alertas.info("Manifiesto " + dkprManifiesto + " generado: " + dkprSeleccion.size()
+                    + " envío(s) EN TRANSITO hacia " + dkprDestino + ".");
+            dkprTxtPlaca.clear();
+            dkprTxtConductor.clear();
+            dkprTxtObsDespacho.clear();
             cargar();
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onRecibir() {
-        List<Envio> seleccion = marcados(tablaRecibir.getItems());
-        if (seleccion.isEmpty()) {
+        List<Envio> dkprSeleccion = marcados(dkprTablaRecibir.getItems());
+        if (dkprSeleccion.isEmpty()) {
             Alertas.advertencia("Marca o escanea los paquetes que llegaron.");
             return;
         }
-        int faltan = tablaRecibir.getItems().size() - seleccion.size();
-        String mensaje = "¿Confirmar la llegada de " + seleccion.size() + " envío(s)?";
-        if (faltan > 0) {
-            mensaje += "\n" + faltan + " envío(s) sin marcar seguirán EN TRANSITO.";
+        int dkprFaltan = dkprTablaRecibir.getItems().size() - dkprSeleccion.size();
+        String dkprMensaje = "¿Confirmar la llegada de " + dkprSeleccion.size() + " envío(s)?";
+        if (dkprFaltan > 0) {
+            dkprMensaje += "\n" + dkprFaltan + " envío(s) sin marcar seguirán EN TRANSITO.";
         }
-        if (!Alertas.confirmar(mensaje)) {
+        if (!Alertas.confirmar(dkprMensaje)) {
             return;
         }
         try {
-            service.recibir(seleccion, txtObsRecepcion.getText(), Sesion.getActual());
-            Alertas.info(seleccion.size() + " envío(s) recibidos. Ya aparecen en \"Por entregar\".");
-            txtObsRecepcion.clear();
+            dkprService.recibir(dkprSeleccion, dkprTxtObsRecepcion.getText(), Sesion.getActual());
+            Alertas.info(dkprSeleccion.size() + " envío(s) recibidos. Ya aparecen en \"Por entregar\".");
+            dkprTxtObsRecepcion.clear();
             cargar();
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onEntregar() {
-        Envio envio = tablaEntregar.getSelectionModel().getSelectedItem();
-        if (envio == null) {
+        Envio dkprEnvio = dkprTablaEntregar.getSelectionModel().getSelectedItem();
+        if (dkprEnvio == null) {
             Alertas.advertencia("Selecciona el envío que van a recoger.");
             return;
         }
-        abrirEntrega(envio);
+        abrirEntrega(dkprEnvio);
     }
 
     /** Abre la pantalla de Entregas con el envío ya cargado. */
-    private void abrirEntrega(Envio envio) {
+    private void abrirEntrega(Envio dkprEnvio) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/entregas.fxml"));
-            Parent vista = loader.load();
-            Node raiz = tabs.getParent();
-            ((Pane) raiz.getParent()).getChildren().setAll(vista);
-            loader.<EntregasController>getController().cargar(envio.getCodigoSeguimiento());
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            FXMLLoader dkprLoader = new FXMLLoader(getClass().getResource("/view/entregas.fxml"));
+            Parent dkprVista = dkprLoader.load();
+            Node dkprRaiz = dkprTabs.getParent();
+            ((Pane) dkprRaiz.getParent()).getChildren().setAll(dkprVista);
+            dkprLoader.<EntregasController>getController().cargar(dkprEnvio.getCodigoSeguimiento());
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 }

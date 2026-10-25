@@ -13,34 +13,34 @@
     <VBox spacing="8" HBox.hgrow="ALWAYS">
         <Label text="Rutas y tarifas" styleClass="titulo"/>
         <Label text="Costo del envío = precio base (hasta 1 kg) + precio por cada kg adicional." styleClass="aviso"/>
-        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+        <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colOrigen" text="Origen" prefWidth="140"/>
-                <TableColumn fx:id="colDestino" text="Destino" prefWidth="140"/>
-                <TableColumn fx:id="colDias" text="Días" prefWidth="50"/>
-                <TableColumn fx:id="colBase" text="Base (S/)" prefWidth="75"/>
-                <TableColumn fx:id="colExtra" text="Kg extra (S/)" prefWidth="90"/>
-                <TableColumn fx:id="colPesoMax" text="Peso máx." prefWidth="75"/>
-                <TableColumn fx:id="colEstado" text="Estado" prefWidth="70"/>
+                <TableColumn fx:id="dkprColOrigen" text="Origen" prefWidth="140"/>
+                <TableColumn fx:id="dkprColDestino" text="Destino" prefWidth="140"/>
+                <TableColumn fx:id="dkprColDias" text="Días" prefWidth="50"/>
+                <TableColumn fx:id="dkprColBase" text="Base (S/)" prefWidth="75"/>
+                <TableColumn fx:id="dkprColExtra" text="Kg extra (S/)" prefWidth="90"/>
+                <TableColumn fx:id="dkprColPesoMax" text="Peso máx." prefWidth="75"/>
+                <TableColumn fx:id="dkprColEstado" text="Estado" prefWidth="70"/>
             </columns>
         </TableView>
     </VBox>
 
     <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
-        <Label fx:id="lblModo" styleClass="subtitulo" wrapText="true"/>
+        <Label fx:id="dkprLblModo" styleClass="subtitulo" wrapText="true"/>
         <Label text="Agencia de origen" styleClass="etiqueta"/>
-        <ComboBox fx:id="cmbOrigen" maxWidth="Infinity"/>
+        <ComboBox fx:id="dkprCmbOrigen" maxWidth="Infinity"/>
         <Label text="Agencia de destino" styleClass="etiqueta"/>
-        <ComboBox fx:id="cmbDestino" maxWidth="Infinity"/>
+        <ComboBox fx:id="dkprCmbDestino" maxWidth="Infinity"/>
         <Label text="Días estimados" styleClass="etiqueta"/>
-        <TextField fx:id="txtDias"/>
+        <TextField fx:id="dkprTxtDias"/>
         <Label text="Precio base (S/, hasta 1 kg)" styleClass="etiqueta"/>
-        <TextField fx:id="txtPrecioBase"/>
+        <TextField fx:id="dkprTxtPrecioBase"/>
         <Label text="Precio por kg adicional (S/)" styleClass="etiqueta"/>
-        <TextField fx:id="txtPrecioKg"/>
+        <TextField fx:id="dkprTxtPrecioKg"/>
         <Label text="Peso máximo (kg)" styleClass="etiqueta"/>
-        <TextField fx:id="txtPesoMax"/>
-        <CheckBox fx:id="chkActivo" text="Ruta activa"/>
+        <TextField fx:id="dkprTxtPesoMax"/>
+        <CheckBox fx:id="dkprChkActivo" text="Ruta activa"/>
         <HBox spacing="8" alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="10"/>

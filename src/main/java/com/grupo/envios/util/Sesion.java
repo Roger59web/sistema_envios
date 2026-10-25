@@ -5,20 +5,20 @@ import com.grupo.envios.model.Empleado;
 /** Guarda el empleado que inició sesión mientras la aplicación está abierta. */
 public final class Sesion {
 
-    private static Empleado actual;
+    private static Empleado dkprActual;
 
     private Sesion() {
     }
 
     public static Empleado getActual() {
-        return actual;
+        return dkprActual;
     }
 
-    public static void iniciar(Empleado empleado) {
-        actual = empleado;
+    public static void iniciar(Empleado dkprEmpleado) {
+        dkprActual = dkprEmpleado;
     }
 
     public static void cerrar() {
-        actual = null;
+        dkprActual = null;
     }
 }

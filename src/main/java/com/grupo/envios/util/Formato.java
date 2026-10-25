@@ -10,13 +10,13 @@ public final class Formato {
     }
 
     /** Ejemplo: S/ 18.00 */
-    public static String soles(BigDecimal monto) {
-        BigDecimal m = monto == null ? BigDecimal.ZERO : monto;
-        return "S/ " + m.setScale(2, RoundingMode.HALF_UP).toPlainString();
+    public static String soles(BigDecimal dkprMonto) {
+        BigDecimal dkprM = dkprMonto == null ? BigDecimal.ZERO : dkprMonto;
+        return "S/ " + dkprM.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
     /** Devuelve el texto o "-" si está vacío. */
-    public static String texto(String valor) {
-        return valor == null || valor.isBlank() ? "-" : valor;
+    public static String texto(String dkprValor) {
+        return dkprValor == null || dkprValor.isBlank() ? "-" : dkprValor;
     }
 }

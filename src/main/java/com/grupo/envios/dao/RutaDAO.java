@@ -29,107 +29,107 @@ public class RutaDAO {
     }
 
     /** Rutas activas con tarifa que salen de una agencia (para registrar envíos). */
-    public List<Ruta> listarPorOrigen(int idAgenciaOrigen) throws SQLException {
-        String sql = SELECT_BASE
+    public List<Ruta> listarPorOrigen(int dkprIdAgenciaOrigen) throws SQLException {
+        String dkprSql = SELECT_BASE
                 + " WHERE r.id_agencia_origen = ? AND r.activo = TRUE AND ao.activo = TRUE AND ad.activo = TRUE"
                 + " AND t.id_tarifa IS NOT NULL ORDER BY ad.nombre";
-        return consultar(sql, idAgenciaOrigen);
+        return consultar(dkprSql, dkprIdAgenciaOrigen);
     }
 
-    public void insertar(Ruta r) throws SQLException {
-        try (Connection cn = Conexion.obtener()) {
-            cn.setAutoCommit(false);
+    public void insertar(Ruta dkprR) throws SQLException {
+        try (Connection dkprCn = Conexion.obtener()) {
+            dkprCn.setAutoCommit(false);
             try {
-                int idRuta;
-                String sql = "INSERT INTO ruta (id_agencia_origen, id_agencia_destino, dias_estimados, activo) "
+                int dkprIdRuta;
+                String dkprSql = "INSERT INTO ruta (id_agencia_origen, id_agencia_destino, dias_estimados, activo) "
                         + "VALUES (?, ?, ?, ?) RETURNING id_ruta";
-                try (PreparedStatement ps = cn.prepareStatement(sql)) {
-                    ps.setInt(1, r.getIdAgenciaOrigen());
-                    ps.setInt(2, r.getIdAgenciaDestino());
-                    ps.setInt(3, r.getDiasEstimados());
-                    ps.setBoolean(4, r.isActivo());
-                    try (ResultSet rs = ps.executeQuery()) {
-                        rs.next();
-                        idRuta = rs.getInt(1);
+                try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+                    dkprPs.setInt(1, dkprR.getIdAgenciaOrigen());
+                    dkprPs.setInt(2, dkprR.getIdAgenciaDestino());
+                    dkprPs.setInt(3, dkprR.getDiasEstimados());
+                    dkprPs.setBoolean(4, dkprR.isActivo());
+                    try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                        dkprRs.next();
+                        dkprIdRuta = dkprRs.getInt(1);
                     }
                 }
-                insertarTarifa(cn, idRuta, r);
-                cn.commit();
-            } catch (SQLException | RuntimeException e) {
-                cn.rollback();
-                throw e;
+                insertarTarifa(dkprCn, dkprIdRuta, dkprR);
+                dkprCn.commit();
+            } catch (SQLException | RuntimeException dkprE) {
+                dkprCn.rollback();
+                throw dkprE;
             }
         }
     }
 
-    public void actualizar(Ruta r) throws SQLException {
-        try (Connection cn = Conexion.obtener()) {
-            cn.setAutoCommit(false);
+    public void actualizar(Ruta dkprR) throws SQLException {
+        try (Connection dkprCn = Conexion.obtener()) {
+            dkprCn.setAutoCommit(false);
             try {
-                String sql = "UPDATE ruta SET dias_estimados = ?, activo = ? WHERE id_ruta = ?";
-                try (PreparedStatement ps = cn.prepareStatement(sql)) {
-                    ps.setInt(1, r.getDiasEstimados());
-                    ps.setBoolean(2, r.isActivo());
-                    ps.setInt(3, r.getIdRuta());
-                    ps.executeUpdate();
+                String dkprSql = "UPDATE ruta SET dias_estimados = ?, activo = ? WHERE id_ruta = ?";
+                try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+                    dkprPs.setInt(1, dkprR.getDiasEstimados());
+                    dkprPs.setBoolean(2, dkprR.isActivo());
+                    dkprPs.setInt(3, dkprR.getIdRuta());
+                    dkprPs.executeUpdate();
                 }
-                if (r.getIdTarifa() > 0) {
-                    String sqlTarifa = "UPDATE tarifa SET precio_base = ?, precio_kg_extra = ?, peso_max_kg = ? "
+                if (dkprR.getIdTarifa() > 0) {
+                    String dkprSqlTarifa = "UPDATE tarifa SET precio_base = ?, precio_kg_extra = ?, peso_max_kg = ? "
                             + "WHERE id_tarifa = ?";
-                    try (PreparedStatement ps = cn.prepareStatement(sqlTarifa)) {
-                        ps.setBigDecimal(1, r.getPrecioBase());
-                        ps.setBigDecimal(2, r.getPrecioKgExtra());
-                        ps.setBigDecimal(3, r.getPesoMaxKg());
-                        ps.setInt(4, r.getIdTarifa());
-                        ps.executeUpdate();
+                    try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSqlTarifa)) {
+                        dkprPs.setBigDecimal(1, dkprR.getPrecioBase());
+                        dkprPs.setBigDecimal(2, dkprR.getPrecioKgExtra());
+                        dkprPs.setBigDecimal(3, dkprR.getPesoMaxKg());
+                        dkprPs.setInt(4, dkprR.getIdTarifa());
+                        dkprPs.executeUpdate();
                     }
                 } else {
-                    insertarTarifa(cn, r.getIdRuta(), r);
+                    insertarTarifa(dkprCn, dkprR.getIdRuta(), dkprR);
                 }
-                cn.commit();
-            } catch (SQLException | RuntimeException e) {
-                cn.rollback();
-                throw e;
+                dkprCn.commit();
+            } catch (SQLException | RuntimeException dkprE) {
+                dkprCn.rollback();
+                throw dkprE;
             }
         }
     }
 
-    private void insertarTarifa(Connection cn, int idRuta, Ruta r) throws SQLException {
-        String sql = "INSERT INTO tarifa (id_ruta, precio_base, precio_kg_extra, peso_max_kg) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, idRuta);
-            ps.setBigDecimal(2, r.getPrecioBase());
-            ps.setBigDecimal(3, r.getPrecioKgExtra());
-            ps.setBigDecimal(4, r.getPesoMaxKg());
-            ps.executeUpdate();
+    private void insertarTarifa(Connection dkprCn, int dkprIdRuta, Ruta dkprR) throws SQLException {
+        String dkprSql = "INSERT INTO tarifa (id_ruta, precio_base, precio_kg_extra, peso_max_kg) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprIdRuta);
+            dkprPs.setBigDecimal(2, dkprR.getPrecioBase());
+            dkprPs.setBigDecimal(3, dkprR.getPrecioKgExtra());
+            dkprPs.setBigDecimal(4, dkprR.getPesoMaxKg());
+            dkprPs.executeUpdate();
         }
     }
 
-    private List<Ruta> consultar(String sql, Integer parametro) throws SQLException {
-        List<Ruta> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            if (parametro != null) {
-                ps.setInt(1, parametro);
+    private List<Ruta> consultar(String dkprSql, Integer dkprParametro) throws SQLException {
+        List<Ruta> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            if (dkprParametro != null) {
+                dkprPs.setInt(1, dkprParametro);
             }
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Ruta r = new Ruta();
-                    r.setIdRuta(rs.getInt("id_ruta"));
-                    r.setIdAgenciaOrigen(rs.getInt("id_agencia_origen"));
-                    r.setIdAgenciaDestino(rs.getInt("id_agencia_destino"));
-                    r.setOrigen(rs.getString("origen"));
-                    r.setDestino(rs.getString("destino"));
-                    r.setDiasEstimados(rs.getInt("dias_estimados"));
-                    r.setActivo(rs.getBoolean("activo"));
-                    r.setIdTarifa(rs.getInt("id_tarifa"));
-                    r.setPrecioBase(rs.getBigDecimal("precio_base"));
-                    r.setPrecioKgExtra(rs.getBigDecimal("precio_kg_extra"));
-                    r.setPesoMaxKg(rs.getBigDecimal("peso_max_kg"));
-                    lista.add(r);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                while (dkprRs.next()) {
+                    Ruta dkprR = new Ruta();
+                    dkprR.setIdRuta(dkprRs.getInt("id_ruta"));
+                    dkprR.setIdAgenciaOrigen(dkprRs.getInt("id_agencia_origen"));
+                    dkprR.setIdAgenciaDestino(dkprRs.getInt("id_agencia_destino"));
+                    dkprR.setOrigen(dkprRs.getString("origen"));
+                    dkprR.setDestino(dkprRs.getString("destino"));
+                    dkprR.setDiasEstimados(dkprRs.getInt("dias_estimados"));
+                    dkprR.setActivo(dkprRs.getBoolean("activo"));
+                    dkprR.setIdTarifa(dkprRs.getInt("id_tarifa"));
+                    dkprR.setPrecioBase(dkprRs.getBigDecimal("precio_base"));
+                    dkprR.setPrecioKgExtra(dkprRs.getBigDecimal("precio_kg_extra"));
+                    dkprR.setPesoMaxKg(dkprRs.getBigDecimal("peso_max_kg"));
+                    dkprLista.add(dkprR);
                 }
             }
         }
-        return lista;
+        return dkprLista;
     }
 }

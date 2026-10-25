@@ -11,34 +11,34 @@ import javafx.scene.control.TextField;
 
 public class LoginController {
 
-    @FXML private TextField txtUsuario;
-    @FXML private PasswordField txtClave;
-    @FXML private Label lblError;
+    @FXML private TextField dkprTxtUsuario;
+    @FXML private PasswordField dkprTxtClave;
+    @FXML private Label dkprLblError;
 
-    private final AuthService authService = new AuthService();
+    private final AuthService dkprAuthService = new AuthService();
 
     @FXML
     private void onIngresar() {
-        String usuario = txtUsuario.getText().trim();
-        String clave = txtClave.getText();
+        String dkprUsuario = dkprTxtUsuario.getText().trim();
+        String dkprClave = dkprTxtClave.getText();
 
-        if (usuario.isEmpty() || clave.isEmpty()) {
-            lblError.setText("Ingresa tu usuario y contraseña.");
+        if (dkprUsuario.isEmpty() || dkprClave.isEmpty()) {
+            dkprLblError.setText("Ingresa tu usuario y contraseña.");
             return;
         }
 
         try {
-            Empleado empleado = authService.login(usuario, clave);
-            if (empleado == null) {
-                lblError.setText("Usuario o contraseña incorrectos.");
-                txtClave.clear();
+            Empleado dkprEmpleado = dkprAuthService.login(dkprUsuario, dkprClave);
+            if (dkprEmpleado == null) {
+                dkprLblError.setText("Usuario o contraseña incorrectos.");
+                dkprTxtClave.clear();
                 return;
             }
-            Sesion.iniciar(empleado);
-            Navegador.ir(txtUsuario, "principal.fxml", "Sistema de Envíos");
-        } catch (Exception e) {
-            lblError.setText("Error: " + e.getMessage());
-            e.printStackTrace();
+            Sesion.iniciar(dkprEmpleado);
+            Navegador.ir(dkprTxtUsuario, "principal.fxml", "Sistema de Envíos");
+        } catch (Exception dkprE) {
+            dkprLblError.setText("Error: " + dkprE.getMessage());
+            dkprE.printStackTrace();
         }
     }
 }

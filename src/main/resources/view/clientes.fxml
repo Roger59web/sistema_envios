@@ -13,33 +13,33 @@
     <VBox spacing="8" HBox.hgrow="ALWAYS">
         <Label text="Clientes" styleClass="titulo"/>
         <HBox spacing="8">
-            <TextField fx:id="txtBuscar" promptText="Buscar por documento o nombre" HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="dkprTxtBuscar" promptText="Buscar por documento o nombre" HBox.hgrow="ALWAYS"/>
             <Button text="Buscar" onAction="#onBuscar"/>
         </HBox>
-        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+        <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colTipo" text="Tipo" prefWidth="60"/>
-                <TableColumn fx:id="colDocumento" text="Documento" prefWidth="110"/>
-                <TableColumn fx:id="colNombre" text="Nombre / Razón social" prefWidth="250"/>
-                <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="110"/>
+                <TableColumn fx:id="dkprColTipo" text="Tipo" prefWidth="60"/>
+                <TableColumn fx:id="dkprColDocumento" text="Documento" prefWidth="110"/>
+                <TableColumn fx:id="dkprColNombre" text="Nombre / Razón social" prefWidth="250"/>
+                <TableColumn fx:id="dkprColTelefono" text="Teléfono" prefWidth="110"/>
             </columns>
         </TableView>
     </VBox>
 
     <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
-        <Label fx:id="lblModo" styleClass="subtitulo"/>
+        <Label fx:id="dkprLblModo" styleClass="subtitulo"/>
         <Label text="Tipo de documento" styleClass="etiqueta"/>
-        <ComboBox fx:id="cmbTipo" maxWidth="Infinity"/>
+        <ComboBox fx:id="dkprCmbTipo" maxWidth="Infinity"/>
         <Label text="Número de documento" styleClass="etiqueta"/>
-        <TextField fx:id="txtDocumento"/>
+        <TextField fx:id="dkprTxtDocumento"/>
         <Label text="Nombre completo / Razón social" styleClass="etiqueta"/>
-        <TextField fx:id="txtNombre"/>
+        <TextField fx:id="dkprTxtNombre"/>
         <Label text="Teléfono" styleClass="etiqueta"/>
-        <TextField fx:id="txtTelefono"/>
+        <TextField fx:id="dkprTxtTelefono"/>
         <Label text="Correo electrónico" styleClass="etiqueta"/>
-        <TextField fx:id="txtEmail"/>
+        <TextField fx:id="dkprTxtEmail"/>
         <Label text="Dirección" styleClass="etiqueta"/>
-        <TextField fx:id="txtDireccion"/>
+        <TextField fx:id="dkprTxtDireccion"/>
         <HBox spacing="8" alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="10"/>

@@ -11,28 +11,28 @@ import java.util.List;
 
 public class ReporteService {
 
-    private final EnvioDAO dao = new EnvioDAO();
+    private final EnvioDAO dkprDao = new EnvioDAO();
 
-    public List<Envio> detalle(LocalDate desde, LocalDate hasta) throws SQLException {
-        validar(desde, hasta);
-        return dao.listarPorFechas(desde, hasta);
+    public List<Envio> detalle(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        validar(dkprDesde, dkprHasta);
+        return dkprDao.listarPorFechas(dkprDesde, dkprHasta);
     }
 
-    public List<ResumenFila> porAgencia(LocalDate desde, LocalDate hasta) throws SQLException {
-        validar(desde, hasta);
-        return dao.resumenPorAgencia(desde, hasta);
+    public List<ResumenFila> porAgencia(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        validar(dkprDesde, dkprHasta);
+        return dkprDao.resumenPorAgencia(dkprDesde, dkprHasta);
     }
 
-    public List<ResumenFila> porEstado(LocalDate desde, LocalDate hasta) throws SQLException {
-        validar(desde, hasta);
-        return dao.resumenPorEstado(desde, hasta);
+    public List<ResumenFila> porEstado(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        validar(dkprDesde, dkprHasta);
+        return dkprDao.resumenPorEstado(dkprDesde, dkprHasta);
     }
 
-    private void validar(LocalDate desde, LocalDate hasta) {
-        if (desde == null || hasta == null) {
+    private void validar(LocalDate dkprDesde, LocalDate dkprHasta) {
+        if (dkprDesde == null || dkprHasta == null) {
             throw new NegocioException("Selecciona la fecha inicial y la final.");
         }
-        if (desde.isAfter(hasta)) {
+        if (dkprDesde.isAfter(dkprHasta)) {
             throw new NegocioException("La fecha inicial no puede ser posterior a la final.");
         }
     }

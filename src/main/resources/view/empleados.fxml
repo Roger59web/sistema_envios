@@ -12,35 +12,35 @@
 
     <VBox spacing="8" HBox.hgrow="ALWAYS">
         <Label text="Empleados" styleClass="titulo"/>
-        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+        <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colDni" text="DNI" prefWidth="80"/>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="170"/>
-                <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="90"/>
-                <TableColumn fx:id="colRol" text="Rol" prefWidth="110"/>
-                <TableColumn fx:id="colAgencia" text="Agencia" prefWidth="140"/>
-                <TableColumn fx:id="colEstado" text="Estado" prefWidth="70"/>
+                <TableColumn fx:id="dkprColDni" text="DNI" prefWidth="80"/>
+                <TableColumn fx:id="dkprColNombre" text="Nombre" prefWidth="170"/>
+                <TableColumn fx:id="dkprColUsuario" text="Usuario" prefWidth="90"/>
+                <TableColumn fx:id="dkprColRol" text="Rol" prefWidth="110"/>
+                <TableColumn fx:id="dkprColAgencia" text="Agencia" prefWidth="140"/>
+                <TableColumn fx:id="dkprColEstado" text="Estado" prefWidth="70"/>
             </columns>
         </TableView>
     </VBox>
 
     <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
-        <Label fx:id="lblModo" styleClass="subtitulo"/>
+        <Label fx:id="dkprLblModo" styleClass="subtitulo"/>
         <Label text="Agencia" styleClass="etiqueta"/>
-        <ComboBox fx:id="cmbAgencia" maxWidth="Infinity"/>
+        <ComboBox fx:id="dkprCmbAgencia" maxWidth="Infinity"/>
         <Label text="Rol" styleClass="etiqueta"/>
-        <ComboBox fx:id="cmbRol" maxWidth="Infinity"/>
+        <ComboBox fx:id="dkprCmbRol" maxWidth="Infinity"/>
         <Label text="DNI" styleClass="etiqueta"/>
-        <TextField fx:id="txtDni"/>
+        <TextField fx:id="dkprTxtDni"/>
         <Label text="Nombres" styleClass="etiqueta"/>
-        <TextField fx:id="txtNombres"/>
+        <TextField fx:id="dkprTxtNombres"/>
         <Label text="Apellidos" styleClass="etiqueta"/>
-        <TextField fx:id="txtApellidos"/>
+        <TextField fx:id="dkprTxtApellidos"/>
         <Label text="Usuario" styleClass="etiqueta"/>
-        <TextField fx:id="txtUsuario"/>
+        <TextField fx:id="dkprTxtUsuario"/>
         <Label text="Contraseña" styleClass="etiqueta"/>
-        <PasswordField fx:id="txtClave"/>
-        <CheckBox fx:id="chkActivo" text="Empleado activo"/>
+        <PasswordField fx:id="dkprTxtClave"/>
+        <CheckBox fx:id="dkprChkActivo" text="Empleado activo"/>
         <HBox spacing="8" alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="10"/>

@@ -20,49 +20,49 @@ import java.math.BigDecimal;
 
 public class RutasController {
 
-    @FXML private TableView<Ruta> tabla;
-    @FXML private TableColumn<Ruta, String> colOrigen;
-    @FXML private TableColumn<Ruta, String> colDestino;
-    @FXML private TableColumn<Ruta, Integer> colDias;
-    @FXML private TableColumn<Ruta, BigDecimal> colBase;
-    @FXML private TableColumn<Ruta, BigDecimal> colExtra;
-    @FXML private TableColumn<Ruta, BigDecimal> colPesoMax;
-    @FXML private TableColumn<Ruta, String> colEstado;
+    @FXML private TableView<Ruta> dkprTabla;
+    @FXML private TableColumn<Ruta, String> dkprColOrigen;
+    @FXML private TableColumn<Ruta, String> dkprColDestino;
+    @FXML private TableColumn<Ruta, Integer> dkprColDias;
+    @FXML private TableColumn<Ruta, BigDecimal> dkprColBase;
+    @FXML private TableColumn<Ruta, BigDecimal> dkprColExtra;
+    @FXML private TableColumn<Ruta, BigDecimal> dkprColPesoMax;
+    @FXML private TableColumn<Ruta, String> dkprColEstado;
 
-    @FXML private Label lblModo;
-    @FXML private ComboBox<Agencia> cmbOrigen;
-    @FXML private ComboBox<Agencia> cmbDestino;
-    @FXML private TextField txtDias;
-    @FXML private TextField txtPrecioBase;
-    @FXML private TextField txtPrecioKg;
-    @FXML private TextField txtPesoMax;
-    @FXML private CheckBox chkActivo;
+    @FXML private Label dkprLblModo;
+    @FXML private ComboBox<Agencia> dkprCmbOrigen;
+    @FXML private ComboBox<Agencia> dkprCmbDestino;
+    @FXML private TextField dkprTxtDias;
+    @FXML private TextField dkprTxtPrecioBase;
+    @FXML private TextField dkprTxtPrecioKg;
+    @FXML private TextField dkprTxtPesoMax;
+    @FXML private CheckBox dkprChkActivo;
 
-    private final RutaService rutaService = new RutaService();
-    private final AgenciaService agenciaService = new AgenciaService();
-    private Ruta seleccionada;
+    private final RutaService dkprRutaService = new RutaService();
+    private final AgenciaService dkprAgenciaService = new AgenciaService();
+    private Ruta dkprSeleccionada;
 
     @FXML
     private void initialize() {
-        colOrigen.setCellValueFactory(new PropertyValueFactory<>("origen"));
-        colDestino.setCellValueFactory(new PropertyValueFactory<>("destino"));
-        colDias.setCellValueFactory(new PropertyValueFactory<>("diasEstimados"));
-        colBase.setCellValueFactory(new PropertyValueFactory<>("precioBase"));
-        colExtra.setCellValueFactory(new PropertyValueFactory<>("precioKgExtra"));
-        colPesoMax.setCellValueFactory(new PropertyValueFactory<>("pesoMaxKg"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estadoTexto"));
+        dkprColOrigen.setCellValueFactory(new PropertyValueFactory<>("origen"));
+        dkprColDestino.setCellValueFactory(new PropertyValueFactory<>("destino"));
+        dkprColDias.setCellValueFactory(new PropertyValueFactory<>("diasEstimados"));
+        dkprColBase.setCellValueFactory(new PropertyValueFactory<>("precioBase"));
+        dkprColExtra.setCellValueFactory(new PropertyValueFactory<>("precioKgExtra"));
+        dkprColPesoMax.setCellValueFactory(new PropertyValueFactory<>("pesoMaxKg"));
+        dkprColEstado.setCellValueFactory(new PropertyValueFactory<>("estadoTexto"));
 
         try {
-            var agencias = FXCollections.observableArrayList(agenciaService.listar(false));
-            cmbOrigen.setItems(agencias);
-            cmbDestino.setItems(agencias);
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            var dkprAgencias = FXCollections.observableArrayList(dkprAgenciaService.listar(false));
+            dkprCmbOrigen.setItems(dkprAgencias);
+            dkprCmbDestino.setItems(dkprAgencias);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
 
-        tabla.getSelectionModel().selectedItemProperty().addListener((obs, anterior, nueva) -> {
-            if (nueva != null) {
-                mostrar(nueva);
+        dkprTabla.getSelectionModel().selectedItemProperty().addListener((dkprObs, dkprAnterior, dkprNueva) -> {
+            if (dkprNueva != null) {
+                mostrar(dkprNueva);
             }
         });
 
@@ -72,49 +72,49 @@ public class RutasController {
 
     private void cargar() {
         try {
-            tabla.setItems(FXCollections.observableArrayList(rutaService.listar()));
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            dkprTabla.setItems(FXCollections.observableArrayList(dkprRutaService.listar()));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
-    private void mostrar(Ruta r) {
-        seleccionada = r;
-        lblModo.setText("Editando ruta (el origen y el destino no se pueden cambiar)");
-        seleccionarAgencia(cmbOrigen, r.getIdAgenciaOrigen());
-        seleccionarAgencia(cmbDestino, r.getIdAgenciaDestino());
-        cmbOrigen.setDisable(true);
-        cmbDestino.setDisable(true);
-        txtDias.setText(String.valueOf(r.getDiasEstimados()));
-        txtPrecioBase.setText(r.getPrecioBase() == null ? "" : r.getPrecioBase().toPlainString());
-        txtPrecioKg.setText(r.getPrecioKgExtra() == null ? "" : r.getPrecioKgExtra().toPlainString());
-        txtPesoMax.setText(r.getPesoMaxKg() == null ? "" : r.getPesoMaxKg().toPlainString());
-        chkActivo.setSelected(r.isActivo());
+    private void mostrar(Ruta dkprR) {
+        dkprSeleccionada = dkprR;
+        dkprLblModo.setText("Editando ruta (el origen y el destino no se pueden cambiar)");
+        seleccionarAgencia(dkprCmbOrigen, dkprR.getIdAgenciaOrigen());
+        seleccionarAgencia(dkprCmbDestino, dkprR.getIdAgenciaDestino());
+        dkprCmbOrigen.setDisable(true);
+        dkprCmbDestino.setDisable(true);
+        dkprTxtDias.setText(String.valueOf(dkprR.getDiasEstimados()));
+        dkprTxtPrecioBase.setText(dkprR.getPrecioBase() == null ? "" : dkprR.getPrecioBase().toPlainString());
+        dkprTxtPrecioKg.setText(dkprR.getPrecioKgExtra() == null ? "" : dkprR.getPrecioKgExtra().toPlainString());
+        dkprTxtPesoMax.setText(dkprR.getPesoMaxKg() == null ? "" : dkprR.getPesoMaxKg().toPlainString());
+        dkprChkActivo.setSelected(dkprR.isActivo());
     }
 
-    private void seleccionarAgencia(ComboBox<Agencia> combo, int idAgencia) {
-        for (Agencia a : combo.getItems()) {
-            if (a.getIdAgencia() == idAgencia) {
-                combo.setValue(a);
+    private void seleccionarAgencia(ComboBox<Agencia> dkprCombo, int dkprIdAgencia) {
+        for (Agencia dkprA : dkprCombo.getItems()) {
+            if (dkprA.getIdAgencia() == dkprIdAgencia) {
+                dkprCombo.setValue(dkprA);
                 return;
             }
         }
-        combo.setValue(null);
+        dkprCombo.setValue(null);
     }
 
     private void limpiar() {
-        seleccionada = null;
-        tabla.getSelectionModel().clearSelection();
-        lblModo.setText("Nueva ruta");
-        cmbOrigen.setDisable(false);
-        cmbDestino.setDisable(false);
-        cmbOrigen.setValue(null);
-        cmbDestino.setValue(null);
-        txtDias.setText("1");
-        txtPrecioBase.clear();
-        txtPrecioKg.clear();
-        txtPesoMax.setText("50");
-        chkActivo.setSelected(true);
+        dkprSeleccionada = null;
+        dkprTabla.getSelectionModel().clearSelection();
+        dkprLblModo.setText("Nueva ruta");
+        dkprCmbOrigen.setDisable(false);
+        dkprCmbDestino.setDisable(false);
+        dkprCmbOrigen.setValue(null);
+        dkprCmbDestino.setValue(null);
+        dkprTxtDias.setText("1");
+        dkprTxtPrecioBase.clear();
+        dkprTxtPrecioKg.clear();
+        dkprTxtPesoMax.setText("50");
+        dkprChkActivo.setSelected(true);
     }
 
     @FXML
@@ -125,23 +125,23 @@ public class RutasController {
     @FXML
     private void onGuardar() {
         try {
-            Ruta r = new Ruta();
-            r.setIdRuta(seleccionada == null ? 0 : seleccionada.getIdRuta());
-            r.setIdTarifa(seleccionada == null ? 0 : seleccionada.getIdTarifa());
-            r.setIdAgenciaOrigen(cmbOrigen.getValue() == null ? 0 : cmbOrigen.getValue().getIdAgencia());
-            r.setIdAgenciaDestino(cmbDestino.getValue() == null ? 0 : cmbDestino.getValue().getIdAgencia());
-            r.setDiasEstimados(Validaciones.entero(txtDias.getText(), "Días estimados"));
-            r.setPrecioBase(Validaciones.decimal(txtPrecioBase.getText(), "Precio base"));
-            r.setPrecioKgExtra(Validaciones.decimal(txtPrecioKg.getText(), "Precio por kg extra"));
-            r.setPesoMaxKg(Validaciones.decimal(txtPesoMax.getText(), "Peso máximo"));
-            r.setActivo(chkActivo.isSelected());
+            Ruta dkprR = new Ruta();
+            dkprR.setIdRuta(dkprSeleccionada == null ? 0 : dkprSeleccionada.getIdRuta());
+            dkprR.setIdTarifa(dkprSeleccionada == null ? 0 : dkprSeleccionada.getIdTarifa());
+            dkprR.setIdAgenciaOrigen(dkprCmbOrigen.getValue() == null ? 0 : dkprCmbOrigen.getValue().getIdAgencia());
+            dkprR.setIdAgenciaDestino(dkprCmbDestino.getValue() == null ? 0 : dkprCmbDestino.getValue().getIdAgencia());
+            dkprR.setDiasEstimados(Validaciones.entero(dkprTxtDias.getText(), "Días estimados"));
+            dkprR.setPrecioBase(Validaciones.decimal(dkprTxtPrecioBase.getText(), "Precio base"));
+            dkprR.setPrecioKgExtra(Validaciones.decimal(dkprTxtPrecioKg.getText(), "Precio por kg extra"));
+            dkprR.setPesoMaxKg(Validaciones.decimal(dkprTxtPesoMax.getText(), "Peso máximo"));
+            dkprR.setActivo(dkprChkActivo.isSelected());
 
-            rutaService.guardar(r);
+            dkprRutaService.guardar(dkprR);
             Alertas.info("Ruta guardada correctamente.");
             limpiar();
             cargar();
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 }

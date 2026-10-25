@@ -23,117 +23,117 @@ import java.math.BigDecimal;
 
 public class RegistrarEnvioController {
 
-    @FXML private Label lblOrigen;
-    @FXML private Label lblCosto;
-    @FXML private ComboBox<Ruta> cmbRuta;
+    @FXML private Label dkprLblOrigen;
+    @FXML private Label dkprLblCosto;
+    @FXML private ComboBox<Ruta> dkprCmbRuta;
 
-    @FXML private ComboBox<String> cmbRemTipo;
-    @FXML private TextField txtRemDoc;
-    @FXML private TextField txtRemNombre;
-    @FXML private TextField txtRemTelefono;
+    @FXML private ComboBox<String> dkprCmbRemTipo;
+    @FXML private TextField dkprTxtRemDoc;
+    @FXML private TextField dkprTxtRemNombre;
+    @FXML private TextField dkprTxtRemTelefono;
 
-    @FXML private ComboBox<String> cmbDesTipo;
-    @FXML private TextField txtDesDoc;
-    @FXML private TextField txtDesNombre;
-    @FXML private TextField txtDesTelefono;
+    @FXML private ComboBox<String> dkprCmbDesTipo;
+    @FXML private TextField dkprTxtDesDoc;
+    @FXML private TextField dkprTxtDesNombre;
+    @FXML private TextField dkprTxtDesTelefono;
 
-    @FXML private TextField txtDescripcion;
-    @FXML private TextField txtBultos;
-    @FXML private TextField txtPeso;
-    @FXML private TextField txtValor;
-    @FXML private TextField txtObservaciones;
+    @FXML private TextField dkprTxtDescripcion;
+    @FXML private TextField dkprTxtBultos;
+    @FXML private TextField dkprTxtPeso;
+    @FXML private TextField dkprTxtValor;
+    @FXML private TextField dkprTxtObservaciones;
 
-    @FXML private ComboBox<String> cmbComprobante;
-    @FXML private ComboBox<String> cmbMetodo;
+    @FXML private ComboBox<String> dkprCmbComprobante;
+    @FXML private ComboBox<String> dkprCmbMetodo;
 
-    private final EnvioService envioService = new EnvioService();
-    private final ClienteService clienteService = new ClienteService();
-    private final RutaService rutaService = new RutaService();
+    private final EnvioService dkprEnvioService = new EnvioService();
+    private final ClienteService dkprClienteService = new ClienteService();
+    private final RutaService dkprRutaService = new RutaService();
 
     @FXML
     private void initialize() {
-        Empleado empleado = Sesion.getActual();
-        lblOrigen.setText("Agencia de origen: " + empleado.getAgencia());
+        Empleado dkprEmpleado = Sesion.getActual();
+        dkprLblOrigen.setText("Agencia de origen: " + dkprEmpleado.getAgencia());
 
         try {
-            var rutas = rutaService.listarPorOrigen(empleado.getIdAgencia());
-            cmbRuta.setItems(FXCollections.observableArrayList(rutas));
-            if (rutas.isEmpty()) {
-                lblOrigen.setText(lblOrigen.getText() + "  (no hay rutas activas con tarifa desde esta agencia)");
+            var dkprRutas = dkprRutaService.listarPorOrigen(dkprEmpleado.getIdAgencia());
+            dkprCmbRuta.setItems(FXCollections.observableArrayList(dkprRutas));
+            if (dkprRutas.isEmpty()) {
+                dkprLblOrigen.setText(dkprLblOrigen.getText() + "  (no hay rutas activas con tarifa desde esta agencia)");
             }
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
 
-        var tipos = FXCollections.observableArrayList("DNI", "RUC", "CE");
-        cmbRemTipo.setItems(tipos);
-        cmbDesTipo.setItems(FXCollections.observableArrayList(tipos));
-        cmbComprobante.setItems(FXCollections.observableArrayList("BOLETA", "FACTURA"));
-        cmbMetodo.setItems(FXCollections.observableArrayList("EFECTIVO", "TARJETA", "YAPE", "PLIN"));
+        var dkprTipos = FXCollections.observableArrayList("DNI", "RUC", "CE");
+        dkprCmbRemTipo.setItems(dkprTipos);
+        dkprCmbDesTipo.setItems(FXCollections.observableArrayList(dkprTipos));
+        dkprCmbComprobante.setItems(FXCollections.observableArrayList("BOLETA", "FACTURA"));
+        dkprCmbMetodo.setItems(FXCollections.observableArrayList("EFECTIVO", "TARJETA", "YAPE", "PLIN"));
 
-        cmbRuta.valueProperty().addListener((obs, anterior, nueva) -> actualizarCosto());
-        txtPeso.textProperty().addListener((obs, anterior, nuevo) -> actualizarCosto());
+        dkprCmbRuta.valueProperty().addListener((dkprObs, dkprAnterior, dkprNueva) -> actualizarCosto());
+        dkprTxtPeso.textProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> actualizarCosto());
 
         // Enter en el documento busca al cliente sin tener que usar el mouse.
-        txtRemDoc.setOnAction(e -> onBuscarRemitente());
-        txtDesDoc.setOnAction(e -> onBuscarDestinatario());
+        dkprTxtRemDoc.setOnAction(dkprE -> onBuscarRemitente());
+        dkprTxtDesDoc.setOnAction(dkprE -> onBuscarDestinatario());
 
         limpiar();
     }
 
     private void actualizarCosto() {
         try {
-            BigDecimal peso = Validaciones.decimal(txtPeso.getText(), "Peso");
-            lblCosto.setText("S/ " + envioService.calcularCosto(cmbRuta.getValue(), peso).toPlainString());
-        } catch (Exception e) {
-            lblCosto.setText("S/ --");
+            BigDecimal dkprPeso = Validaciones.decimal(dkprTxtPeso.getText(), "Peso");
+            dkprLblCosto.setText("S/ " + dkprEnvioService.calcularCosto(dkprCmbRuta.getValue(), dkprPeso).toPlainString());
+        } catch (Exception dkprE) {
+            dkprLblCosto.setText("S/ --");
         }
     }
 
     private void limpiar() {
-        cmbRuta.setValue(null);
-        cmbRemTipo.setValue("DNI");
-        cmbDesTipo.setValue("DNI");
-        txtRemDoc.clear();
-        txtRemNombre.clear();
-        txtRemTelefono.clear();
-        txtDesDoc.clear();
-        txtDesNombre.clear();
-        txtDesTelefono.clear();
-        txtDescripcion.clear();
-        txtBultos.setText("1");
-        txtPeso.clear();
-        txtValor.clear();
-        txtObservaciones.clear();
-        cmbComprobante.setValue("BOLETA");
-        cmbMetodo.setValue("EFECTIVO");
-        lblCosto.setText("S/ --");
+        dkprCmbRuta.setValue(null);
+        dkprCmbRemTipo.setValue("DNI");
+        dkprCmbDesTipo.setValue("DNI");
+        dkprTxtRemDoc.clear();
+        dkprTxtRemNombre.clear();
+        dkprTxtRemTelefono.clear();
+        dkprTxtDesDoc.clear();
+        dkprTxtDesNombre.clear();
+        dkprTxtDesTelefono.clear();
+        dkprTxtDescripcion.clear();
+        dkprTxtBultos.setText("1");
+        dkprTxtPeso.clear();
+        dkprTxtValor.clear();
+        dkprTxtObservaciones.clear();
+        dkprCmbComprobante.setValue("BOLETA");
+        dkprCmbMetodo.setValue("EFECTIVO");
+        dkprLblCosto.setText("S/ --");
     }
 
-    private void buscarCliente(ComboBox<String> tipo, TextField doc, TextField nombre, TextField telefono) {
+    private void buscarCliente(ComboBox<String> dkprTipo, TextField dkprDoc, TextField dkprNombre, TextField dkprTelefono) {
         try {
-            Cliente c = clienteService.buscarPorDocumento(tipo.getValue(), doc.getText());
-            if (c == null) {
-                nombre.clear();
-                telefono.clear();
+            Cliente dkprC = dkprClienteService.buscarPorDocumento(dkprTipo.getValue(), dkprDoc.getText());
+            if (dkprC == null) {
+                dkprNombre.clear();
+                dkprTelefono.clear();
                 Alertas.info("Cliente nuevo: completa su nombre y teléfono. Se registrará junto con el envío.");
             } else {
-                nombre.setText(c.getNombreCompleto());
-                telefono.setText(c.getTelefono());
+                dkprNombre.setText(dkprC.getNombreCompleto());
+                dkprTelefono.setText(dkprC.getTelefono());
             }
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onBuscarRemitente() {
-        buscarCliente(cmbRemTipo, txtRemDoc, txtRemNombre, txtRemTelefono);
+        buscarCliente(dkprCmbRemTipo, dkprTxtRemDoc, dkprTxtRemNombre, dkprTxtRemTelefono);
     }
 
     @FXML
     private void onBuscarDestinatario() {
-        buscarCliente(cmbDesTipo, txtDesDoc, txtDesNombre, txtDesTelefono);
+        buscarCliente(dkprCmbDesTipo, dkprTxtDesDoc, dkprTxtDesNombre, dkprTxtDesTelefono);
     }
 
     @FXML
@@ -144,43 +144,43 @@ public class RegistrarEnvioController {
     @FXML
     private void onRegistrar() {
         try {
-            BigDecimal valor = Validaciones.vacio(txtValor.getText())
+            BigDecimal dkprValor = Validaciones.vacio(dkprTxtValor.getText())
                     ? BigDecimal.ZERO
-                    : Validaciones.decimal(txtValor.getText(), "Valor declarado");
+                    : Validaciones.decimal(dkprTxtValor.getText(), "Valor declarado");
 
-            SolicitudEnvio solicitud = new SolicitudEnvio(
-                    cmbRuta.getValue(),
-                    cmbRemTipo.getValue(), txtRemDoc.getText(), txtRemNombre.getText(), txtRemTelefono.getText(),
-                    cmbDesTipo.getValue(), txtDesDoc.getText(), txtDesNombre.getText(), txtDesTelefono.getText(),
-                    txtDescripcion.getText(),
-                    Validaciones.entero(txtBultos.getText(), "Bultos"),
-                    Validaciones.decimal(txtPeso.getText(), "Peso (kg)"),
-                    valor,
-                    txtObservaciones.getText(),
-                    cmbComprobante.getValue(),
-                    cmbMetodo.getValue());
+            SolicitudEnvio dkprSolicitud = new SolicitudEnvio(
+                    dkprCmbRuta.getValue(),
+                    dkprCmbRemTipo.getValue(), dkprTxtRemDoc.getText(), dkprTxtRemNombre.getText(), dkprTxtRemTelefono.getText(),
+                    dkprCmbDesTipo.getValue(), dkprTxtDesDoc.getText(), dkprTxtDesNombre.getText(), dkprTxtDesTelefono.getText(),
+                    dkprTxtDescripcion.getText(),
+                    Validaciones.entero(dkprTxtBultos.getText(), "Bultos"),
+                    Validaciones.decimal(dkprTxtPeso.getText(), "Peso (kg)"),
+                    dkprValor,
+                    dkprTxtObservaciones.getText(),
+                    dkprCmbComprobante.getValue(),
+                    dkprCmbMetodo.getValue());
 
-            ResultadoRegistro resultado = envioService.registrar(solicitud, Sesion.getActual());
+            ResultadoRegistro dkprResultado = dkprEnvioService.registrar(dkprSolicitud, Sesion.getActual());
             limpiar();
-            mostrarTicket(resultado);
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            mostrarTicket(dkprResultado);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     /** Tras registrar, abre la vista previa del ticket para imprimirlo o guardarlo en PDF. */
-    private void mostrarTicket(ResultadoRegistro resultado) {
-        String resumen = "Envío registrado correctamente.\n"
-                + "Código: " + resultado.codigoSeguimiento()
-                + "   |   Comprobante: " + resultado.comprobante()
-                + "\nTotal cobrado: " + Formato.soles(resultado.total());
+    private void mostrarTicket(ResultadoRegistro dkprResultado) {
+        String dkprResumen = "Envío registrado correctamente.\n"
+                + "Código: " + dkprResultado.codigoSeguimiento()
+                + "   |   Comprobante: " + dkprResultado.comprobante()
+                + "\nTotal cobrado: " + Formato.soles(dkprResultado.total());
         try {
-            VistaTicket.mostrar(envioService.detalle(resultado.codigoSeguimiento()),
-                    lblCosto.getScene().getWindow(), resumen);
-        } catch (Exception e) {
+            VistaTicket.mostrar(dkprEnvioService.detalle(dkprResultado.codigoSeguimiento()),
+                    dkprLblCosto.getScene().getWindow(), dkprResumen);
+        } catch (Exception dkprE) {
             // El envío ya quedó registrado: si falla la vista previa, al menos se informa el resultado.
-            e.printStackTrace();
-            Alertas.info(resumen + "\n\nPuedes reimprimir el ticket desde Seguimiento.");
+            dkprE.printStackTrace();
+            Alertas.info(dkprResumen + "\n\nPuedes reimprimir el ticket desde Seguimiento.");
         }
     }
 }

@@ -14,8 +14,8 @@
             </padding>
             <Label text="Sistema de Envíos" styleClass="titulo-barra"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="lblUsuario" styleClass="texto-barra"/>
-            <Button fx:id="btnCerrarSesion" text="Cerrar sesión" onAction="#onCerrarSesion"/>
+            <Label fx:id="dkprLblUsuario" styleClass="texto-barra"/>
+            <Button fx:id="dkprBtnCerrarSesion" text="Cerrar sesión" onAction="#onCerrarSesion"/>
         </HBox>
     </top>
 
@@ -28,12 +28,12 @@
 
             <Label text="OPERACIÓN" styleClass="seccion-menu"/>
             <Button text="Bandeja de agencia" maxWidth="Infinity" onAction="#onBandeja"/>
-            <Button fx:id="btnClientes" text="Clientes" maxWidth="Infinity" onAction="#onClientes"/>
-            <Button fx:id="btnEnvio" text="Registrar envío" maxWidth="Infinity" onAction="#onRegistrarEnvio"/>
+            <Button fx:id="dkprBtnClientes" text="Clientes" maxWidth="Infinity" onAction="#onClientes"/>
+            <Button fx:id="dkprBtnEnvio" text="Registrar envío" maxWidth="Infinity" onAction="#onRegistrarEnvio"/>
             <Button text="Seguimiento" maxWidth="Infinity" onAction="#onSeguimiento"/>
-            <Button fx:id="btnEntregas" text="Entregas" maxWidth="Infinity" onAction="#onEntregas"/>
+            <Button fx:id="dkprBtnEntregas" text="Entregas" maxWidth="Infinity" onAction="#onEntregas"/>
 
-            <VBox fx:id="seccionAdmin" spacing="6">
+            <VBox fx:id="dkprSeccionAdmin" spacing="6">
                 <Label text="ADMINISTRACIÓN" styleClass="seccion-menu"/>
                 <Button text="Reportes" maxWidth="Infinity" onAction="#onReportes"/>
                 <Button text="Agencias" maxWidth="Infinity" onAction="#onAgencias"/>
@@ -44,6 +44,6 @@
     </left>
 
     <center>
-        <StackPane fx:id="contenido"/>
+        <StackPane fx:id="dkprContenido"/>
     </center>
 </BorderPane>

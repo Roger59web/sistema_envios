@@ -56,323 +56,323 @@ public final class GeneradorPdf {
     }
 
     /** Muestra el diálogo "Guardar como" para un PDF. Devuelve null si el usuario cancela. */
-    public static File elegirDestino(Window owner, String titulo, String nombreInicial) {
-        FileChooser selector = new FileChooser();
-        selector.setTitle(titulo);
-        selector.setInitialFileName(nombreInicial);
-        selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento PDF (*.pdf)", "*.pdf"));
-        return selector.showSaveDialog(owner);
+    public static File elegirDestino(Window dkprOwner, String dkprTitulo, String dkprNombreInicial) {
+        FileChooser dkprSelector = new FileChooser();
+        dkprSelector.setTitle(dkprTitulo);
+        dkprSelector.setInitialFileName(dkprNombreInicial);
+        dkprSelector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento PDF (*.pdf)", "*.pdf"));
+        return dkprSelector.showSaveDialog(dkprOwner);
     }
 
     /** Avisa dónde se guardó el PDF y, si el usuario quiere, lo abre con el visor del sistema. */
-    public static void ofrecerAbrir(File archivo) {
-        if (!Alertas.confirmar("PDF guardado en:\n" + archivo.getAbsolutePath() + "\n\n¿Deseas abrirlo ahora?")) {
+    public static void ofrecerAbrir(File dkprArchivo) {
+        if (!Alertas.confirmar("PDF guardado en:\n" + dkprArchivo.getAbsolutePath() + "\n\n¿Deseas abrirlo ahora?")) {
             return;
         }
         // Desktop es de AWT: se abre fuera del hilo de JavaFX para no congelar la ventana.
-        Thread hilo = new Thread(() -> {
+        Thread dkprHilo = new Thread(() -> {
             try {
                 if (Desktop.isDesktopSupported()) {
-                    Desktop.getDesktop().open(archivo);
+                    Desktop.getDesktop().open(dkprArchivo);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException dkprE) {
+                dkprE.printStackTrace();
             }
         });
-        hilo.setDaemon(true);
-        hilo.start();
+        dkprHilo.setDaemon(true);
+        dkprHilo.start();
     }
 
     // --------------------------------------------------------- detalle de envío
 
-    public static void detalleEnvio(DetalleEnvio d, File archivo) throws IOException {
-        Envio e = d.envio();
-        Comprobante c = d.comprobante();
+    public static void detalleEnvio(DetalleEnvio dkprD, File dkprArchivo) throws IOException {
+        Envio dkprE = dkprD.envio();
+        Comprobante dkprC = dkprD.comprobante();
 
-        Document doc = new Document(PageSize.A4, 40, 40, 36, 36);
-        try (OutputStream out = new FileOutputStream(archivo)) {
-            PdfWriter.getInstance(doc, out);
-            doc.addTitle("Envío " + e.getCodigoSeguimiento());
-            doc.open();
+        Document dkprDoc = new Document(PageSize.A4, 40, 40, 36, 36);
+        try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
+            PdfWriter.getInstance(dkprDoc, dkprOut);
+            dkprDoc.addTitle("Envío " + dkprE.getCodigoSeguimiento());
+            dkprDoc.open();
 
-            encabezado(doc, "Detalle de envío", e.getOrigen()
-                    + (e.getOrigenDireccion() == null ? "" : " - " + e.getOrigenDireccion()));
+            encabezado(dkprDoc, "Detalle de envío", dkprE.getOrigen()
+                    + (dkprE.getOrigenDireccion() == null ? "" : " - " + dkprE.getOrigenDireccion()));
 
             // Código y estado
-            PdfPTable codigo = new PdfPTable(new float[]{3, 2});
-            codigo.setWidthPercentage(100);
-            PdfPCell celdaCodigo = new PdfPCell();
-            celdaCodigo.addElement(new Paragraph("CÓDIGO DE SEGUIMIENTO", ETIQUETA));
-            celdaCodigo.addElement(new Paragraph(e.getCodigoSeguimiento(), CODIGO));
-            PdfPCell celdaEstado = new PdfPCell();
-            celdaEstado.addElement(new Paragraph("ESTADO ACTUAL", ETIQUETA));
-            celdaEstado.addElement(new Paragraph(e.getEstado(),
-                    e.getIdEstadoActual() == Estados.ANULADO ? ANULADO : SUBTITULO));
-            celdaEstado.addElement(new Paragraph("Registrado: " + e.getFechaTexto(), PEQUENA));
-            for (PdfPCell celda : List.of(celdaCodigo, celdaEstado)) {
-                celda.setBackgroundColor(GRIS_FONDO);
-                celda.setBorder(Rectangle.NO_BORDER);
-                celda.setPadding(10);
-                codigo.addCell(celda);
+            PdfPTable dkprCodigo = new PdfPTable(new float[]{3, 2});
+            dkprCodigo.setWidthPercentage(100);
+            PdfPCell dkprCeldaCodigo = new PdfPCell();
+            dkprCeldaCodigo.addElement(new Paragraph("CÓDIGO DE SEGUIMIENTO", ETIQUETA));
+            dkprCeldaCodigo.addElement(new Paragraph(dkprE.getCodigoSeguimiento(), CODIGO));
+            PdfPCell dkprCeldaEstado = new PdfPCell();
+            dkprCeldaEstado.addElement(new Paragraph("ESTADO ACTUAL", ETIQUETA));
+            dkprCeldaEstado.addElement(new Paragraph(dkprE.getEstado(),
+                    dkprE.getIdEstadoActual() == Estados.ANULADO ? ANULADO : SUBTITULO));
+            dkprCeldaEstado.addElement(new Paragraph("Registrado: " + dkprE.getFechaTexto(), PEQUENA));
+            for (PdfPCell dkprCelda : List.of(dkprCeldaCodigo, dkprCeldaEstado)) {
+                dkprCelda.setBackgroundColor(GRIS_FONDO);
+                dkprCelda.setBorder(Rectangle.NO_BORDER);
+                dkprCelda.setPadding(10);
+                dkprCodigo.addCell(dkprCelda);
             }
-            codigo.setSpacingAfter(12);
-            doc.add(codigo);
+            dkprCodigo.setSpacingAfter(12);
+            dkprDoc.add(dkprCodigo);
 
             // Datos del envío
-            seccion(doc, "Datos del envío");
-            PdfPTable datos = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
-            datos.setWidthPercentage(100);
-            par(datos, "Origen", e.getOrigen());
-            par(datos, "Destino", e.getDestino());
-            par(datos, "Remitente", e.getRemitente());
-            par(datos, "Destinatario", e.getDestinatario());
-            par(datos, "Documento", e.getRemitenteDocumento());
-            par(datos, "Documento", e.getDestinatarioDocumento());
-            par(datos, "Teléfono", e.getRemitenteTelefono());
-            par(datos, "Teléfono", e.getDestinatarioTelefono());
-            par(datos, "Contenido", e.getDescripcion());
-            par(datos, "Bultos / peso", e.getCantidadBultos() + " bulto(s) / " + e.getPesoKg().toPlainString() + " kg");
-            par(datos, "Valor declarado", Formato.soles(e.getValorDeclarado()));
-            par(datos, "Atendido por", e.getEmpleadoRegistro());
-            if (e.getObservaciones() != null && !e.getObservaciones().isBlank()) {
-                datos.addCell(celdaEtiqueta("Observaciones"));
-                PdfPCell obs = celdaValor(e.getObservaciones());
-                obs.setColspan(3);
-                datos.addCell(obs);
+            seccion(dkprDoc, "Datos del envío");
+            PdfPTable dkprDatos = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
+            dkprDatos.setWidthPercentage(100);
+            par(dkprDatos, "Origen", dkprE.getOrigen());
+            par(dkprDatos, "Destino", dkprE.getDestino());
+            par(dkprDatos, "Remitente", dkprE.getRemitente());
+            par(dkprDatos, "Destinatario", dkprE.getDestinatario());
+            par(dkprDatos, "Documento", dkprE.getRemitenteDocumento());
+            par(dkprDatos, "Documento", dkprE.getDestinatarioDocumento());
+            par(dkprDatos, "Teléfono", dkprE.getRemitenteTelefono());
+            par(dkprDatos, "Teléfono", dkprE.getDestinatarioTelefono());
+            par(dkprDatos, "Contenido", dkprE.getDescripcion());
+            par(dkprDatos, "Bultos / peso", dkprE.getCantidadBultos() + " bulto(s) / " + dkprE.getPesoKg().toPlainString() + " kg");
+            par(dkprDatos, "Valor declarado", Formato.soles(dkprE.getValorDeclarado()));
+            par(dkprDatos, "Atendido por", dkprE.getEmpleadoRegistro());
+            if (dkprE.getObservaciones() != null && !dkprE.getObservaciones().isBlank()) {
+                dkprDatos.addCell(celdaEtiqueta("Observaciones"));
+                PdfPCell dkprObs = celdaValor(dkprE.getObservaciones());
+                dkprObs.setColspan(3);
+                dkprDatos.addCell(dkprObs);
             }
-            datos.setSpacingAfter(12);
-            doc.add(datos);
+            dkprDatos.setSpacingAfter(12);
+            dkprDoc.add(dkprDatos);
 
             // Comprobante
-            seccion(doc, "Comprobante de pago");
-            PdfPTable pago = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
-            pago.setWidthPercentage(100);
-            if (c != null) {
-                par(pago, "Tipo", c.getTipo());
-                par(pago, "Número", c.getNumeroTexto());
-                par(pago, "Fecha emisión", c.getFechaTexto());
-                par(pago, "Forma de pago", c.getMetodoPago());
-                par(pago, "Op. gravada", Formato.soles(c.getSubtotal()));
-                par(pago, "IGV (18 %)", Formato.soles(c.getIgv()));
-                pago.addCell(celdaEtiqueta("TOTAL"));
-                PdfPCell total = new PdfPCell(new Phrase(Formato.soles(c.getTotal()), TOTAL));
-                total.setBorder(Rectangle.NO_BORDER);
-                total.setColspan(3);
-                total.setPadding(4);
-                pago.addCell(total);
+            seccion(dkprDoc, "Comprobante de pago");
+            PdfPTable dkprPago = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
+            dkprPago.setWidthPercentage(100);
+            if (dkprC != null) {
+                par(dkprPago, "Tipo", dkprC.getTipo());
+                par(dkprPago, "Número", dkprC.getNumeroTexto());
+                par(dkprPago, "Fecha emisión", dkprC.getFechaTexto());
+                par(dkprPago, "Forma de pago", dkprC.getMetodoPago());
+                par(dkprPago, "Op. gravada", Formato.soles(dkprC.getSubtotal()));
+                par(dkprPago, "IGV (18 %)", Formato.soles(dkprC.getIgv()));
+                dkprPago.addCell(celdaEtiqueta("TOTAL"));
+                PdfPCell dkprTotal = new PdfPCell(new Phrase(Formato.soles(dkprC.getTotal()), TOTAL));
+                dkprTotal.setBorder(Rectangle.NO_BORDER);
+                dkprTotal.setColspan(3);
+                dkprTotal.setPadding(4);
+                dkprPago.addCell(dkprTotal);
             } else {
-                par(pago, "Costo", Formato.soles(e.getCostoEnvio()));
-                par(pago, "Comprobante", "No registrado");
+                par(dkprPago, "Costo", Formato.soles(dkprE.getCostoEnvio()));
+                par(dkprPago, "Comprobante", "No registrado");
             }
-            pago.setSpacingAfter(12);
-            doc.add(pago);
+            dkprPago.setSpacingAfter(12);
+            dkprDoc.add(dkprPago);
 
             // Historial
-            seccion(doc, "Historial de movimientos");
-            PdfPTable hist = new PdfPTable(new float[]{1.6f, 1.8f, 1.6f, 2, 3});
-            hist.setWidthPercentage(100);
-            hist.setHeaderRows(1);
-            for (String titulo : List.of("Fecha", "Estado", "Agencia", "Empleado", "Observación")) {
-                hist.addCell(celdaCabecera(titulo));
+            seccion(dkprDoc, "Historial de movimientos");
+            PdfPTable dkprHist = new PdfPTable(new float[]{1.6f, 1.8f, 1.6f, 2, 3});
+            dkprHist.setWidthPercentage(100);
+            dkprHist.setHeaderRows(1);
+            for (String dkprTitulo : List.of("Fecha", "Estado", "Agencia", "Empleado", "Observación")) {
+                dkprHist.addCell(celdaCabecera(dkprTitulo));
             }
-            boolean alterna = false;
-            for (HistorialEnvio h : d.historial()) {
-                for (String valor : List.of(h.getFechaTexto(), h.getEstado(), h.getAgencia(),
-                        h.getEmpleado(), Formato.texto(h.getObservacion()))) {
-                    hist.addCell(celdaTabla(valor, alterna, Element.ALIGN_LEFT));
+            boolean dkprAlterna = false;
+            for (HistorialEnvio dkprH : dkprD.historial()) {
+                for (String dkprValor : List.of(dkprH.getFechaTexto(), dkprH.getEstado(), dkprH.getAgencia(),
+                        dkprH.getEmpleado(), Formato.texto(dkprH.getObservacion()))) {
+                    dkprHist.addCell(celdaTabla(dkprValor, dkprAlterna, Element.ALIGN_LEFT));
                 }
-                alterna = !alterna;
+                dkprAlterna = !dkprAlterna;
             }
-            doc.add(hist);
+            dkprDoc.add(dkprHist);
 
-            pie(doc);
-            doc.close();
-        } catch (DocumentException ex) {
-            throw new IOException("No se pudo generar el PDF: " + ex.getMessage(), ex);
+            pie(dkprDoc);
+            dkprDoc.close();
+        } catch (DocumentException dkprEx) {
+            throw new IOException("No se pudo generar el PDF: " + dkprEx.getMessage(), dkprEx);
         }
     }
 
     // ------------------------------------------------------------------ reporte
 
-    public static void reporte(LocalDate desde, LocalDate hasta, List<ResumenFila> porAgencia,
-                               List<ResumenFila> porEstado, List<Envio> detalle, File archivo)
+    public static void reporte(LocalDate dkprDesde, LocalDate dkprHasta, List<ResumenFila> dkprPorAgencia,
+                               List<ResumenFila> dkprPorEstado, List<Envio> dkprDetalle, File dkprArchivo)
             throws IOException {
-        Document doc = new Document(PageSize.A4.rotate(), 36, 36, 30, 30);
-        try (OutputStream out = new FileOutputStream(archivo)) {
-            PdfWriter.getInstance(doc, out);
-            doc.addTitle("Reporte de envíos");
-            doc.open();
+        Document dkprDoc = new Document(PageSize.A4.rotate(), 36, 36, 30, 30);
+        try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
+            PdfWriter.getInstance(dkprDoc, dkprOut);
+            dkprDoc.addTitle("Reporte de envíos");
+            dkprDoc.open();
 
-            encabezado(doc, "Reporte de envíos",
-                    "Del " + desde.format(FECHA) + " al " + hasta.format(FECHA));
+            encabezado(dkprDoc, "Reporte de envíos",
+                    "Del " + dkprDesde.format(FECHA) + " al " + dkprHasta.format(FECHA));
 
-            BigDecimal ingresos = porAgencia.stream()
+            BigDecimal dkprIngresos = dkprPorAgencia.stream()
                     .map(ResumenFila::getMonto)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-            PdfPTable totales = new PdfPTable(2);
-            totales.setWidthPercentage(50);
-            totales.setHorizontalAlignment(Element.ALIGN_LEFT);
-            PdfPCell envios = new PdfPCell();
-            envios.addElement(new Paragraph("Envíos registrados", ETIQUETA));
-            envios.addElement(new Paragraph(String.valueOf(detalle.size()), TOTAL));
-            PdfPCell monto = new PdfPCell();
-            monto.addElement(new Paragraph("Ingresos (sin anulados)", ETIQUETA));
-            monto.addElement(new Paragraph(Formato.soles(ingresos), TOTAL));
-            for (PdfPCell celda : List.of(envios, monto)) {
-                celda.setBackgroundColor(GRIS_FONDO);
-                celda.setBorder(Rectangle.NO_BORDER);
-                celda.setPadding(8);
-                totales.addCell(celda);
+            PdfPTable dkprTotales = new PdfPTable(2);
+            dkprTotales.setWidthPercentage(50);
+            dkprTotales.setHorizontalAlignment(Element.ALIGN_LEFT);
+            PdfPCell dkprEnvios = new PdfPCell();
+            dkprEnvios.addElement(new Paragraph("Envíos registrados", ETIQUETA));
+            dkprEnvios.addElement(new Paragraph(String.valueOf(dkprDetalle.size()), TOTAL));
+            PdfPCell dkprMonto = new PdfPCell();
+            dkprMonto.addElement(new Paragraph("Ingresos (sin anulados)", ETIQUETA));
+            dkprMonto.addElement(new Paragraph(Formato.soles(dkprIngresos), TOTAL));
+            for (PdfPCell dkprCelda : List.of(dkprEnvios, dkprMonto)) {
+                dkprCelda.setBackgroundColor(GRIS_FONDO);
+                dkprCelda.setBorder(Rectangle.NO_BORDER);
+                dkprCelda.setPadding(8);
+                dkprTotales.addCell(dkprCelda);
             }
-            totales.setSpacingAfter(12);
-            doc.add(totales);
+            dkprTotales.setSpacingAfter(12);
+            dkprDoc.add(dkprTotales);
 
             // Resúmenes lado a lado
-            PdfPTable resumenes = new PdfPTable(new float[]{1, 0.08f, 1});
-            resumenes.setWidthPercentage(100);
-            resumenes.addCell(contenedor(tablaResumen("Por agencia de origen", "Agencia", "Ingresos (S/)", porAgencia)));
-            resumenes.addCell(contenedor(null));
-            resumenes.addCell(contenedor(tablaResumen("Por estado", "Estado", "Monto (S/)", porEstado)));
-            resumenes.setSpacingAfter(12);
-            doc.add(resumenes);
+            PdfPTable dkprResumenes = new PdfPTable(new float[]{1, 0.08f, 1});
+            dkprResumenes.setWidthPercentage(100);
+            dkprResumenes.addCell(contenedor(tablaResumen("Por agencia de origen", "Agencia", "Ingresos (S/)", dkprPorAgencia)));
+            dkprResumenes.addCell(contenedor(null));
+            dkprResumenes.addCell(contenedor(tablaResumen("Por estado", "Estado", "Monto (S/)", dkprPorEstado)));
+            dkprResumenes.setSpacingAfter(12);
+            dkprDoc.add(dkprResumenes);
 
-            seccion(doc, "Detalle de envíos");
-            PdfPTable tabla = new PdfPTable(new float[]{1.1f, 1.3f, 1.4f, 1.4f, 2.2f, 2.2f, 1.6f, 1});
-            tabla.setWidthPercentage(100);
-            tabla.setHeaderRows(1);
-            for (String titulo : List.of("Código", "Fecha", "Origen", "Destino", "Remitente",
+            seccion(dkprDoc, "Detalle de envíos");
+            PdfPTable dkprTabla = new PdfPTable(new float[]{1.1f, 1.3f, 1.4f, 1.4f, 2.2f, 2.2f, 1.6f, 1});
+            dkprTabla.setWidthPercentage(100);
+            dkprTabla.setHeaderRows(1);
+            for (String dkprTitulo : List.of("Código", "Fecha", "Origen", "Destino", "Remitente",
                     "Destinatario", "Estado", "Costo (S/)")) {
-                tabla.addCell(celdaCabecera(titulo));
+                dkprTabla.addCell(celdaCabecera(dkprTitulo));
             }
-            boolean alterna = false;
-            for (Envio e : detalle) {
-                for (String valor : List.of(e.getCodigoSeguimiento(), e.getFechaTexto(), e.getOrigen(),
-                        e.getDestino(), e.getRemitente(), e.getDestinatario(), e.getEstado())) {
-                    tabla.addCell(celdaTabla(valor, alterna, Element.ALIGN_LEFT));
+            boolean dkprAlterna = false;
+            for (Envio dkprE : dkprDetalle) {
+                for (String dkprValor : List.of(dkprE.getCodigoSeguimiento(), dkprE.getFechaTexto(), dkprE.getOrigen(),
+                        dkprE.getDestino(), dkprE.getRemitente(), dkprE.getDestinatario(), dkprE.getEstado())) {
+                    dkprTabla.addCell(celdaTabla(dkprValor, dkprAlterna, Element.ALIGN_LEFT));
                 }
-                tabla.addCell(celdaTabla(e.getCostoEnvio().toPlainString(), alterna, Element.ALIGN_RIGHT));
-                alterna = !alterna;
+                dkprTabla.addCell(celdaTabla(dkprE.getCostoEnvio().toPlainString(), dkprAlterna, Element.ALIGN_RIGHT));
+                dkprAlterna = !dkprAlterna;
             }
-            doc.add(tabla);
+            dkprDoc.add(dkprTabla);
 
-            pie(doc);
-            doc.close();
-        } catch (DocumentException ex) {
-            throw new IOException("No se pudo generar el PDF: " + ex.getMessage(), ex);
+            pie(dkprDoc);
+            dkprDoc.close();
+        } catch (DocumentException dkprEx) {
+            throw new IOException("No se pudo generar el PDF: " + dkprEx.getMessage(), dkprEx);
         }
     }
 
-    private static PdfPTable tablaResumen(String titulo, String columna, String columnaMonto,
-                                          List<ResumenFila> filas) {
-        PdfPTable t = new PdfPTable(new float[]{3, 1, 1.5f});
-        t.setWidthPercentage(100);
-        PdfPCell cab = new PdfPCell(new Phrase(titulo, SUBTITULO));
-        cab.setColspan(3);
-        cab.setBorder(Rectangle.NO_BORDER);
-        cab.setPaddingBottom(6);
-        t.addCell(cab);
-        t.addCell(celdaCabecera(columna));
-        t.addCell(celdaCabecera("Envíos"));
-        t.addCell(celdaCabecera(columnaMonto));
-        boolean alterna = false;
-        for (ResumenFila f : filas) {
-            t.addCell(celdaTabla(f.getEtiqueta(), alterna, Element.ALIGN_LEFT));
-            t.addCell(celdaTabla(String.valueOf(f.getCantidad()), alterna, Element.ALIGN_RIGHT));
-            t.addCell(celdaTabla(f.getMonto().setScale(2).toPlainString(), alterna, Element.ALIGN_RIGHT));
-            alterna = !alterna;
+    private static PdfPTable tablaResumen(String dkprTitulo, String dkprColumna, String dkprColumnaMonto,
+                                          List<ResumenFila> dkprFilas) {
+        PdfPTable dkprT = new PdfPTable(new float[]{3, 1, 1.5f});
+        dkprT.setWidthPercentage(100);
+        PdfPCell dkprCab = new PdfPCell(new Phrase(dkprTitulo, SUBTITULO));
+        dkprCab.setColspan(3);
+        dkprCab.setBorder(Rectangle.NO_BORDER);
+        dkprCab.setPaddingBottom(6);
+        dkprT.addCell(dkprCab);
+        dkprT.addCell(celdaCabecera(dkprColumna));
+        dkprT.addCell(celdaCabecera("Envíos"));
+        dkprT.addCell(celdaCabecera(dkprColumnaMonto));
+        boolean dkprAlterna = false;
+        for (ResumenFila dkprF : dkprFilas) {
+            dkprT.addCell(celdaTabla(dkprF.getEtiqueta(), dkprAlterna, Element.ALIGN_LEFT));
+            dkprT.addCell(celdaTabla(String.valueOf(dkprF.getCantidad()), dkprAlterna, Element.ALIGN_RIGHT));
+            dkprT.addCell(celdaTabla(dkprF.getMonto().setScale(2).toPlainString(), dkprAlterna, Element.ALIGN_RIGHT));
+            dkprAlterna = !dkprAlterna;
         }
-        return t;
+        return dkprT;
     }
 
     // ------------------------------------------------------------------ ayudas
 
-    private static void encabezado(Document doc, String titulo, String subtitulo) throws DocumentException {
-        PdfPTable t = new PdfPTable(new float[]{3, 2});
-        t.setWidthPercentage(100);
+    private static void encabezado(Document dkprDoc, String dkprTitulo, String dkprSubtitulo) throws DocumentException {
+        PdfPTable dkprT = new PdfPTable(new float[]{3, 2});
+        dkprT.setWidthPercentage(100);
 
-        PdfPCell izq = new PdfPCell();
-        izq.addElement(new Paragraph("SISTEMA DE ENVÍOS", TITULO));
-        izq.addElement(new Paragraph(titulo + "  |  " + subtitulo, NORMAL));
-        izq.setBorder(Rectangle.BOTTOM);
-        izq.setBorderColor(AZUL);
-        izq.setBorderWidth(1.5f);
-        izq.setPaddingBottom(8);
+        PdfPCell dkprIzq = new PdfPCell();
+        dkprIzq.addElement(new Paragraph("SISTEMA DE ENVÍOS", TITULO));
+        dkprIzq.addElement(new Paragraph(dkprTitulo + "  |  " + dkprSubtitulo, NORMAL));
+        dkprIzq.setBorder(Rectangle.BOTTOM);
+        dkprIzq.setBorderColor(AZUL);
+        dkprIzq.setBorderWidth(1.5f);
+        dkprIzq.setPaddingBottom(8);
 
-        Paragraph fecha = new Paragraph("Generado: " + LocalDateTime.now().format(FECHA_HORA), PEQUENA);
-        fecha.setAlignment(Element.ALIGN_RIGHT);
-        PdfPCell der = new PdfPCell();
-        der.addElement(fecha);
-        der.setBorder(Rectangle.BOTTOM);
-        der.setBorderColor(AZUL);
-        der.setBorderWidth(1.5f);
-        der.setVerticalAlignment(Element.ALIGN_BOTTOM);
-        der.setPaddingBottom(8);
+        Paragraph dkprFecha = new Paragraph("Generado: " + LocalDateTime.now().format(FECHA_HORA), PEQUENA);
+        dkprFecha.setAlignment(Element.ALIGN_RIGHT);
+        PdfPCell dkprDer = new PdfPCell();
+        dkprDer.addElement(dkprFecha);
+        dkprDer.setBorder(Rectangle.BOTTOM);
+        dkprDer.setBorderColor(AZUL);
+        dkprDer.setBorderWidth(1.5f);
+        dkprDer.setVerticalAlignment(Element.ALIGN_BOTTOM);
+        dkprDer.setPaddingBottom(8);
 
-        t.addCell(izq);
-        t.addCell(der);
-        t.setSpacingAfter(14);
-        doc.add(t);
+        dkprT.addCell(dkprIzq);
+        dkprT.addCell(dkprDer);
+        dkprT.setSpacingAfter(14);
+        dkprDoc.add(dkprT);
     }
 
-    private static void seccion(Document doc, String titulo) throws DocumentException {
-        Paragraph p = new Paragraph(titulo, SUBTITULO);
-        p.setSpacingAfter(6);
-        doc.add(p);
+    private static void seccion(Document dkprDoc, String dkprTitulo) throws DocumentException {
+        Paragraph dkprP = new Paragraph(dkprTitulo, SUBTITULO);
+        dkprP.setSpacingAfter(6);
+        dkprDoc.add(dkprP);
     }
 
-    private static void pie(Document doc) throws DocumentException {
-        Paragraph p = new Paragraph("Documento generado por el Sistema de Envíos. "
+    private static void pie(Document dkprDoc) throws DocumentException {
+        Paragraph dkprP = new Paragraph("Documento generado por el Sistema de Envíos. "
                 + "Comprobante de práctica académica, sin valor tributario.", PEQUENA);
-        p.setAlignment(Element.ALIGN_CENTER);
-        p.setSpacingBefore(18);
-        doc.add(p);
+        dkprP.setAlignment(Element.ALIGN_CENTER);
+        dkprP.setSpacingBefore(18);
+        dkprDoc.add(dkprP);
     }
 
-    private static void par(PdfPTable t, String etiqueta, String valor) {
-        t.addCell(celdaEtiqueta(etiqueta));
-        t.addCell(celdaValor(valor));
+    private static void par(PdfPTable dkprT, String dkprEtiqueta, String dkprValor) {
+        dkprT.addCell(celdaEtiqueta(dkprEtiqueta));
+        dkprT.addCell(celdaValor(dkprValor));
     }
 
-    private static PdfPCell celdaEtiqueta(String texto) {
-        PdfPCell c = new PdfPCell(new Phrase(texto + ":", ETIQUETA));
-        c.setBorder(Rectangle.NO_BORDER);
-        c.setPadding(4);
-        return c;
+    private static PdfPCell celdaEtiqueta(String dkprTexto) {
+        PdfPCell dkprC = new PdfPCell(new Phrase(dkprTexto + ":", ETIQUETA));
+        dkprC.setBorder(Rectangle.NO_BORDER);
+        dkprC.setPadding(4);
+        return dkprC;
     }
 
-    private static PdfPCell celdaValor(String texto) {
-        PdfPCell c = new PdfPCell(new Phrase(Formato.texto(texto), NORMAL));
-        c.setBorder(Rectangle.NO_BORDER);
-        c.setPadding(4);
-        return c;
+    private static PdfPCell celdaValor(String dkprTexto) {
+        PdfPCell dkprC = new PdfPCell(new Phrase(Formato.texto(dkprTexto), NORMAL));
+        dkprC.setBorder(Rectangle.NO_BORDER);
+        dkprC.setPadding(4);
+        return dkprC;
     }
 
-    private static PdfPCell celdaCabecera(String texto) {
-        PdfPCell c = new PdfPCell(new Phrase(texto, CABECERA));
-        c.setBackgroundColor(AZUL);
-        c.setBorderColor(AZUL);
-        c.setPadding(5);
-        return c;
+    private static PdfPCell celdaCabecera(String dkprTexto) {
+        PdfPCell dkprC = new PdfPCell(new Phrase(dkprTexto, CABECERA));
+        dkprC.setBackgroundColor(AZUL);
+        dkprC.setBorderColor(AZUL);
+        dkprC.setPadding(5);
+        return dkprC;
     }
 
-    private static PdfPCell celdaTabla(String texto, boolean alterna, int alineacion) {
-        PdfPCell c = new PdfPCell(new Phrase(texto == null ? "" : texto, NORMAL));
-        c.setBorderColor(new Color(0xdd, 0xe3, 0xea));
-        c.setPadding(4);
-        c.setHorizontalAlignment(alineacion);
-        if (alterna) {
-            c.setBackgroundColor(GRIS_FONDO);
+    private static PdfPCell celdaTabla(String dkprTexto, boolean dkprAlterna, int dkprAlineacion) {
+        PdfPCell dkprC = new PdfPCell(new Phrase(dkprTexto == null ? "" : dkprTexto, NORMAL));
+        dkprC.setBorderColor(new Color(0xdd, 0xe3, 0xea));
+        dkprC.setPadding(4);
+        dkprC.setHorizontalAlignment(dkprAlineacion);
+        if (dkprAlterna) {
+            dkprC.setBackgroundColor(GRIS_FONDO);
         }
-        return c;
+        return dkprC;
     }
 
-    private static PdfPCell contenedor(PdfPTable tabla) {
-        PdfPCell c = new PdfPCell();
-        if (tabla != null) {
-            c.addElement(tabla); // así la tabla no se estira al alto de la fila
+    private static PdfPCell contenedor(PdfPTable dkprTabla) {
+        PdfPCell dkprC = new PdfPCell();
+        if (dkprTabla != null) {
+            dkprC.addElement(dkprTabla); // así la tabla no se estira al alto de la fila
         }
-        c.setBorder(Rectangle.NO_BORDER);
-        c.setPadding(0);
-        return c;
+        dkprC.setBorder(Rectangle.NO_BORDER);
+        dkprC.setPadding(0);
+        return dkprC;
     }
 }

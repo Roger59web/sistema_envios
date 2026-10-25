@@ -25,76 +25,76 @@ public final class VistaTicket {
     private VistaTicket() {
     }
 
-    public static void mostrar(DetalleEnvio d, Window owner) {
-        mostrar(d, owner, null);
+    public static void mostrar(DetalleEnvio dkprD, Window dkprOwner) {
+        mostrar(dkprD, dkprOwner, null);
     }
 
     /** @param mensaje aviso opcional que se muestra arriba del ticket (ej: "Envío registrado correctamente") */
-    public static void mostrar(DetalleEnvio d, Window owner, String mensaje) {
-        String codigo = d.envio().getCodigoSeguimiento();
-        Stage ventana = new Stage();
-        ventana.initOwner(owner);
-        ventana.initModality(Modality.WINDOW_MODAL);
-        ventana.setTitle("Ticket del envío " + codigo);
+    public static void mostrar(DetalleEnvio dkprD, Window dkprOwner, String dkprMensaje) {
+        String dkprCodigo = dkprD.envio().getCodigoSeguimiento();
+        Stage dkprVentana = new Stage();
+        dkprVentana.initOwner(dkprOwner);
+        dkprVentana.initModality(Modality.WINDOW_MODAL);
+        dkprVentana.setTitle("Ticket del envío " + dkprCodigo);
 
-        StackPane papel = new StackPane(Ticket.crear(d));
-        papel.setPadding(new Insets(16));
-        papel.setStyle("-fx-background-color: #d5dbe3;");
-        ScrollPane scroll = new ScrollPane(papel);
-        scroll.setFitToWidth(true);
+        StackPane dkprPapel = new StackPane(Ticket.crear(dkprD));
+        dkprPapel.setPadding(new Insets(16));
+        dkprPapel.setStyle("-fx-background-color: #d5dbe3;");
+        ScrollPane dkprScroll = new ScrollPane(dkprPapel);
+        dkprScroll.setFitToWidth(true);
 
-        Button btnImprimir = new Button("Imprimir ticket");
-        btnImprimir.getStyleClass().add("boton-primario");
-        btnImprimir.setDefaultButton(true);
-        btnImprimir.setOnAction(e -> Ticket.imprimir(d, ventana));
+        Button dkprBtnImprimir = new Button("Imprimir ticket");
+        dkprBtnImprimir.getStyleClass().add("boton-primario");
+        dkprBtnImprimir.setDefaultButton(true);
+        dkprBtnImprimir.setOnAction(dkprE -> Ticket.imprimir(dkprD, dkprVentana));
 
-        Button btnPdf = new Button("Guardar PDF");
-        btnPdf.setOnAction(e -> guardarPdf(d, ventana));
+        Button dkprBtnPdf = new Button("Guardar PDF");
+        dkprBtnPdf.setOnAction(dkprE -> guardarPdf(dkprD, dkprVentana));
 
-        Button btnCerrar = new Button("Cerrar");
-        btnCerrar.setCancelButton(true);
-        btnCerrar.setOnAction(e -> ventana.close());
+        Button dkprBtnCerrar = new Button("Cerrar");
+        dkprBtnCerrar.setCancelButton(true);
+        dkprBtnCerrar.setOnAction(dkprE -> dkprVentana.close());
 
-        Region espacio = new Region();
-        HBox.setHgrow(espacio, Priority.ALWAYS);
-        HBox barra = new HBox(8, btnPdf, espacio, btnCerrar, btnImprimir);
-        barra.setAlignment(Pos.CENTER_RIGHT);
-        barra.setPadding(new Insets(10, 12, 10, 12));
-        barra.getStyleClass().add("panel-form");
+        Region dkprEspacio = new Region();
+        HBox.setHgrow(dkprEspacio, Priority.ALWAYS);
+        HBox dkprBarra = new HBox(8, dkprBtnPdf, dkprEspacio, dkprBtnCerrar, dkprBtnImprimir);
+        dkprBarra.setAlignment(Pos.CENTER_RIGHT);
+        dkprBarra.setPadding(new Insets(10, 12, 10, 12));
+        dkprBarra.getStyleClass().add("panel-form");
 
-        BorderPane raiz = new BorderPane(scroll);
-        raiz.setBottom(barra);
-        if (mensaje != null) {
-            Label aviso = new Label(mensaje);
-            aviso.getStyleClass().add("aviso-exito");
-            aviso.setMaxWidth(Double.MAX_VALUE);
-            aviso.setWrapText(true);
-            raiz.setTop(aviso);
+        BorderPane dkprRaiz = new BorderPane(dkprScroll);
+        dkprRaiz.setBottom(dkprBarra);
+        if (dkprMensaje != null) {
+            Label dkprAviso = new Label(dkprMensaje);
+            dkprAviso.getStyleClass().add("aviso-exito");
+            dkprAviso.setMaxWidth(Double.MAX_VALUE);
+            dkprAviso.setWrapText(true);
+            dkprRaiz.setTop(dkprAviso);
         }
 
-        Scene scene = new Scene(raiz, 360, 660);
-        scene.getStylesheets().add(VistaTicket.class.getResource("/css/estilos.css").toExternalForm());
-        scene.setOnKeyPressed(e -> {
-            if (e.isControlDown() && e.getCode() == KeyCode.P) {
-                Ticket.imprimir(d, ventana);
+        Scene dkprScene = new Scene(dkprRaiz, 360, 660);
+        dkprScene.getStylesheets().add(VistaTicket.class.getResource("/css/estilos.css").toExternalForm());
+        dkprScene.setOnKeyPressed(dkprE -> {
+            if (dkprE.isControlDown() && dkprE.getCode() == KeyCode.P) {
+                Ticket.imprimir(dkprD, dkprVentana);
             }
         });
-        ventana.setScene(scene);
-        ventana.showAndWait();
+        dkprVentana.setScene(dkprScene);
+        dkprVentana.showAndWait();
     }
 
     /** Guarda el detalle completo del envío (A4) en PDF. */
-    public static void guardarPdf(DetalleEnvio d, Window owner) {
-        String codigo = d.envio().getCodigoSeguimiento();
-        File archivo = GeneradorPdf.elegirDestino(owner, "Guardar detalle del envío", "envio_" + codigo + ".pdf");
-        if (archivo == null) {
+    public static void guardarPdf(DetalleEnvio dkprD, Window dkprOwner) {
+        String dkprCodigo = dkprD.envio().getCodigoSeguimiento();
+        File dkprArchivo = GeneradorPdf.elegirDestino(dkprOwner, "Guardar detalle del envío", "envio_" + dkprCodigo + ".pdf");
+        if (dkprArchivo == null) {
             return;
         }
         try {
-            GeneradorPdf.detalleEnvio(d, archivo);
-            GeneradorPdf.ofrecerAbrir(archivo);
-        } catch (Exception ex) {
-            Alertas.manejar(ex);
+            GeneradorPdf.detalleEnvio(dkprD, dkprArchivo);
+            GeneradorPdf.ofrecerAbrir(dkprArchivo);
+        } catch (Exception dkprEx) {
+            Alertas.manejar(dkprEx);
         }
     }
 }

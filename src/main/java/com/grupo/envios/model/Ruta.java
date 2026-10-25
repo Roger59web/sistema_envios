@@ -2,61 +2,61 @@ package com.grupo.envios.model;
 
 import java.math.BigDecimal;
 
-/** Una ruta (origen → destino) junto con su tarifa vigente. */
+
 public class Ruta {
 
-    private int idRuta;
-    private int idAgenciaOrigen;
-    private int idAgenciaDestino;
-    private String origen;
-    private String destino;
-    private int diasEstimados = 1;
-    private boolean activo = true;
+    private int dkprIdRuta;
+    private int dkprIdAgenciaOrigen;
+    private int dkprIdAgenciaDestino;
+    private String dkprOrigen;
+    private String dkprDestino;
+    private int dkprDiasEstimados = 1;
+    private boolean dkprActivo = true;
 
-    private int idTarifa;
-    private BigDecimal precioBase;
-    private BigDecimal precioKgExtra;
-    private BigDecimal pesoMaxKg;
+    private int dkprIdTarifa;
+    private BigDecimal dkprPrecioBase;
+    private BigDecimal dkprPrecioKgExtra;
+    private BigDecimal dkprPesoMaxKg;
 
-    public int getIdRuta() { return idRuta; }
-    public void setIdRuta(int idRuta) { this.idRuta = idRuta; }
+    public int getIdRuta() { return dkprIdRuta; }
+    public void setIdRuta(int dkprIdRuta) { this.dkprIdRuta = dkprIdRuta; }
 
-    public int getIdAgenciaOrigen() { return idAgenciaOrigen; }
-    public void setIdAgenciaOrigen(int idAgenciaOrigen) { this.idAgenciaOrigen = idAgenciaOrigen; }
+    public int getIdAgenciaOrigen() { return dkprIdAgenciaOrigen; }
+    public void setIdAgenciaOrigen(int dkprIdAgenciaOrigen) { this.dkprIdAgenciaOrigen = dkprIdAgenciaOrigen; }
 
-    public int getIdAgenciaDestino() { return idAgenciaDestino; }
-    public void setIdAgenciaDestino(int idAgenciaDestino) { this.idAgenciaDestino = idAgenciaDestino; }
+    public int getIdAgenciaDestino() { return dkprIdAgenciaDestino; }
+    public void setIdAgenciaDestino(int dkprIdAgenciaDestino) { this.dkprIdAgenciaDestino = dkprIdAgenciaDestino; }
 
-    public String getOrigen() { return origen; }
-    public void setOrigen(String origen) { this.origen = origen; }
+    public String getOrigen() { return dkprOrigen; }
+    public void setOrigen(String dkprOrigen) { this.dkprOrigen = dkprOrigen; }
 
-    public String getDestino() { return destino; }
-    public void setDestino(String destino) { this.destino = destino; }
+    public String getDestino() { return dkprDestino; }
+    public void setDestino(String dkprDestino) { this.dkprDestino = dkprDestino; }
 
-    public int getDiasEstimados() { return diasEstimados; }
-    public void setDiasEstimados(int diasEstimados) { this.diasEstimados = diasEstimados; }
+    public int getDiasEstimados() { return dkprDiasEstimados; }
+    public void setDiasEstimados(int dkprDiasEstimados) { this.dkprDiasEstimados = dkprDiasEstimados; }
 
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    public boolean isActivo() { return dkprActivo; }
+    public void setActivo(boolean dkprActivo) { this.dkprActivo = dkprActivo; }
 
-    public int getIdTarifa() { return idTarifa; }
-    public void setIdTarifa(int idTarifa) { this.idTarifa = idTarifa; }
+    public int getIdTarifa() { return dkprIdTarifa; }
+    public void setIdTarifa(int dkprIdTarifa) { this.dkprIdTarifa = dkprIdTarifa; }
 
-    public BigDecimal getPrecioBase() { return precioBase; }
-    public void setPrecioBase(BigDecimal precioBase) { this.precioBase = precioBase; }
+    public BigDecimal getPrecioBase() { return dkprPrecioBase; }
+    public void setPrecioBase(BigDecimal dkprPrecioBase) { this.dkprPrecioBase = dkprPrecioBase; }
 
-    public BigDecimal getPrecioKgExtra() { return precioKgExtra; }
-    public void setPrecioKgExtra(BigDecimal precioKgExtra) { this.precioKgExtra = precioKgExtra; }
+    public BigDecimal getPrecioKgExtra() { return dkprPrecioKgExtra; }
+    public void setPrecioKgExtra(BigDecimal dkprPrecioKgExtra) { this.dkprPrecioKgExtra = dkprPrecioKgExtra; }
 
-    public BigDecimal getPesoMaxKg() { return pesoMaxKg; }
-    public void setPesoMaxKg(BigDecimal pesoMaxKg) { this.pesoMaxKg = pesoMaxKg; }
+    public BigDecimal getPesoMaxKg() { return dkprPesoMaxKg; }
+    public void setPesoMaxKg(BigDecimal dkprPesoMaxKg) { this.dkprPesoMaxKg = dkprPesoMaxKg; }
 
     public String getEstadoTexto() {
-        return activo ? "Activa" : "Inactiva";
+        return dkprActivo ? "Activa" : "Inactiva";
     }
 
     @Override
     public String toString() {
-        return origen + " → " + destino + " (" + diasEstimados + (diasEstimados == 1 ? " día)" : " días)");
+        return dkprOrigen + " → " + dkprDestino + " (" + dkprDiasEstimados + (dkprDiasEstimados == 1 ? " día)" : " días)");
     }
 }

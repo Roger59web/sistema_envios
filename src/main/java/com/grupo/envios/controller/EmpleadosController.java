@@ -19,47 +19,47 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class EmpleadosController {
 
-    @FXML private TableView<Empleado> tabla;
-    @FXML private TableColumn<Empleado, String> colDni;
-    @FXML private TableColumn<Empleado, String> colNombre;
-    @FXML private TableColumn<Empleado, String> colUsuario;
-    @FXML private TableColumn<Empleado, String> colRol;
-    @FXML private TableColumn<Empleado, String> colAgencia;
-    @FXML private TableColumn<Empleado, String> colEstado;
+    @FXML private TableView<Empleado> dkprTabla;
+    @FXML private TableColumn<Empleado, String> dkprColDni;
+    @FXML private TableColumn<Empleado, String> dkprColNombre;
+    @FXML private TableColumn<Empleado, String> dkprColUsuario;
+    @FXML private TableColumn<Empleado, String> dkprColRol;
+    @FXML private TableColumn<Empleado, String> dkprColAgencia;
+    @FXML private TableColumn<Empleado, String> dkprColEstado;
 
-    @FXML private Label lblModo;
-    @FXML private ComboBox<Agencia> cmbAgencia;
-    @FXML private ComboBox<Rol> cmbRol;
-    @FXML private TextField txtDni;
-    @FXML private TextField txtNombres;
-    @FXML private TextField txtApellidos;
-    @FXML private TextField txtUsuario;
-    @FXML private PasswordField txtClave;
-    @FXML private CheckBox chkActivo;
+    @FXML private Label dkprLblModo;
+    @FXML private ComboBox<Agencia> dkprCmbAgencia;
+    @FXML private ComboBox<Rol> dkprCmbRol;
+    @FXML private TextField dkprTxtDni;
+    @FXML private TextField dkprTxtNombres;
+    @FXML private TextField dkprTxtApellidos;
+    @FXML private TextField dkprTxtUsuario;
+    @FXML private PasswordField dkprTxtClave;
+    @FXML private CheckBox dkprChkActivo;
 
-    private final EmpleadoService empleadoService = new EmpleadoService();
-    private final AgenciaService agenciaService = new AgenciaService();
-    private Empleado seleccionado;
+    private final EmpleadoService dkprEmpleadoService = new EmpleadoService();
+    private final AgenciaService dkprAgenciaService = new AgenciaService();
+    private Empleado dkprSeleccionado;
 
     @FXML
     private void initialize() {
-        colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreCompleto"));
-        colUsuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
-        colRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
-        colAgencia.setCellValueFactory(new PropertyValueFactory<>("agencia"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estadoTexto"));
+        dkprColDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        dkprColNombre.setCellValueFactory(new PropertyValueFactory<>("nombreCompleto"));
+        dkprColUsuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
+        dkprColRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
+        dkprColAgencia.setCellValueFactory(new PropertyValueFactory<>("agencia"));
+        dkprColEstado.setCellValueFactory(new PropertyValueFactory<>("estadoTexto"));
 
         try {
-            cmbAgencia.setItems(FXCollections.observableArrayList(agenciaService.listar(false)));
-            cmbRol.setItems(FXCollections.observableArrayList(empleadoService.listarRoles()));
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            dkprCmbAgencia.setItems(FXCollections.observableArrayList(dkprAgenciaService.listar(false)));
+            dkprCmbRol.setItems(FXCollections.observableArrayList(dkprEmpleadoService.listarRoles()));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
 
-        tabla.getSelectionModel().selectedItemProperty().addListener((obs, anterior, nuevo) -> {
-            if (nuevo != null) {
-                mostrar(nuevo);
+        dkprTabla.getSelectionModel().selectedItemProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> {
+            if (dkprNuevo != null) {
+                mostrar(dkprNuevo);
             }
         });
 
@@ -69,47 +69,47 @@ public class EmpleadosController {
 
     private void cargar() {
         try {
-            tabla.setItems(FXCollections.observableArrayList(empleadoService.listar()));
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            dkprTabla.setItems(FXCollections.observableArrayList(dkprEmpleadoService.listar()));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
-    private void mostrar(Empleado e) {
-        seleccionado = e;
-        lblModo.setText("Editando empleado");
-        for (Agencia a : cmbAgencia.getItems()) {
-            if (a.getIdAgencia() == e.getIdAgencia()) {
-                cmbAgencia.setValue(a);
+    private void mostrar(Empleado dkprE) {
+        dkprSeleccionado = dkprE;
+        dkprLblModo.setText("Editando empleado");
+        for (Agencia dkprA : dkprCmbAgencia.getItems()) {
+            if (dkprA.getIdAgencia() == dkprE.getIdAgencia()) {
+                dkprCmbAgencia.setValue(dkprA);
             }
         }
-        for (Rol r : cmbRol.getItems()) {
-            if (r.getIdRol() == e.getIdRol()) {
-                cmbRol.setValue(r);
+        for (Rol dkprR : dkprCmbRol.getItems()) {
+            if (dkprR.getIdRol() == dkprE.getIdRol()) {
+                dkprCmbRol.setValue(dkprR);
             }
         }
-        txtDni.setText(e.getDni());
-        txtNombres.setText(e.getNombres());
-        txtApellidos.setText(e.getApellidos());
-        txtUsuario.setText(e.getUsuario());
-        txtClave.clear();
-        txtClave.setPromptText("Vacío = no cambiar");
-        chkActivo.setSelected(e.isActivo());
+        dkprTxtDni.setText(dkprE.getDni());
+        dkprTxtNombres.setText(dkprE.getNombres());
+        dkprTxtApellidos.setText(dkprE.getApellidos());
+        dkprTxtUsuario.setText(dkprE.getUsuario());
+        dkprTxtClave.clear();
+        dkprTxtClave.setPromptText("Vacío = no cambiar");
+        dkprChkActivo.setSelected(dkprE.isActivo());
     }
 
     private void limpiar() {
-        seleccionado = null;
-        tabla.getSelectionModel().clearSelection();
-        lblModo.setText("Nuevo empleado");
-        cmbAgencia.setValue(null);
-        cmbRol.setValue(null);
-        txtDni.clear();
-        txtNombres.clear();
-        txtApellidos.clear();
-        txtUsuario.clear();
-        txtClave.clear();
-        txtClave.setPromptText("Mínimo 6 caracteres");
-        chkActivo.setSelected(true);
+        dkprSeleccionado = null;
+        dkprTabla.getSelectionModel().clearSelection();
+        dkprLblModo.setText("Nuevo empleado");
+        dkprCmbAgencia.setValue(null);
+        dkprCmbRol.setValue(null);
+        dkprTxtDni.clear();
+        dkprTxtNombres.clear();
+        dkprTxtApellidos.clear();
+        dkprTxtUsuario.clear();
+        dkprTxtClave.clear();
+        dkprTxtClave.setPromptText("Mínimo 6 caracteres");
+        dkprChkActivo.setSelected(true);
     }
 
     @FXML
@@ -119,22 +119,22 @@ public class EmpleadosController {
 
     @FXML
     private void onGuardar() {
-        Empleado e = new Empleado();
-        e.setIdEmpleado(seleccionado == null ? 0 : seleccionado.getIdEmpleado());
-        e.setIdAgencia(cmbAgencia.getValue() == null ? 0 : cmbAgencia.getValue().getIdAgencia());
-        e.setIdRol(cmbRol.getValue() == null ? 0 : cmbRol.getValue().getIdRol());
-        e.setDni(txtDni.getText());
-        e.setNombres(txtNombres.getText());
-        e.setApellidos(txtApellidos.getText());
-        e.setUsuario(txtUsuario.getText());
-        e.setActivo(chkActivo.isSelected());
+        Empleado dkprE = new Empleado();
+        dkprE.setIdEmpleado(dkprSeleccionado == null ? 0 : dkprSeleccionado.getIdEmpleado());
+        dkprE.setIdAgencia(dkprCmbAgencia.getValue() == null ? 0 : dkprCmbAgencia.getValue().getIdAgencia());
+        dkprE.setIdRol(dkprCmbRol.getValue() == null ? 0 : dkprCmbRol.getValue().getIdRol());
+        dkprE.setDni(dkprTxtDni.getText());
+        dkprE.setNombres(dkprTxtNombres.getText());
+        dkprE.setApellidos(dkprTxtApellidos.getText());
+        dkprE.setUsuario(dkprTxtUsuario.getText());
+        dkprE.setActivo(dkprChkActivo.isSelected());
         try {
-            empleadoService.guardar(e, txtClave.getText());
+            dkprEmpleadoService.guardar(dkprE, dkprTxtClave.getText());
             Alertas.info("Empleado guardado correctamente.");
             limpiar();
             cargar();
-        } catch (Exception ex) {
-            Alertas.manejar(ex);
+        } catch (Exception dkprEx) {
+            Alertas.manejar(dkprEx);
         }
     }
 }

@@ -13,7 +13,7 @@
     <Label text="Entrega de encomiendas" styleClass="titulo"/>
 
     <HBox spacing="8">
-        <TextField fx:id="txtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
+        <TextField fx:id="dkprTxtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
         <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscar"/>
     </HBox>
 
@@ -26,31 +26,31 @@
         </columnConstraints>
 
         <Label text="Código:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Label fx:id="lblCodigo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblCodigo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
         <Label text="Estado:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-        <Label fx:id="lblEstado" styleClass="subtitulo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblEstado" styleClass="subtitulo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
 
         <Label text="Ruta:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Label fx:id="lblRuta" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblRuta" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
         <Label text="Contenido:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-        <Label fx:id="lblDescripcion" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblDescripcion" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
 
         <Label text="Remitente:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <Label fx:id="lblRemitente" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblRemitente" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
         <Label text="Destinatario:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-        <Label fx:id="lblDestinatario" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblDestinatario" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
     </GridPane>
 
-    <Label fx:id="lblAviso" styleClass="aviso" wrapText="true"/>
+    <Label fx:id="dkprLblAviso" styleClass="aviso" wrapText="true"/>
 
-    <VBox fx:id="panelEntrega" spacing="6" styleClass="panel-form">
+    <VBox fx:id="dkprPanelEntrega" spacing="6" styleClass="panel-form">
         <Label text="Datos de quien recoge" styleClass="subtitulo"/>
         <HBox spacing="8">
-            <TextField fx:id="txtReceptor" promptText="Nombre completo" HBox.hgrow="ALWAYS"/>
-            <TextField fx:id="txtDniReceptor" promptText="DNI" prefWidth="120"/>
+            <TextField fx:id="dkprTxtReceptor" promptText="Nombre completo" HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="dkprTxtDniReceptor" promptText="DNI" prefWidth="120"/>
             <Button text="Usar datos del destinatario" onAction="#onUsarDestinatario"/>
         </HBox>
-        <TextField fx:id="txtObservacion" promptText="Observación (obligatoria si recoge otra persona: parentesco, carta poder...)"/>
+        <TextField fx:id="dkprTxtObservacion" promptText="Observación (obligatoria si recoge otra persona: parentesco, carta poder...)"/>
         <HBox alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="6"/>

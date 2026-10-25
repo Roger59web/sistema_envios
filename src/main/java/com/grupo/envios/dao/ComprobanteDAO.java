@@ -11,54 +11,54 @@ import java.sql.SQLException;
 public class ComprobanteDAO {
 
     /** Inserta el comprobante asignándole el siguiente número de su serie. */
-    public void insertar(Connection cn, Comprobante c) throws SQLException {
-        String sqlNumero = "SELECT COALESCE(MAX(numero), 0) + 1 FROM comprobante WHERE tipo = ? AND serie = ?";
-        try (PreparedStatement ps = cn.prepareStatement(sqlNumero)) {
-            ps.setString(1, c.getTipo());
-            ps.setString(2, c.getSerie());
-            try (ResultSet rs = ps.executeQuery()) {
-                rs.next();
-                c.setNumero(rs.getInt(1));
+    public void insertar(Connection dkprCn, Comprobante dkprC) throws SQLException {
+        String dkprSqlNumero = "SELECT COALESCE(MAX(numero), 0) + 1 FROM comprobante WHERE tipo = ? AND serie = ?";
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSqlNumero)) {
+            dkprPs.setString(1, dkprC.getTipo());
+            dkprPs.setString(2, dkprC.getSerie());
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                dkprRs.next();
+                dkprC.setNumero(dkprRs.getInt(1));
             }
         }
 
-        String sql = "INSERT INTO comprobante (id_envio, tipo, serie, numero, subtotal, igv, total, metodo_pago) "
+        String dkprSql = "INSERT INTO comprobante (id_envio, tipo, serie, numero, subtotal, igv, total, metodo_pago) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, c.getIdEnvio());
-            ps.setString(2, c.getTipo());
-            ps.setString(3, c.getSerie());
-            ps.setInt(4, c.getNumero());
-            ps.setBigDecimal(5, c.getSubtotal());
-            ps.setBigDecimal(6, c.getIgv());
-            ps.setBigDecimal(7, c.getTotal());
-            ps.setString(8, c.getMetodoPago());
-            ps.executeUpdate();
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprC.getIdEnvio());
+            dkprPs.setString(2, dkprC.getTipo());
+            dkprPs.setString(3, dkprC.getSerie());
+            dkprPs.setInt(4, dkprC.getNumero());
+            dkprPs.setBigDecimal(5, dkprC.getSubtotal());
+            dkprPs.setBigDecimal(6, dkprC.getIgv());
+            dkprPs.setBigDecimal(7, dkprC.getTotal());
+            dkprPs.setString(8, dkprC.getMetodoPago());
+            dkprPs.executeUpdate();
         }
     }
 
     /** Devuelve el comprobante del envío, o null si no tiene. */
-    public Comprobante buscarPorEnvio(int idEnvio) throws SQLException {
-        String sql = "SELECT id_envio, tipo, serie, numero, fecha_emision, subtotal, igv, total, metodo_pago "
+    public Comprobante buscarPorEnvio(int dkprIdEnvio) throws SQLException {
+        String dkprSql = "SELECT id_envio, tipo, serie, numero, fecha_emision, subtotal, igv, total, metodo_pago "
                 + "FROM comprobante WHERE id_envio = ?";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, idEnvio);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (!rs.next()) {
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprIdEnvio);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                if (!dkprRs.next()) {
                     return null;
                 }
-                Comprobante c = new Comprobante();
-                c.setIdEnvio(rs.getInt("id_envio"));
-                c.setTipo(rs.getString("tipo"));
-                c.setSerie(rs.getString("serie"));
-                c.setNumero(rs.getInt("numero"));
-                c.setFechaEmision(rs.getTimestamp("fecha_emision").toLocalDateTime());
-                c.setSubtotal(rs.getBigDecimal("subtotal"));
-                c.setIgv(rs.getBigDecimal("igv"));
-                c.setTotal(rs.getBigDecimal("total"));
-                c.setMetodoPago(rs.getString("metodo_pago"));
-                return c;
+                Comprobante dkprC = new Comprobante();
+                dkprC.setIdEnvio(dkprRs.getInt("id_envio"));
+                dkprC.setTipo(dkprRs.getString("tipo"));
+                dkprC.setSerie(dkprRs.getString("serie"));
+                dkprC.setNumero(dkprRs.getInt("numero"));
+                dkprC.setFechaEmision(dkprRs.getTimestamp("fecha_emision").toLocalDateTime());
+                dkprC.setSubtotal(dkprRs.getBigDecimal("subtotal"));
+                dkprC.setIgv(dkprRs.getBigDecimal("igv"));
+                dkprC.setTotal(dkprRs.getBigDecimal("total"));
+                dkprC.setMetodoPago(dkprRs.getString("metodo_pago"));
+                return dkprC;
             }
         }
     }

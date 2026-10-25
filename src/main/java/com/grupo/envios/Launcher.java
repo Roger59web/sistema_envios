@@ -6,7 +6,7 @@ package com.grupo.envios;
  * cuando JavaFX viene como dependencia de Maven y el proyecto no usa módulos.
  */
 public class    Launcher {
-    public static void main(String[] args) {
-        App.main(args);
+    public static void main(String[] dkprArgs) {
+        App.main(dkprArgs);
     }
 }

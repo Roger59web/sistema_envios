@@ -9,17 +9,17 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
-        stage.setTitle("Sistema de Envíos - Iniciar sesión");
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
+    public void start(Stage dkprStage) throws Exception {
+        Parent dkprRoot = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+        Scene dkprScene = new Scene(dkprRoot);
+        dkprScene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
+        dkprStage.setTitle("Sistema de Envíos - Iniciar sesión");
+        dkprStage.setScene(dkprScene);
+        dkprStage.setResizable(false);
+        dkprStage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main(String[] dkprArgs) {
+        launch(dkprArgs);
     }
 }

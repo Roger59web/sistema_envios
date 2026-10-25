@@ -23,12 +23,12 @@ public final class Conexion {
         if (!props.isEmpty()) {
             return;
         }
-        try (InputStream in = new FileInputStream("db.properties")) {
-            props.load(in);
-        } catch (IOException e) {
+        try (InputStream dkprIn = new FileInputStream("db.properties")) {
+            props.load(dkprIn);
+        } catch (IOException dkprE) {
             throw new IllegalStateException(
                     "No se encontró db.properties en la raíz del proyecto. "
-                            + "Copia db.properties.example como db.properties y ajusta tus datos.", e);
+                            + "Copia db.properties.example como db.properties y ajusta tus datos.", dkprE);
         }
     }
 

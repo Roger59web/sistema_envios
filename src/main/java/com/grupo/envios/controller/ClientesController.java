@@ -14,38 +14,38 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class ClientesController {
 
-    @FXML private TextField txtBuscar;
-    @FXML private TableView<Cliente> tabla;
-    @FXML private TableColumn<Cliente, String> colTipo;
-    @FXML private TableColumn<Cliente, String> colDocumento;
-    @FXML private TableColumn<Cliente, String> colNombre;
-    @FXML private TableColumn<Cliente, String> colTelefono;
+    @FXML private TextField dkprTxtBuscar;
+    @FXML private TableView<Cliente> dkprTabla;
+    @FXML private TableColumn<Cliente, String> dkprColTipo;
+    @FXML private TableColumn<Cliente, String> dkprColDocumento;
+    @FXML private TableColumn<Cliente, String> dkprColNombre;
+    @FXML private TableColumn<Cliente, String> dkprColTelefono;
 
-    @FXML private Label lblModo;
-    @FXML private ComboBox<String> cmbTipo;
-    @FXML private TextField txtDocumento;
-    @FXML private TextField txtNombre;
-    @FXML private TextField txtTelefono;
-    @FXML private TextField txtEmail;
-    @FXML private TextField txtDireccion;
+    @FXML private Label dkprLblModo;
+    @FXML private ComboBox<String> dkprCmbTipo;
+    @FXML private TextField dkprTxtDocumento;
+    @FXML private TextField dkprTxtNombre;
+    @FXML private TextField dkprTxtTelefono;
+    @FXML private TextField dkprTxtEmail;
+    @FXML private TextField dkprTxtDireccion;
 
-    private final ClienteService service = new ClienteService();
-    private Cliente seleccionado;
+    private final ClienteService dkprService = new ClienteService();
+    private Cliente dkprSeleccionado;
 
     @FXML
     private void initialize() {
-        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipoDocumento"));
-        colDocumento.setCellValueFactory(new PropertyValueFactory<>("numeroDocumento"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombreCompleto"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        dkprColTipo.setCellValueFactory(new PropertyValueFactory<>("tipoDocumento"));
+        dkprColDocumento.setCellValueFactory(new PropertyValueFactory<>("numeroDocumento"));
+        dkprColNombre.setCellValueFactory(new PropertyValueFactory<>("nombreCompleto"));
+        dkprColTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
 
-        cmbTipo.setItems(FXCollections.observableArrayList("DNI", "RUC", "CE"));
-        tabla.getSelectionModel().selectedItemProperty().addListener((obs, anterior, nuevo) -> {
-            if (nuevo != null) {
-                mostrar(nuevo);
+        dkprCmbTipo.setItems(FXCollections.observableArrayList("DNI", "RUC", "CE"));
+        dkprTabla.getSelectionModel().selectedItemProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> {
+            if (dkprNuevo != null) {
+                mostrar(dkprNuevo);
             }
         });
-        txtBuscar.setOnAction(e -> cargar());
+        dkprTxtBuscar.setOnAction(dkprE -> cargar());
 
         limpiar();
         cargar();
@@ -53,33 +53,33 @@ public class ClientesController {
 
     private void cargar() {
         try {
-            tabla.setItems(FXCollections.observableArrayList(service.buscar(txtBuscar.getText())));
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            dkprTabla.setItems(FXCollections.observableArrayList(dkprService.buscar(dkprTxtBuscar.getText())));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
-    private void mostrar(Cliente c) {
-        seleccionado = c;
-        lblModo.setText("Editando cliente");
-        cmbTipo.setValue(c.getTipoDocumento());
-        txtDocumento.setText(c.getNumeroDocumento());
-        txtNombre.setText(c.getNombreCompleto());
-        txtTelefono.setText(c.getTelefono());
-        txtEmail.setText(c.getEmail());
-        txtDireccion.setText(c.getDireccion());
+    private void mostrar(Cliente dkprC) {
+        dkprSeleccionado = dkprC;
+        dkprLblModo.setText("Editando cliente");
+        dkprCmbTipo.setValue(dkprC.getTipoDocumento());
+        dkprTxtDocumento.setText(dkprC.getNumeroDocumento());
+        dkprTxtNombre.setText(dkprC.getNombreCompleto());
+        dkprTxtTelefono.setText(dkprC.getTelefono());
+        dkprTxtEmail.setText(dkprC.getEmail());
+        dkprTxtDireccion.setText(dkprC.getDireccion());
     }
 
     private void limpiar() {
-        seleccionado = null;
-        tabla.getSelectionModel().clearSelection();
-        lblModo.setText("Nuevo cliente");
-        cmbTipo.setValue("DNI");
-        txtDocumento.clear();
-        txtNombre.clear();
-        txtTelefono.clear();
-        txtEmail.clear();
-        txtDireccion.clear();
+        dkprSeleccionado = null;
+        dkprTabla.getSelectionModel().clearSelection();
+        dkprLblModo.setText("Nuevo cliente");
+        dkprCmbTipo.setValue("DNI");
+        dkprTxtDocumento.clear();
+        dkprTxtNombre.clear();
+        dkprTxtTelefono.clear();
+        dkprTxtEmail.clear();
+        dkprTxtDireccion.clear();
     }
 
     @FXML
@@ -94,21 +94,21 @@ public class ClientesController {
 
     @FXML
     private void onGuardar() {
-        Cliente c = new Cliente();
-        c.setIdCliente(seleccionado == null ? 0 : seleccionado.getIdCliente());
-        c.setTipoDocumento(cmbTipo.getValue());
-        c.setNumeroDocumento(txtDocumento.getText());
-        c.setNombreCompleto(txtNombre.getText());
-        c.setTelefono(txtTelefono.getText());
-        c.setEmail(txtEmail.getText());
-        c.setDireccion(txtDireccion.getText());
+        Cliente dkprC = new Cliente();
+        dkprC.setIdCliente(dkprSeleccionado == null ? 0 : dkprSeleccionado.getIdCliente());
+        dkprC.setTipoDocumento(dkprCmbTipo.getValue());
+        dkprC.setNumeroDocumento(dkprTxtDocumento.getText());
+        dkprC.setNombreCompleto(dkprTxtNombre.getText());
+        dkprC.setTelefono(dkprTxtTelefono.getText());
+        dkprC.setEmail(dkprTxtEmail.getText());
+        dkprC.setDireccion(dkprTxtDireccion.getText());
         try {
-            service.guardar(c);
+            dkprService.guardar(dkprC);
             Alertas.info("Cliente guardado correctamente.");
             limpiar();
             cargar();
-        } catch (Exception e) {
-            Alertas.manejar(e);
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 }

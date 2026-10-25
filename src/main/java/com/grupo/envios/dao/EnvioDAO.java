@@ -41,35 +41,35 @@ public class EnvioDAO {
             """;
 
     /** Reserva el siguiente id de envío (sirve para armar el código de seguimiento). */
-    public int siguienteId(Connection cn) throws SQLException {
-        try (PreparedStatement ps = cn.prepareStatement(
+    public int siguienteId(Connection dkprCn) throws SQLException {
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(
                 "SELECT nextval(pg_get_serial_sequence('envio', 'id_envio'))");
-             ResultSet rs = ps.executeQuery()) {
-            rs.next();
-            return rs.getInt(1);
+             ResultSet dkprRs = dkprPs.executeQuery()) {
+            dkprRs.next();
+            return dkprRs.getInt(1);
         }
     }
 
-    public void insertar(Connection cn, Envio e) throws SQLException {
-        String sql = "INSERT INTO envio (id_envio, codigo_seguimiento, id_ruta, id_remitente, id_destinatario, "
+    public void insertar(Connection dkprCn, Envio dkprE) throws SQLException {
+        String dkprSql = "INSERT INTO envio (id_envio, codigo_seguimiento, id_ruta, id_remitente, id_destinatario, "
                 + "id_empleado_registro, id_estado_actual, descripcion, cantidad_bultos, peso_kg, "
                 + "valor_declarado, costo_envio, observaciones) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, e.getIdEnvio());
-            ps.setString(2, e.getCodigoSeguimiento());
-            ps.setInt(3, e.getIdRuta());
-            ps.setInt(4, e.getIdRemitente());
-            ps.setInt(5, e.getIdDestinatario());
-            ps.setInt(6, e.getIdEmpleadoRegistro());
-            ps.setInt(7, e.getIdEstadoActual());
-            ps.setString(8, e.getDescripcion());
-            ps.setInt(9, e.getCantidadBultos());
-            ps.setBigDecimal(10, e.getPesoKg());
-            ps.setBigDecimal(11, e.getValorDeclarado());
-            ps.setBigDecimal(12, e.getCostoEnvio());
-            ps.setString(13, e.getObservaciones());
-            ps.executeUpdate();
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprE.getIdEnvio());
+            dkprPs.setString(2, dkprE.getCodigoSeguimiento());
+            dkprPs.setInt(3, dkprE.getIdRuta());
+            dkprPs.setInt(4, dkprE.getIdRemitente());
+            dkprPs.setInt(5, dkprE.getIdDestinatario());
+            dkprPs.setInt(6, dkprE.getIdEmpleadoRegistro());
+            dkprPs.setInt(7, dkprE.getIdEstadoActual());
+            dkprPs.setString(8, dkprE.getDescripcion());
+            dkprPs.setInt(9, dkprE.getCantidadBultos());
+            dkprPs.setBigDecimal(10, dkprE.getPesoKg());
+            dkprPs.setBigDecimal(11, dkprE.getValorDeclarado());
+            dkprPs.setBigDecimal(12, dkprE.getCostoEnvio());
+            dkprPs.setString(13, dkprE.getObservaciones());
+            dkprPs.executeUpdate();
         }
     }
 
@@ -77,16 +77,16 @@ public class EnvioDAO {
      * Cambia el estado solo si el envío sigue en el estado esperado (evita que dos empleados
      * muevan el mismo paquete a la vez). Devuelve false si otro ya lo cambió.
      */
-    public boolean actualizarEstadoSi(Connection cn, int idEnvio, int estadoEsperado, int nuevoEstado,
-                                      Integer idManifiesto) throws SQLException {
-        String sql = "UPDATE envio SET id_estado_actual = ?, id_manifiesto = COALESCE(?, id_manifiesto) "
+    public boolean actualizarEstadoSi(Connection dkprCn, int dkprIdEnvio, int dkprEstadoEsperado, int dkprNuevoEstado,
+                                      Integer dkprIdManifiesto) throws SQLException {
+        String dkprSql = "UPDATE envio SET id_estado_actual = ?, id_manifiesto = COALESCE(?, id_manifiesto) "
                 + "WHERE id_envio = ? AND id_estado_actual = ?";
-        try (PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, nuevoEstado);
-            ps.setObject(2, idManifiesto);
-            ps.setInt(3, idEnvio);
-            ps.setInt(4, estadoEsperado);
-            return ps.executeUpdate() == 1;
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprNuevoEstado);
+            dkprPs.setObject(2, dkprIdManifiesto);
+            dkprPs.setInt(3, dkprIdEnvio);
+            dkprPs.setInt(4, dkprEstadoEsperado);
+            return dkprPs.executeUpdate() == 1;
         }
     }
 
@@ -96,57 +96,57 @@ public class EnvioDAO {
      *
      * @param comoOrigen true: la agencia es el origen (por despachar); false: es el destino
      */
-    public List<Envio> listarPorEstadoYAgencia(int idEstado, int idAgencia, boolean comoOrigen) throws SQLException {
-        String sql = SELECT_BASE + " WHERE e.id_estado_actual = ? AND "
-                + (comoOrigen ? "ru.id_agencia_origen" : "ru.id_agencia_destino") + " = ? "
+    public List<Envio> listarPorEstadoYAgencia(int dkprIdEstado, int dkprIdAgencia, boolean dkprComoOrigen) throws SQLException {
+        String dkprSql = SELECT_BASE + " WHERE e.id_estado_actual = ? AND "
+                + (dkprComoOrigen ? "ru.id_agencia_origen" : "ru.id_agencia_destino") + " = ? "
                 + "ORDER BY e.fecha_registro, e.id_envio";
-        List<Envio> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, idEstado);
-            ps.setInt(2, idAgencia);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(mapear(rs));
+        List<Envio> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprIdEstado);
+            dkprPs.setInt(2, dkprIdAgencia);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                while (dkprRs.next()) {
+                    dkprLista.add(mapear(dkprRs));
                 }
             }
         }
-        return lista;
+        return dkprLista;
     }
 
     /** Devuelve el envío con ese código, o null si no existe. */
-    public Envio buscarPorCodigo(String codigo) throws SQLException {
-        String sql = SELECT_BASE + " WHERE e.codigo_seguimiento = ?";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? mapear(rs) : null;
+    public Envio buscarPorCodigo(String dkprCodigo) throws SQLException {
+        String dkprSql = SELECT_BASE + " WHERE e.codigo_seguimiento = ?";
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setString(1, dkprCodigo);
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                return dkprRs.next() ? mapear(dkprRs) : null;
             }
         }
     }
 
     /** Envíos registrados entre dos fechas (ambas incluidas), del más reciente al más antiguo. */
-    public List<Envio> listarPorFechas(LocalDate desde, LocalDate hasta) throws SQLException {
-        String sql = SELECT_BASE + " WHERE e.fecha_registro >= ? AND e.fecha_registro < ? "
+    public List<Envio> listarPorFechas(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        String dkprSql = SELECT_BASE + " WHERE e.fecha_registro >= ? AND e.fecha_registro < ? "
                 + "ORDER BY e.fecha_registro DESC, e.id_envio DESC";
-        List<Envio> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(desde.atStartOfDay()));
-            ps.setTimestamp(2, Timestamp.valueOf(hasta.plusDays(1).atStartOfDay()));
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(mapear(rs));
+        List<Envio> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setTimestamp(1, Timestamp.valueOf(dkprDesde.atStartOfDay()));
+            dkprPs.setTimestamp(2, Timestamp.valueOf(dkprHasta.plusDays(1).atStartOfDay()));
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                while (dkprRs.next()) {
+                    dkprLista.add(mapear(dkprRs));
                 }
             }
         }
-        return lista;
+        return dkprLista;
     }
 
     /** Cantidad de envíos e ingresos por agencia de origen (los anulados no suman ingresos). */
-    public List<ResumenFila> resumenPorAgencia(LocalDate desde, LocalDate hasta) throws SQLException {
-        String sql = """
+    public List<ResumenFila> resumenPorAgencia(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        String dkprSql = """
                 SELECT ao.nombre AS etiqueta, COUNT(*) AS cantidad,
                        COALESCE(SUM(CASE WHEN e.id_estado_actual <> 5 THEN e.costo_envio ELSE 0 END), 0) AS monto
                 FROM envio e
@@ -156,12 +156,12 @@ public class EnvioDAO {
                 GROUP BY ao.nombre
                 ORDER BY ao.nombre
                 """;
-        return resumen(sql, desde, hasta);
+        return resumen(dkprSql, dkprDesde, dkprHasta);
     }
 
     /** Cantidad de envíos y monto por estado actual. */
-    public List<ResumenFila> resumenPorEstado(LocalDate desde, LocalDate hasta) throws SQLException {
-        String sql = """
+    public List<ResumenFila> resumenPorEstado(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        String dkprSql = """
                 SELECT es.nombre AS etiqueta, COUNT(*) AS cantidad, COALESCE(SUM(e.costo_envio), 0) AS monto
                 FROM envio e
                 JOIN estado_envio es ON es.id_estado = e.id_estado_actual
@@ -169,59 +169,59 @@ public class EnvioDAO {
                 GROUP BY es.nombre, es.orden
                 ORDER BY es.orden
                 """;
-        return resumen(sql, desde, hasta);
+        return resumen(dkprSql, dkprDesde, dkprHasta);
     }
 
-    private List<ResumenFila> resumen(String sql, LocalDate desde, LocalDate hasta) throws SQLException {
-        List<ResumenFila> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setTimestamp(1, Timestamp.valueOf(desde.atStartOfDay()));
-            ps.setTimestamp(2, Timestamp.valueOf(hasta.plusDays(1).atStartOfDay()));
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    lista.add(new ResumenFila(rs.getString("etiqueta"), rs.getInt("cantidad"),
-                            rs.getBigDecimal("monto")));
+    private List<ResumenFila> resumen(String dkprSql, LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
+        List<ResumenFila> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setTimestamp(1, Timestamp.valueOf(dkprDesde.atStartOfDay()));
+            dkprPs.setTimestamp(2, Timestamp.valueOf(dkprHasta.plusDays(1).atStartOfDay()));
+            try (ResultSet dkprRs = dkprPs.executeQuery()) {
+                while (dkprRs.next()) {
+                    dkprLista.add(new ResumenFila(dkprRs.getString("etiqueta"), dkprRs.getInt("cantidad"),
+                            dkprRs.getBigDecimal("monto")));
                 }
             }
         }
-        return lista;
+        return dkprLista;
     }
 
-    private Envio mapear(ResultSet rs) throws SQLException {
-        Envio e = new Envio();
-        e.setIdEnvio(rs.getInt("id_envio"));
-        e.setCodigoSeguimiento(rs.getString("codigo_seguimiento"));
-        e.setIdRuta(rs.getInt("id_ruta"));
-        e.setIdAgenciaOrigen(rs.getInt("id_agencia_origen"));
-        e.setIdAgenciaDestino(rs.getInt("id_agencia_destino"));
-        e.setOrigen(rs.getString("origen"));
-        e.setDestino(rs.getString("destino"));
-        e.setOrigenDireccion(rs.getString("origen_direccion"));
-        e.setOrigenTelefono(rs.getString("origen_telefono"));
-        e.setIdRemitente(rs.getInt("id_remitente"));
-        e.setRemitente(rs.getString("remitente"));
-        e.setRemitenteDocumento(rs.getString("remitente_doc"));
-        e.setRemitenteTelefono(rs.getString("remitente_tel"));
-        e.setIdDestinatario(rs.getInt("id_destinatario"));
-        e.setDestinatario(rs.getString("destinatario"));
-        e.setDestinatarioDocumento(rs.getString("destinatario_doc"));
-        e.setDestinatarioTelefono(rs.getString("destinatario_tel"));
-        e.setIdEmpleadoRegistro(rs.getInt("id_empleado_registro"));
-        e.setEmpleadoRegistro(rs.getString("empleado_registro"));
-        e.setIdEstadoActual(rs.getInt("id_estado_actual"));
-        e.setEstado(rs.getString("estado"));
-        e.setFechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime());
-        e.setDescripcion(rs.getString("descripcion"));
-        e.setCantidadBultos(rs.getInt("cantidad_bultos"));
-        e.setPesoKg(rs.getBigDecimal("peso_kg"));
-        e.setValorDeclarado(rs.getBigDecimal("valor_declarado"));
-        e.setCostoEnvio(rs.getBigDecimal("costo_envio"));
-        e.setObservaciones(rs.getString("observaciones"));
-        e.setDiasEstimados(rs.getInt("dias_estimados"));
-        e.setManifiesto(rs.getString("manifiesto"));
-        Timestamp ultimo = rs.getTimestamp("fecha_ultimo_mov");
-        e.setFechaUltimoMovimiento(ultimo == null ? null : ultimo.toLocalDateTime());
-        return e;
+    private Envio mapear(ResultSet dkprRs) throws SQLException {
+        Envio dkprE = new Envio();
+        dkprE.setIdEnvio(dkprRs.getInt("id_envio"));
+        dkprE.setCodigoSeguimiento(dkprRs.getString("codigo_seguimiento"));
+        dkprE.setIdRuta(dkprRs.getInt("id_ruta"));
+        dkprE.setIdAgenciaOrigen(dkprRs.getInt("id_agencia_origen"));
+        dkprE.setIdAgenciaDestino(dkprRs.getInt("id_agencia_destino"));
+        dkprE.setOrigen(dkprRs.getString("origen"));
+        dkprE.setDestino(dkprRs.getString("destino"));
+        dkprE.setOrigenDireccion(dkprRs.getString("origen_direccion"));
+        dkprE.setOrigenTelefono(dkprRs.getString("origen_telefono"));
+        dkprE.setIdRemitente(dkprRs.getInt("id_remitente"));
+        dkprE.setRemitente(dkprRs.getString("remitente"));
+        dkprE.setRemitenteDocumento(dkprRs.getString("remitente_doc"));
+        dkprE.setRemitenteTelefono(dkprRs.getString("remitente_tel"));
+        dkprE.setIdDestinatario(dkprRs.getInt("id_destinatario"));
+        dkprE.setDestinatario(dkprRs.getString("destinatario"));
+        dkprE.setDestinatarioDocumento(dkprRs.getString("destinatario_doc"));
+        dkprE.setDestinatarioTelefono(dkprRs.getString("destinatario_tel"));
+        dkprE.setIdEmpleadoRegistro(dkprRs.getInt("id_empleado_registro"));
+        dkprE.setEmpleadoRegistro(dkprRs.getString("empleado_registro"));
+        dkprE.setIdEstadoActual(dkprRs.getInt("id_estado_actual"));
+        dkprE.setEstado(dkprRs.getString("estado"));
+        dkprE.setFechaRegistro(dkprRs.getTimestamp("fecha_registro").toLocalDateTime());
+        dkprE.setDescripcion(dkprRs.getString("descripcion"));
+        dkprE.setCantidadBultos(dkprRs.getInt("cantidad_bultos"));
+        dkprE.setPesoKg(dkprRs.getBigDecimal("peso_kg"));
+        dkprE.setValorDeclarado(dkprRs.getBigDecimal("valor_declarado"));
+        dkprE.setCostoEnvio(dkprRs.getBigDecimal("costo_envio"));
+        dkprE.setObservaciones(dkprRs.getString("observaciones"));
+        dkprE.setDiasEstimados(dkprRs.getInt("dias_estimados"));
+        dkprE.setManifiesto(dkprRs.getString("manifiesto"));
+        Timestamp dkprUltimo = dkprRs.getTimestamp("fecha_ultimo_mov");
+        dkprE.setFechaUltimoMovimiento(dkprUltimo == null ? null : dkprUltimo.toLocalDateTime());
+        return dkprE;
     }
 }

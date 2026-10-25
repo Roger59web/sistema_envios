@@ -2,37 +2,37 @@ package com.grupo.envios.model;
 
 public class Cliente {
 
-    private int idCliente;
-    private String tipoDocumento;
-    private String numeroDocumento;
-    private String nombreCompleto;
-    private String telefono;
-    private String email;
-    private String direccion;
+    private int dkprIdCliente;
+    private String dkprTipoDocumento;
+    private String dkprNumeroDocumento;
+    private String dkprNombreCompleto;
+    private String dkprTelefono;
+    private String dkprEmail;
+    private String dkprDireccion;
 
-    public int getIdCliente() { return idCliente; }
-    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+    public int getIdCliente() { return dkprIdCliente; }
+    public void setIdCliente(int dkprIdCliente) { this.dkprIdCliente = dkprIdCliente; }
 
-    public String getTipoDocumento() { return tipoDocumento; }
-    public void setTipoDocumento(String tipoDocumento) { this.tipoDocumento = tipoDocumento; }
+    public String getTipoDocumento() { return dkprTipoDocumento; }
+    public void setTipoDocumento(String dkprTipoDocumento) { this.dkprTipoDocumento = dkprTipoDocumento; }
 
-    public String getNumeroDocumento() { return numeroDocumento; }
-    public void setNumeroDocumento(String numeroDocumento) { this.numeroDocumento = numeroDocumento; }
+    public String getNumeroDocumento() { return dkprNumeroDocumento; }
+    public void setNumeroDocumento(String dkprNumeroDocumento) { this.dkprNumeroDocumento = dkprNumeroDocumento; }
 
-    public String getNombreCompleto() { return nombreCompleto; }
-    public void setNombreCompleto(String nombreCompleto) { this.nombreCompleto = nombreCompleto; }
+    public String getNombreCompleto() { return dkprNombreCompleto; }
+    public void setNombreCompleto(String dkprNombreCompleto) { this.dkprNombreCompleto = dkprNombreCompleto; }
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getTelefono() { return dkprTelefono; }
+    public void setTelefono(String dkprTelefono) { this.dkprTelefono = dkprTelefono; }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getEmail() { return dkprEmail; }
+    public void setEmail(String dkprEmail) { this.dkprEmail = dkprEmail; }
 
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public String getDireccion() { return dkprDireccion; }
+    public void setDireccion(String dkprDireccion) { this.dkprDireccion = dkprDireccion; }
 
     @Override
     public String toString() {
-        return nombreCompleto;
+        return dkprNombreCompleto;
     }
 }

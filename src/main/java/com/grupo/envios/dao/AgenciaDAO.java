@@ -12,53 +12,53 @@ import java.util.List;
 
 public class AgenciaDAO {
 
-    public List<Agencia> listar(boolean soloActivas) throws SQLException {
-        String sql = "SELECT id_agencia, nombre, ciudad, direccion, telefono, activo FROM agencia"
-                + (soloActivas ? " WHERE activo = TRUE" : "")
+    public List<Agencia> listar(boolean dkprSoloActivas) throws SQLException {
+        String dkprSql = "SELECT id_agencia, nombre, ciudad, direccion, telefono, activo FROM agencia"
+                + (dkprSoloActivas ? " WHERE activo = TRUE" : "")
                 + " ORDER BY nombre";
-        List<Agencia> lista = new ArrayList<>();
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Agencia a = new Agencia();
-                a.setIdAgencia(rs.getInt("id_agencia"));
-                a.setNombre(rs.getString("nombre"));
-                a.setCiudad(rs.getString("ciudad"));
-                a.setDireccion(rs.getString("direccion"));
-                a.setTelefono(rs.getString("telefono"));
-                a.setActivo(rs.getBoolean("activo"));
-                lista.add(a);
+        List<Agencia> dkprLista = new ArrayList<>();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql);
+             ResultSet dkprRs = dkprPs.executeQuery()) {
+            while (dkprRs.next()) {
+                Agencia dkprA = new Agencia();
+                dkprA.setIdAgencia(dkprRs.getInt("id_agencia"));
+                dkprA.setNombre(dkprRs.getString("nombre"));
+                dkprA.setCiudad(dkprRs.getString("ciudad"));
+                dkprA.setDireccion(dkprRs.getString("direccion"));
+                dkprA.setTelefono(dkprRs.getString("telefono"));
+                dkprA.setActivo(dkprRs.getBoolean("activo"));
+                dkprLista.add(dkprA);
             }
         }
-        return lista;
+        return dkprLista;
     }
 
-    public void insertar(Agencia a) throws SQLException {
-        String sql = "INSERT INTO agencia (nombre, ciudad, direccion, telefono, activo) VALUES (?, ?, ?, ?, ?)";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, a.getNombre());
-            ps.setString(2, a.getCiudad());
-            ps.setString(3, a.getDireccion());
-            ps.setString(4, a.getTelefono());
-            ps.setBoolean(5, a.isActivo());
-            ps.executeUpdate();
+    public void insertar(Agencia dkprA) throws SQLException {
+        String dkprSql = "INSERT INTO agencia (nombre, ciudad, direccion, telefono, activo) VALUES (?, ?, ?, ?, ?)";
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setString(1, dkprA.getNombre());
+            dkprPs.setString(2, dkprA.getCiudad());
+            dkprPs.setString(3, dkprA.getDireccion());
+            dkprPs.setString(4, dkprA.getTelefono());
+            dkprPs.setBoolean(5, dkprA.isActivo());
+            dkprPs.executeUpdate();
         }
     }
 
-    public void actualizar(Agencia a) throws SQLException {
-        String sql = "UPDATE agencia SET nombre = ?, ciudad = ?, direccion = ?, telefono = ?, activo = ? "
+    public void actualizar(Agencia dkprA) throws SQLException {
+        String dkprSql = "UPDATE agencia SET nombre = ?, ciudad = ?, direccion = ?, telefono = ?, activo = ? "
                 + "WHERE id_agencia = ?";
-        try (Connection cn = Conexion.obtener();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setString(1, a.getNombre());
-            ps.setString(2, a.getCiudad());
-            ps.setString(3, a.getDireccion());
-            ps.setString(4, a.getTelefono());
-            ps.setBoolean(5, a.isActivo());
-            ps.setInt(6, a.getIdAgencia());
-            ps.executeUpdate();
+        try (Connection dkprCn = Conexion.obtener();
+             PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setString(1, dkprA.getNombre());
+            dkprPs.setString(2, dkprA.getCiudad());
+            dkprPs.setString(3, dkprA.getDireccion());
+            dkprPs.setString(4, dkprA.getTelefono());
+            dkprPs.setBoolean(5, dkprA.isActivo());
+            dkprPs.setInt(6, dkprA.getIdAgencia());
+            dkprPs.executeUpdate();
         }
     }
 }

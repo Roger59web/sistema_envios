@@ -13,65 +13,65 @@ import java.util.List;
 
 public class EmpleadoService {
 
-    private final EmpleadoDAO dao = new EmpleadoDAO();
+    private final EmpleadoDAO dkprDao = new EmpleadoDAO();
 
     public List<Empleado> listar() throws SQLException {
-        return dao.listar();
+        return dkprDao.listar();
     }
 
     public List<Rol> listarRoles() throws SQLException {
-        return dao.listarRoles();
+        return dkprDao.listarRoles();
     }
 
     /**
      * @param clavePlano contraseña escrita en pantalla. Obligatoria al crear; al editar,
      *                   si está vacía se conserva la contraseña actual.
      */
-    public void guardar(Empleado e, String clavePlano) throws SQLException {
-        if (e.getIdAgencia() <= 0) {
+    public void guardar(Empleado dkprE, String dkprClavePlano) throws SQLException {
+        if (dkprE.getIdAgencia() <= 0) {
             throw new NegocioException("Selecciona la agencia del empleado.");
         }
-        if (e.getIdRol() <= 0) {
+        if (dkprE.getIdRol() <= 0) {
             throw new NegocioException("Selecciona el rol del empleado.");
         }
-        Validaciones.validarDni(e.getDni(), "El DNI");
-        e.setDni(e.getDni().trim());
-        e.setNombres(Validaciones.requerido(e.getNombres(), "Nombres", 80));
-        e.setApellidos(Validaciones.requerido(e.getApellidos(), "Apellidos", 80));
-        e.setUsuario(Validaciones.requerido(e.getUsuario(), "Usuario", 30));
-        if (!e.getUsuario().matches("[A-Za-z0-9._-]{3,30}")) {
+        Validaciones.validarDni(dkprE.getDni(), "El DNI");
+        dkprE.setDni(dkprE.getDni().trim());
+        dkprE.setNombres(Validaciones.requerido(dkprE.getNombres(), "Nombres", 80));
+        dkprE.setApellidos(Validaciones.requerido(dkprE.getApellidos(), "Apellidos", 80));
+        dkprE.setUsuario(Validaciones.requerido(dkprE.getUsuario(), "Usuario", 30));
+        if (!dkprE.getUsuario().matches("[A-Za-z0-9._-]{3,30}")) {
             throw new NegocioException("El usuario debe tener entre 3 y 30 caracteres: letras, números, punto, guion o guion bajo.");
         }
 
-        boolean esNuevo = e.getIdEmpleado() == 0;
-        if (esNuevo && Validaciones.vacio(clavePlano)) {
+        boolean dkprEsNuevo = dkprE.getIdEmpleado() == 0;
+        if (dkprEsNuevo && Validaciones.vacio(dkprClavePlano)) {
             throw new NegocioException("Ingresa una contraseña para el nuevo empleado.");
         }
-        if (!Validaciones.vacio(clavePlano)) {
-            if (clavePlano.length() < 6) {
+        if (!Validaciones.vacio(dkprClavePlano)) {
+            if (dkprClavePlano.length() < 6) {
                 throw new NegocioException("La contraseña debe tener al menos 6 caracteres.");
             }
-            e.setClaveHash(BCrypt.hashpw(clavePlano, BCrypt.gensalt(10)));
+            dkprE.setClaveHash(BCrypt.hashpw(dkprClavePlano, BCrypt.gensalt(10)));
         } else {
-            e.setClaveHash(null);
+            dkprE.setClaveHash(null);
         }
 
-        if (!esNuevo && !e.isActivo() && Sesion.getActual() != null
-                && Sesion.getActual().getIdEmpleado() == e.getIdEmpleado()) {
+        if (!dkprEsNuevo && !dkprE.isActivo() && Sesion.getActual() != null
+                && Sesion.getActual().getIdEmpleado() == dkprE.getIdEmpleado()) {
             throw new NegocioException("No puedes desactivar tu propio usuario.");
         }
 
         try {
-            if (esNuevo) {
-                dao.insertar(e);
+            if (dkprEsNuevo) {
+                dkprDao.insertar(dkprE);
             } else {
-                dao.actualizar(e);
+                dkprDao.actualizar(dkprE);
             }
-        } catch (SQLException ex) {
-            if ("23505".equals(ex.getSQLState())) {
+        } catch (SQLException dkprEx) {
+            if ("23505".equals(dkprEx.getSQLState())) {
                 throw new NegocioException("Ya existe un empleado con ese DNI o ese usuario.");
             }
-            throw ex;
+            throw dkprEx;
         }
     }
 }

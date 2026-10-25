@@ -8,49 +8,49 @@ public class Comprobante {
 
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    private int idEnvio;
-    private String tipo;
-    private String serie;
-    private int numero;
-    private LocalDateTime fechaEmision;
-    private BigDecimal subtotal;
-    private BigDecimal igv;
-    private BigDecimal total;
-    private String metodoPago;
+    private int dkprIdEnvio;
+    private String dkprTipo;
+    private String dkprSerie;
+    private int dkprNumero;
+    private LocalDateTime dkprFechaEmision;
+    private BigDecimal dkprSubtotal;
+    private BigDecimal dkprIgv;
+    private BigDecimal dkprTotal;
+    private String dkprMetodoPago;
 
-    public int getIdEnvio() { return idEnvio; }
-    public void setIdEnvio(int idEnvio) { this.idEnvio = idEnvio; }
+    public int getIdEnvio() { return dkprIdEnvio; }
+    public void setIdEnvio(int dkprIdEnvio) { this.dkprIdEnvio = dkprIdEnvio; }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getTipo() { return dkprTipo; }
+    public void setTipo(String dkprTipo) { this.dkprTipo = dkprTipo; }
 
-    public String getSerie() { return serie; }
-    public void setSerie(String serie) { this.serie = serie; }
+    public String getSerie() { return dkprSerie; }
+    public void setSerie(String dkprSerie) { this.dkprSerie = dkprSerie; }
 
-    public int getNumero() { return numero; }
-    public void setNumero(int numero) { this.numero = numero; }
+    public int getNumero() { return dkprNumero; }
+    public void setNumero(int dkprNumero) { this.dkprNumero = dkprNumero; }
 
-    public LocalDateTime getFechaEmision() { return fechaEmision; }
-    public void setFechaEmision(LocalDateTime fechaEmision) { this.fechaEmision = fechaEmision; }
+    public LocalDateTime getFechaEmision() { return dkprFechaEmision; }
+    public void setFechaEmision(LocalDateTime dkprFechaEmision) { this.dkprFechaEmision = dkprFechaEmision; }
 
-    public BigDecimal getSubtotal() { return subtotal; }
-    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
+    public BigDecimal getSubtotal() { return dkprSubtotal; }
+    public void setSubtotal(BigDecimal dkprSubtotal) { this.dkprSubtotal = dkprSubtotal; }
 
-    public BigDecimal getIgv() { return igv; }
-    public void setIgv(BigDecimal igv) { this.igv = igv; }
+    public BigDecimal getIgv() { return dkprIgv; }
+    public void setIgv(BigDecimal dkprIgv) { this.dkprIgv = dkprIgv; }
 
-    public BigDecimal getTotal() { return total; }
-    public void setTotal(BigDecimal total) { this.total = total; }
+    public BigDecimal getTotal() { return dkprTotal; }
+    public void setTotal(BigDecimal dkprTotal) { this.dkprTotal = dkprTotal; }
 
-    public String getMetodoPago() { return metodoPago; }
-    public void setMetodoPago(String metodoPago) { this.metodoPago = metodoPago; }
+    public String getMetodoPago() { return dkprMetodoPago; }
+    public void setMetodoPago(String dkprMetodoPago) { this.dkprMetodoPago = dkprMetodoPago; }
 
     /** Ejemplo: B001-00000012 */
     public String getNumeroTexto() {
-        return serie + "-" + String.format("%08d", numero);
+        return dkprSerie + "-" + String.format("%08d", dkprNumero);
     }
 
     public String getFechaTexto() {
-        return fechaEmision == null ? "" : fechaEmision.format(FORMATO);
+        return dkprFechaEmision == null ? "" : dkprFechaEmision.format(FORMATO);
     }
 }

@@ -12,56 +12,56 @@
         </padding>
 
         <Label text="Registrar envío" styleClass="titulo"/>
-        <Label fx:id="lblOrigen" styleClass="etiqueta"/>
+        <Label fx:id="dkprLblOrigen" styleClass="etiqueta"/>
 
         <HBox spacing="8" alignment="CENTER_LEFT">
             <Label text="Destino (ruta):" styleClass="etiqueta"/>
-            <ComboBox fx:id="cmbRuta" prefWidth="420"/>
+            <ComboBox fx:id="dkprCmbRuta" prefWidth="420"/>
         </HBox>
 
         <HBox spacing="16">
             <VBox spacing="6" styleClass="panel-form" HBox.hgrow="ALWAYS">
                 <Label text="Remitente" styleClass="subtitulo"/>
                 <HBox spacing="6">
-                    <ComboBox fx:id="cmbRemTipo" prefWidth="80"/>
-                    <TextField fx:id="txtRemDoc" promptText="N° de documento" HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="dkprCmbRemTipo" prefWidth="80"/>
+                    <TextField fx:id="dkprTxtRemDoc" promptText="N° de documento" HBox.hgrow="ALWAYS"/>
                     <Button text="Buscar" onAction="#onBuscarRemitente"/>
                 </HBox>
-                <TextField fx:id="txtRemNombre" promptText="Nombre completo / razón social"/>
-                <TextField fx:id="txtRemTelefono" promptText="Teléfono"/>
+                <TextField fx:id="dkprTxtRemNombre" promptText="Nombre completo / razón social"/>
+                <TextField fx:id="dkprTxtRemTelefono" promptText="Teléfono"/>
             </VBox>
 
             <VBox spacing="6" styleClass="panel-form" HBox.hgrow="ALWAYS">
                 <Label text="Destinatario" styleClass="subtitulo"/>
                 <HBox spacing="6">
-                    <ComboBox fx:id="cmbDesTipo" prefWidth="80"/>
-                    <TextField fx:id="txtDesDoc" promptText="N° de documento" HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="dkprCmbDesTipo" prefWidth="80"/>
+                    <TextField fx:id="dkprTxtDesDoc" promptText="N° de documento" HBox.hgrow="ALWAYS"/>
                     <Button text="Buscar" onAction="#onBuscarDestinatario"/>
                 </HBox>
-                <TextField fx:id="txtDesNombre" promptText="Nombre completo / razón social"/>
-                <TextField fx:id="txtDesTelefono" promptText="Teléfono"/>
+                <TextField fx:id="dkprTxtDesNombre" promptText="Nombre completo / razón social"/>
+                <TextField fx:id="dkprTxtDesTelefono" promptText="Teléfono"/>
             </VBox>
         </HBox>
 
         <VBox spacing="6" styleClass="panel-form">
             <Label text="Paquete" styleClass="subtitulo"/>
-            <TextField fx:id="txtDescripcion" promptText="Descripción del contenido"/>
+            <TextField fx:id="dkprTxtDescripcion" promptText="Descripción del contenido"/>
             <HBox spacing="8">
-                <TextField fx:id="txtBultos" promptText="Bultos" prefWidth="90"/>
-                <TextField fx:id="txtPeso" promptText="Peso (kg)" prefWidth="110"/>
-                <TextField fx:id="txtValor" promptText="Valor declarado (S/), opcional" HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="dkprTxtBultos" promptText="Bultos" prefWidth="90"/>
+                <TextField fx:id="dkprTxtPeso" promptText="Peso (kg)" prefWidth="110"/>
+                <TextField fx:id="dkprTxtValor" promptText="Valor declarado (S/), opcional" HBox.hgrow="ALWAYS"/>
             </HBox>
-            <TextField fx:id="txtObservaciones" promptText="Observaciones (opcional)"/>
+            <TextField fx:id="dkprTxtObservaciones" promptText="Observaciones (opcional)"/>
         </VBox>
 
         <HBox spacing="12" alignment="CENTER_LEFT" styleClass="panel-form">
             <Label text="Comprobante:" styleClass="etiqueta"/>
-            <ComboBox fx:id="cmbComprobante"/>
+            <ComboBox fx:id="dkprCmbComprobante"/>
             <Label text="Pago:" styleClass="etiqueta"/>
-            <ComboBox fx:id="cmbMetodo"/>
+            <ComboBox fx:id="dkprCmbMetodo"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label text="Total:" styleClass="subtitulo"/>
-            <Label fx:id="lblCosto" styleClass="costo"/>
+            <Label fx:id="dkprLblCosto" styleClass="costo"/>
         </HBox>
 
         <HBox spacing="8" alignment="CENTER_RIGHT">

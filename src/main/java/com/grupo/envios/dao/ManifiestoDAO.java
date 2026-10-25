@@ -8,31 +8,31 @@ import java.sql.SQLException;
 public class ManifiestoDAO {
 
     /** Crea el manifiesto y devuelve su id. El código se arma con el id: MAN-000001. */
-    public int insertar(Connection cn, int idRuta, int idEmpleado, String placa, String conductor,
-                        String observacion) throws SQLException {
-        int id;
-        try (PreparedStatement ps = cn.prepareStatement(
+    public int insertar(Connection dkprCn, int dkprIdRuta, int dkprIdEmpleado, String dkprPlaca, String dkprConductor,
+                        String dkprObservacion) throws SQLException {
+        int dkprId;
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(
                 "SELECT nextval(pg_get_serial_sequence('manifiesto', 'id_manifiesto'))");
-             ResultSet rs = ps.executeQuery()) {
-            rs.next();
-            id = rs.getInt(1);
+             ResultSet dkprRs = dkprPs.executeQuery()) {
+            dkprRs.next();
+            dkprId = dkprRs.getInt(1);
         }
-        String sql = "INSERT INTO manifiesto (id_manifiesto, codigo, id_ruta, id_empleado, placa, conductor, observacion) "
+        String dkprSql = "INSERT INTO manifiesto (id_manifiesto, codigo, id_ruta, id_empleado, placa, conductor, observacion) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = cn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.setString(2, codigo(id));
-            ps.setInt(3, idRuta);
-            ps.setInt(4, idEmpleado);
-            ps.setString(5, placa);
-            ps.setString(6, conductor);
-            ps.setString(7, observacion);
-            ps.executeUpdate();
+        try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
+            dkprPs.setInt(1, dkprId);
+            dkprPs.setString(2, codigo(dkprId));
+            dkprPs.setInt(3, dkprIdRuta);
+            dkprPs.setInt(4, dkprIdEmpleado);
+            dkprPs.setString(5, dkprPlaca);
+            dkprPs.setString(6, dkprConductor);
+            dkprPs.setString(7, dkprObservacion);
+            dkprPs.executeUpdate();
         }
-        return id;
+        return dkprId;
     }
 
-    public static String codigo(int idManifiesto) {
-        return String.format("MAN-%06d", idManifiesto);
+    public static String codigo(int dkprIdManifiesto) {
+        return String.format("MAN-%06d", dkprIdManifiesto);
     }
 }

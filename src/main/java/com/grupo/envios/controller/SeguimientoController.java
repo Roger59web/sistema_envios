@@ -27,197 +27,197 @@ import java.util.List;
 
 public class SeguimientoController {
 
-    @FXML private TextField txtCodigo;
-    @FXML private Button btnCopiar;
-    @FXML private Button btnPdf;
-    @FXML private Button btnTicket;
+    @FXML private TextField dkprTxtCodigo;
+    @FXML private Button dkprBtnCopiar;
+    @FXML private Button dkprBtnPdf;
+    @FXML private Button dkprBtnTicket;
 
-    @FXML private Label lblCodigo;
-    @FXML private Label lblEstado;
-    @FXML private Label lblRuta;
-    @FXML private Label lblFecha;
-    @FXML private Label lblRemitente;
-    @FXML private Label lblDestinatario;
-    @FXML private Label lblDescripcion;
-    @FXML private Label lblPesoBultos;
-    @FXML private Label lblCosto;
-    @FXML private Label lblEstimada;
+    @FXML private Label dkprLblCodigo;
+    @FXML private Label dkprLblEstado;
+    @FXML private Label dkprLblRuta;
+    @FXML private Label dkprLblFecha;
+    @FXML private Label dkprLblRemitente;
+    @FXML private Label dkprLblDestinatario;
+    @FXML private Label dkprLblDescripcion;
+    @FXML private Label dkprLblPesoBultos;
+    @FXML private Label dkprLblCosto;
+    @FXML private Label dkprLblEstimada;
 
-    @FXML private TableView<HistorialEnvio> tablaHistorial;
-    @FXML private TableColumn<HistorialEnvio, String> colFecha;
-    @FXML private TableColumn<HistorialEnvio, String> colEstadoHist;
-    @FXML private TableColumn<HistorialEnvio, String> colAgencia;
-    @FXML private TableColumn<HistorialEnvio, String> colEmpleado;
-    @FXML private TableColumn<HistorialEnvio, String> colObservacion;
+    @FXML private TableView<HistorialEnvio> dkprTablaHistorial;
+    @FXML private TableColumn<HistorialEnvio, String> dkprColFecha;
+    @FXML private TableColumn<HistorialEnvio, String> dkprColEstadoHist;
+    @FXML private TableColumn<HistorialEnvio, String> dkprColAgencia;
+    @FXML private TableColumn<HistorialEnvio, String> dkprColEmpleado;
+    @FXML private TableColumn<HistorialEnvio, String> dkprColObservacion;
 
-    @FXML private Label lblPermiso;
-    @FXML private VBox panelEstado;
-    @FXML private ComboBox<String> cmbNuevoEstado;
-    @FXML private TextField txtObservacion;
+    @FXML private Label dkprLblPermiso;
+    @FXML private VBox dkprPanelEstado;
+    @FXML private ComboBox<String> dkprCmbNuevoEstado;
+    @FXML private TextField dkprTxtObservacion;
 
-    private final EnvioService service = new EnvioService();
-    private Envio envio;
+    private final EnvioService dkprService = new EnvioService();
+    private Envio dkprEnvio;
 
     @FXML
     private void initialize() {
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fechaTexto"));
-        colEstadoHist.setCellValueFactory(new PropertyValueFactory<>("estado"));
-        colAgencia.setCellValueFactory(new PropertyValueFactory<>("agencia"));
-        colEmpleado.setCellValueFactory(new PropertyValueFactory<>("empleado"));
-        colObservacion.setCellValueFactory(new PropertyValueFactory<>("observacion"));
+        dkprColFecha.setCellValueFactory(new PropertyValueFactory<>("fechaTexto"));
+        dkprColEstadoHist.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        dkprColAgencia.setCellValueFactory(new PropertyValueFactory<>("agencia"));
+        dkprColEmpleado.setCellValueFactory(new PropertyValueFactory<>("empleado"));
+        dkprColObservacion.setCellValueFactory(new PropertyValueFactory<>("observacion"));
 
-        txtCodigo.setOnAction(e -> onBuscar());
+        dkprTxtCodigo.setOnAction(dkprE -> onBuscar());
         limpiarDetalle();
     }
 
     private void limpiarDetalle() {
-        envio = null;
-        lblCodigo.setText("");
-        lblEstado.setText("");
-        lblRuta.setText("");
-        lblFecha.setText("");
-        lblRemitente.setText("");
-        lblDestinatario.setText("");
-        lblDescripcion.setText("");
-        lblPesoBultos.setText("");
-        lblCosto.setText("");
-        lblEstimada.setText("");
-        Estados.colorear(lblEstado, null);
-        tablaHistorial.getItems().clear();
+        dkprEnvio = null;
+        dkprLblCodigo.setText("");
+        dkprLblEstado.setText("");
+        dkprLblRuta.setText("");
+        dkprLblFecha.setText("");
+        dkprLblRemitente.setText("");
+        dkprLblDestinatario.setText("");
+        dkprLblDescripcion.setText("");
+        dkprLblPesoBultos.setText("");
+        dkprLblCosto.setText("");
+        dkprLblEstimada.setText("");
+        Estados.colorear(dkprLblEstado, null);
+        dkprTablaHistorial.getItems().clear();
         mostrarPermiso("");
         ocultarPanelEstado();
         habilitarAcciones(false);
     }
 
-    private void habilitarAcciones(boolean hayEnvio) {
-        btnCopiar.setDisable(!hayEnvio);
-        btnPdf.setDisable(!hayEnvio);
-        btnTicket.setDisable(!hayEnvio);
+    private void habilitarAcciones(boolean dkprHayEnvio) {
+        dkprBtnCopiar.setDisable(!dkprHayEnvio);
+        dkprBtnPdf.setDisable(!dkprHayEnvio);
+        dkprBtnTicket.setDisable(!dkprHayEnvio);
     }
 
-    private void mostrarPermiso(String texto) {
-        lblPermiso.setText(texto);
-        lblPermiso.setVisible(!texto.isEmpty());
-        lblPermiso.setManaged(!texto.isEmpty());
+    private void mostrarPermiso(String dkprTexto) {
+        dkprLblPermiso.setText(dkprTexto);
+        dkprLblPermiso.setVisible(!dkprTexto.isEmpty());
+        dkprLblPermiso.setManaged(!dkprTexto.isEmpty());
     }
 
     private void ocultarPanelEstado() {
-        panelEstado.setVisible(false);
-        panelEstado.setManaged(false);
+        dkprPanelEstado.setVisible(false);
+        dkprPanelEstado.setManaged(false);
     }
 
-    private void mostrar(Envio e) throws Exception {
-        envio = e;
-        lblCodigo.setText(e.getCodigoSeguimiento());
-        lblEstado.setText(e.getEstado());
-        Estados.colorear(lblEstado, e.getEstado());
+    private void mostrar(Envio dkprE) throws Exception {
+        dkprEnvio = dkprE;
+        dkprLblCodigo.setText(dkprE.getCodigoSeguimiento());
+        dkprLblEstado.setText(dkprE.getEstado());
+        Estados.colorear(dkprLblEstado, dkprE.getEstado());
         habilitarAcciones(true);
-        lblRuta.setText(e.getRuta());
-        lblFecha.setText(e.getFechaTexto());
-        lblRemitente.setText(e.getRemitente() + " (" + e.getRemitenteDocumento() + ")");
-        lblDestinatario.setText(e.getDestinatario() + " (" + e.getDestinatarioDocumento() + ")");
-        lblDescripcion.setText(e.getDescripcion());
-        lblPesoBultos.setText(e.getPesoKg().toPlainString() + " kg  /  " + e.getCantidadBultos() + " bulto(s)");
-        lblCosto.setText("S/ " + e.getCostoEnvio().toPlainString());
-        lblEstimada.setText(textoLlegada(e));
+        dkprLblRuta.setText(dkprE.getRuta());
+        dkprLblFecha.setText(dkprE.getFechaTexto());
+        dkprLblRemitente.setText(dkprE.getRemitente() + " (" + dkprE.getRemitenteDocumento() + ")");
+        dkprLblDestinatario.setText(dkprE.getDestinatario() + " (" + dkprE.getDestinatarioDocumento() + ")");
+        dkprLblDescripcion.setText(dkprE.getDescripcion());
+        dkprLblPesoBultos.setText(dkprE.getPesoKg().toPlainString() + " kg  /  " + dkprE.getCantidadBultos() + " bulto(s)");
+        dkprLblCosto.setText("S/ " + dkprE.getCostoEnvio().toPlainString());
+        dkprLblEstimada.setText(textoLlegada(dkprE));
 
-        tablaHistorial.setItems(FXCollections.observableArrayList(service.historial(e.getIdEnvio())));
+        dkprTablaHistorial.setItems(FXCollections.observableArrayList(dkprService.historial(dkprE.getIdEnvio())));
 
-        Empleado empleado = Sesion.getActual();
-        mostrarPermiso(service.avisoSoloConsulta(e, empleado));
-        List<Integer> siguientes = service.estadosDisponibles(e, empleado);
-        boolean mostrarPanel = !siguientes.isEmpty();
-        panelEstado.setVisible(mostrarPanel);
-        panelEstado.setManaged(mostrarPanel);
-        if (mostrarPanel) {
-            cmbNuevoEstado.setItems(FXCollections.observableArrayList(
-                    siguientes.stream().map(Estados::nombre).toList()));
-            cmbNuevoEstado.setValue(null);
-            txtObservacion.clear();
+        Empleado dkprEmpleado = Sesion.getActual();
+        mostrarPermiso(dkprService.avisoSoloConsulta(dkprE, dkprEmpleado));
+        List<Integer> dkprSiguientes = dkprService.estadosDisponibles(dkprE, dkprEmpleado);
+        boolean dkprMostrarPanel = !dkprSiguientes.isEmpty();
+        dkprPanelEstado.setVisible(dkprMostrarPanel);
+        dkprPanelEstado.setManaged(dkprMostrarPanel);
+        if (dkprMostrarPanel) {
+            dkprCmbNuevoEstado.setItems(FXCollections.observableArrayList(
+                    dkprSiguientes.stream().map(Estados::nombre).toList()));
+            dkprCmbNuevoEstado.setValue(null);
+            dkprTxtObservacion.clear();
         }
     }
 
     /** Fecha prometida al cliente, con el atraso o el manifiesto en que viaja. */
-    private String textoLlegada(Envio e) {
-        String texto = e.getFechaEstimadaTexto();
-        if (e.getDiasAtraso() > 0) {
-            texto += "  (" + e.getAlerta() + ")";
+    private String textoLlegada(Envio dkprE) {
+        String dkprTexto = dkprE.getFechaEstimadaTexto();
+        if (dkprE.getDiasAtraso() > 0) {
+            dkprTexto += "  (" + dkprE.getAlerta() + ")";
         }
-        if (e.getManifiesto() != null) {
-            texto += "  -  manifiesto " + e.getManifiesto();
+        if (dkprE.getManifiesto() != null) {
+            dkprTexto += "  -  manifiesto " + dkprE.getManifiesto();
         }
-        return texto;
+        return dkprTexto;
     }
 
     @FXML
     private void onBuscar() {
         try {
-            mostrar(service.buscar(txtCodigo.getText()));
-        } catch (Exception e) {
+            mostrar(dkprService.buscar(dkprTxtCodigo.getText()));
+        } catch (Exception dkprE) {
             limpiarDetalle();
-            Alertas.manejar(e);
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onCopiarCodigo() {
-        if (envio == null) {
+        if (dkprEnvio == null) {
             return;
         }
-        ClipboardContent contenido = new ClipboardContent();
-        contenido.putString(envio.getCodigoSeguimiento());
-        Clipboard.getSystemClipboard().setContent(contenido);
-        btnCopiar.setText("¡Copiado!");
-        PauseTransition pausa = new PauseTransition(Duration.seconds(1.5));
-        pausa.setOnFinished(ev -> btnCopiar.setText("Copiar código"));
-        pausa.play();
+        ClipboardContent dkprContenido = new ClipboardContent();
+        dkprContenido.putString(dkprEnvio.getCodigoSeguimiento());
+        Clipboard.getSystemClipboard().setContent(dkprContenido);
+        dkprBtnCopiar.setText("¡Copiado!");
+        PauseTransition dkprPausa = new PauseTransition(Duration.seconds(1.5));
+        dkprPausa.setOnFinished(dkprEv -> dkprBtnCopiar.setText("Copiar código"));
+        dkprPausa.play();
     }
 
     @FXML
     private void onTicket() {
-        if (envio == null) {
+        if (dkprEnvio == null) {
             return;
         }
         try {
-            VistaTicket.mostrar(service.detalle(envio.getCodigoSeguimiento()), txtCodigo.getScene().getWindow());
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            VistaTicket.mostrar(dkprService.detalle(dkprEnvio.getCodigoSeguimiento()), dkprTxtCodigo.getScene().getWindow());
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onGuardarPdf() {
-        if (envio == null) {
+        if (dkprEnvio == null) {
             return;
         }
         try {
-            VistaTicket.guardarPdf(service.detalle(envio.getCodigoSeguimiento()), txtCodigo.getScene().getWindow());
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            VistaTicket.guardarPdf(dkprService.detalle(dkprEnvio.getCodigoSeguimiento()), dkprTxtCodigo.getScene().getWindow());
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 
     @FXML
     private void onActualizarEstado() {
-        if (envio == null) {
+        if (dkprEnvio == null) {
             return;
         }
-        String nombreEstado = cmbNuevoEstado.getValue();
-        if (nombreEstado == null) {
+        String dkprNombreEstado = dkprCmbNuevoEstado.getValue();
+        if (dkprNombreEstado == null) {
             Alertas.advertencia("Selecciona el nuevo estado.");
             return;
         }
-        int nuevoEstado = Estados.id(nombreEstado);
-        if (nuevoEstado == Estados.ANULADO
-                && !Alertas.confirmar("¿Seguro que deseas ANULAR el envío " + envio.getCodigoSeguimiento() + "?")) {
+        int dkprNuevoEstado = Estados.id(dkprNombreEstado);
+        if (dkprNuevoEstado == Estados.ANULADO
+                && !Alertas.confirmar("¿Seguro que deseas ANULAR el envío " + dkprEnvio.getCodigoSeguimiento() + "?")) {
             return;
         }
         try {
-            service.cambiarEstado(envio, nuevoEstado, txtObservacion.getText(), Sesion.getActual());
-            Alertas.info("Estado actualizado a " + nombreEstado + ".");
-            mostrar(service.buscar(envio.getCodigoSeguimiento()));
-        } catch (Exception e) {
-            Alertas.manejar(e);
+            dkprService.cambiarEstado(dkprEnvio, dkprNuevoEstado, dkprTxtObservacion.getText(), Sesion.getActual());
+            Alertas.info("Estado actualizado a " + dkprNombreEstado + ".");
+            mostrar(dkprService.buscar(dkprEnvio.getCodigoSeguimiento()));
+        } catch (Exception dkprE) {
+            Alertas.manejar(dkprE);
         }
     }
 }

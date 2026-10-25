@@ -13,12 +13,12 @@
     <Label text="Seguimiento de envíos" styleClass="titulo"/>
 
     <HBox spacing="8">
-        <TextField fx:id="txtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
+        <TextField fx:id="dkprTxtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
         <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscar"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="btnCopiar" text="Copiar código" onAction="#onCopiarCodigo"/>
-        <Button fx:id="btnPdf" text="Guardar PDF" onAction="#onGuardarPdf"/>
-        <Button fx:id="btnTicket" text="Imprimir ticket" styleClass="boton-primario" onAction="#onTicket"/>
+        <Button fx:id="dkprBtnCopiar" text="Copiar código" onAction="#onCopiarCodigo"/>
+        <Button fx:id="dkprBtnPdf" text="Guardar PDF" onAction="#onGuardarPdf"/>
+        <Button fx:id="dkprBtnTicket" text="Imprimir ticket" styleClass="boton-primario" onAction="#onTicket"/>
     </HBox>
 
     <GridPane hgap="12" vgap="6" styleClass="panel-form">
@@ -30,49 +30,49 @@
         </columnConstraints>
 
         <Label text="Código:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <Label fx:id="lblCodigo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblCodigo" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
         <Label text="Estado:" styleClass="etiqueta" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
-        <Label fx:id="lblEstado" styleClass="subtitulo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblEstado" styleClass="subtitulo" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
 
         <Label text="Ruta:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <Label fx:id="lblRuta" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblRuta" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
         <Label text="Registrado:" styleClass="etiqueta" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
-        <Label fx:id="lblFecha" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblFecha" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
 
         <Label text="Remitente:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <Label fx:id="lblRemitente" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblRemitente" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
         <Label text="Destinatario:" styleClass="etiqueta" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-        <Label fx:id="lblDestinatario" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblDestinatario" wrapText="true" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
 
         <Label text="Contenido:" styleClass="etiqueta" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <Label fx:id="lblDescripcion" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblDescripcion" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
         <Label text="Peso / bultos:" styleClass="etiqueta" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
-        <Label fx:id="lblPesoBultos" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblPesoBultos" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
 
         <Label text="Costo:" styleClass="etiqueta" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <Label fx:id="lblCosto" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label fx:id="dkprLblCosto" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
         <Label text="Llegada estimada:" styleClass="etiqueta" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
-        <Label fx:id="lblEstimada" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+        <Label fx:id="dkprLblEstimada" wrapText="true" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
     </GridPane>
 
     <Label text="Historial de movimientos" styleClass="subtitulo"/>
-    <TableView fx:id="tablaHistorial" VBox.vgrow="ALWAYS" prefHeight="180">
+    <TableView fx:id="dkprTablaHistorial" VBox.vgrow="ALWAYS" prefHeight="180">
         <columns>
-            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120"/>
-            <TableColumn fx:id="colEstadoHist" text="Estado" prefWidth="140"/>
-            <TableColumn fx:id="colAgencia" text="Agencia" prefWidth="150"/>
-            <TableColumn fx:id="colEmpleado" text="Empleado" prefWidth="160"/>
-            <TableColumn fx:id="colObservacion" text="Observación" prefWidth="260"/>
+            <TableColumn fx:id="dkprColFecha" text="Fecha" prefWidth="120"/>
+            <TableColumn fx:id="dkprColEstadoHist" text="Estado" prefWidth="140"/>
+            <TableColumn fx:id="dkprColAgencia" text="Agencia" prefWidth="150"/>
+            <TableColumn fx:id="dkprColEmpleado" text="Empleado" prefWidth="160"/>
+            <TableColumn fx:id="dkprColObservacion" text="Observación" prefWidth="260"/>
         </columns>
     </TableView>
 
-    <Label fx:id="lblPermiso" styleClass="aviso" wrapText="true"/>
+    <Label fx:id="dkprLblPermiso" styleClass="aviso" wrapText="true"/>
 
-    <VBox fx:id="panelEstado" spacing="6" styleClass="panel-form">
+    <VBox fx:id="dkprPanelEstado" spacing="6" styleClass="panel-form">
         <Label text="Actualizar estado" styleClass="subtitulo"/>
         <HBox spacing="8" alignment="CENTER_LEFT">
-            <ComboBox fx:id="cmbNuevoEstado" promptText="Nuevo estado" prefWidth="200"/>
-            <TextField fx:id="txtObservacion" promptText="Observación (obligatoria al anular)" HBox.hgrow="ALWAYS"/>
+            <ComboBox fx:id="dkprCmbNuevoEstado" promptText="Nuevo estado" prefWidth="200"/>
+            <TextField fx:id="dkprTxtObservacion" promptText="Observación (obligatoria al anular)" HBox.hgrow="ALWAYS"/>
             <Button text="Actualizar" styleClass="boton-primario" onAction="#onActualizarEstado"/>
         </HBox>
     </VBox>

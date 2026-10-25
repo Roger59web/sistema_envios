@@ -11,39 +11,39 @@ import java.util.List;
 
 public class ClienteService {
 
-    private final ClienteDAO dao = new ClienteDAO();
+    private final ClienteDAO dkprDao = new ClienteDAO();
 
-    public List<Cliente> buscar(String filtro) throws SQLException {
-        return dao.listar(filtro == null ? "" : filtro.trim());
+    public List<Cliente> buscar(String dkprFiltro) throws SQLException {
+        return dkprDao.listar(dkprFiltro == null ? "" : dkprFiltro.trim());
     }
 
     /** Devuelve el cliente con ese documento, o null si todavía no está registrado. */
-    public Cliente buscarPorDocumento(String tipo, String numero) throws SQLException {
-        Validaciones.validarDocumento(tipo, numero);
-        return dao.buscarPorDocumento(tipo, numero.trim());
+    public Cliente buscarPorDocumento(String dkprTipo, String dkprNumero) throws SQLException {
+        Validaciones.validarDocumento(dkprTipo, dkprNumero);
+        return dkprDao.buscarPorDocumento(dkprTipo, dkprNumero.trim());
     }
 
-    public void guardar(Cliente c) throws SQLException {
-        Validaciones.validarDocumento(c.getTipoDocumento(), c.getNumeroDocumento());
-        c.setNumeroDocumento(c.getNumeroDocumento().trim());
-        c.setNombreCompleto(Validaciones.requerido(c.getNombreCompleto(), "Nombre / Razón social", 150));
-        c.setTelefono(Validaciones.opcional(c.getTelefono(), "Teléfono", 15));
-        c.setEmail(Validaciones.opcional(c.getEmail(), "Correo", 100));
-        c.setDireccion(Validaciones.opcional(c.getDireccion(), "Dirección", 150));
-        Validaciones.validarTelefono(c.getTelefono());
-        Validaciones.validarEmail(c.getEmail());
+    public void guardar(Cliente dkprC) throws SQLException {
+        Validaciones.validarDocumento(dkprC.getTipoDocumento(), dkprC.getNumeroDocumento());
+        dkprC.setNumeroDocumento(dkprC.getNumeroDocumento().trim());
+        dkprC.setNombreCompleto(Validaciones.requerido(dkprC.getNombreCompleto(), "Nombre / Razón social", 150));
+        dkprC.setTelefono(Validaciones.opcional(dkprC.getTelefono(), "Teléfono", 15));
+        dkprC.setEmail(Validaciones.opcional(dkprC.getEmail(), "Correo", 100));
+        dkprC.setDireccion(Validaciones.opcional(dkprC.getDireccion(), "Dirección", 150));
+        Validaciones.validarTelefono(dkprC.getTelefono());
+        Validaciones.validarEmail(dkprC.getEmail());
 
         try {
-            if (c.getIdCliente() == 0) {
-                dao.insertar(c);
+            if (dkprC.getIdCliente() == 0) {
+                dkprDao.insertar(dkprC);
             } else {
-                dao.actualizar(c);
+                dkprDao.actualizar(dkprC);
             }
-        } catch (SQLException e) {
-            if ("23505".equals(e.getSQLState())) {
+        } catch (SQLException dkprE) {
+            if ("23505".equals(dkprE.getSQLState())) {
                 throw new NegocioException("Ya existe un cliente con ese tipo y número de documento.");
             }
-            throw e;
+            throw dkprE;
         }
     }
 
@@ -53,24 +53,24 @@ public class ClienteService {
      *
      * @param etiqueta "remitente" o "destinatario", solo para armar los mensajes de error
      */
-    public Cliente obtenerOCrear(Connection cn, String tipo, String documento, String nombre,
-                                 String telefono, String etiqueta) throws SQLException {
-        Validaciones.validarDocumento(tipo, documento);
-        String doc = documento.trim();
+    public Cliente obtenerOCrear(Connection dkprCn, String dkprTipo, String dkprDocumento, String dkprNombre,
+                                 String dkprTelefono, String dkprEtiqueta) throws SQLException {
+        Validaciones.validarDocumento(dkprTipo, dkprDocumento);
+        String dkprDoc = dkprDocumento.trim();
 
-        Cliente existente = dao.buscarPorDocumento(cn, tipo, doc);
-        if (existente != null) {
-            return existente;
+        Cliente dkprExistente = dkprDao.buscarPorDocumento(dkprCn, dkprTipo, dkprDoc);
+        if (dkprExistente != null) {
+            return dkprExistente;
         }
 
-        Cliente nuevo = new Cliente();
-        nuevo.setTipoDocumento(tipo);
-        nuevo.setNumeroDocumento(doc);
-        nuevo.setNombreCompleto(Validaciones.requerido(nombre, "Nombre del " + etiqueta, 150));
-        String tel = Validaciones.opcional(telefono, "Teléfono del " + etiqueta, 15);
-        Validaciones.validarTelefono(tel);
-        nuevo.setTelefono(tel);
-        nuevo.setIdCliente(dao.insertar(cn, nuevo));
-        return nuevo;
+        Cliente dkprNuevo = new Cliente();
+        dkprNuevo.setTipoDocumento(dkprTipo);
+        dkprNuevo.setNumeroDocumento(dkprDoc);
+        dkprNuevo.setNombreCompleto(Validaciones.requerido(dkprNombre, "Nombre del " + dkprEtiqueta, 150));
+        String dkprTel = Validaciones.opcional(dkprTelefono, "Teléfono del " + dkprEtiqueta, 15);
+        Validaciones.validarTelefono(dkprTel);
+        dkprNuevo.setTelefono(dkprTel);
+        dkprNuevo.setIdCliente(dkprDao.insertar(dkprCn, dkprNuevo));
+        return dkprNuevo;
     }
 }

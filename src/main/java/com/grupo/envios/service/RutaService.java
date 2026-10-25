@@ -14,56 +14,56 @@ public class RutaService {
     private static final BigDecimal MAXIMO_PRECIO = new BigDecimal("99999.99");
     private static final BigDecimal MAXIMO_PESO = new BigDecimal("9999.99");
 
-    private final RutaDAO dao = new RutaDAO();
+    private final RutaDAO dkprDao = new RutaDAO();
 
     public List<Ruta> listar() throws SQLException {
-        return dao.listar();
+        return dkprDao.listar();
     }
 
-    public List<Ruta> listarPorOrigen(int idAgenciaOrigen) throws SQLException {
-        return dao.listarPorOrigen(idAgenciaOrigen);
+    public List<Ruta> listarPorOrigen(int dkprIdAgenciaOrigen) throws SQLException {
+        return dkprDao.listarPorOrigen(dkprIdAgenciaOrigen);
     }
 
-    public void guardar(Ruta r) throws SQLException {
-        if (r.getIdAgenciaOrigen() <= 0 || r.getIdAgenciaDestino() <= 0) {
+    public void guardar(Ruta dkprR) throws SQLException {
+        if (dkprR.getIdAgenciaOrigen() <= 0 || dkprR.getIdAgenciaDestino() <= 0) {
             throw new NegocioException("Selecciona la agencia de origen y la de destino.");
         }
-        if (r.getIdAgenciaOrigen() == r.getIdAgenciaDestino()) {
+        if (dkprR.getIdAgenciaOrigen() == dkprR.getIdAgenciaDestino()) {
             throw new NegocioException("El origen y el destino deben ser agencias distintas.");
         }
-        if (r.getDiasEstimados() < 1 || r.getDiasEstimados() > 30) {
+        if (dkprR.getDiasEstimados() < 1 || dkprR.getDiasEstimados() > 30) {
             throw new NegocioException("Los días estimados deben estar entre 1 y 30.");
         }
-        r.setPrecioBase(validarMonto(r.getPrecioBase(), "Precio base", MAXIMO_PRECIO, true));
-        r.setPrecioKgExtra(validarMonto(r.getPrecioKgExtra(), "Precio por kg extra", MAXIMO_PRECIO, true));
-        r.setPesoMaxKg(validarMonto(r.getPesoMaxKg(), "Peso máximo", MAXIMO_PESO, false));
+        dkprR.setPrecioBase(validarMonto(dkprR.getPrecioBase(), "Precio base", MAXIMO_PRECIO, true));
+        dkprR.setPrecioKgExtra(validarMonto(dkprR.getPrecioKgExtra(), "Precio por kg extra", MAXIMO_PRECIO, true));
+        dkprR.setPesoMaxKg(validarMonto(dkprR.getPesoMaxKg(), "Peso máximo", MAXIMO_PESO, false));
 
         try {
-            if (r.getIdRuta() == 0) {
-                dao.insertar(r);
+            if (dkprR.getIdRuta() == 0) {
+                dkprDao.insertar(dkprR);
             } else {
-                dao.actualizar(r);
+                dkprDao.actualizar(dkprR);
             }
-        } catch (SQLException e) {
-            if ("23505".equals(e.getSQLState())) {
+        } catch (SQLException dkprE) {
+            if ("23505".equals(dkprE.getSQLState())) {
                 throw new NegocioException("Ya existe una ruta entre esas dos agencias.");
             }
-            throw e;
+            throw dkprE;
         }
     }
 
-    private BigDecimal validarMonto(BigDecimal valor, String campo, BigDecimal maximo, boolean admiteCero) {
-        if (valor == null) {
-            throw new NegocioException("El campo \"" + campo + "\" es obligatorio.");
+    private BigDecimal validarMonto(BigDecimal dkprValor, String dkprCampo, BigDecimal dkprMaximo, boolean dkprAdmiteCero) {
+        if (dkprValor == null) {
+            throw new NegocioException("El campo \"" + dkprCampo + "\" es obligatorio.");
         }
-        boolean invalido = admiteCero ? valor.signum() < 0 : valor.signum() <= 0;
-        if (invalido) {
-            throw new NegocioException("El campo \"" + campo + "\" debe ser "
-                    + (admiteCero ? "cero o mayor." : "mayor que cero."));
+        boolean dkprInvalido = dkprAdmiteCero ? dkprValor.signum() < 0 : dkprValor.signum() <= 0;
+        if (dkprInvalido) {
+            throw new NegocioException("El campo \"" + dkprCampo + "\" debe ser "
+                    + (dkprAdmiteCero ? "cero o mayor." : "mayor que cero."));
         }
-        if (valor.compareTo(maximo) > 0) {
-            throw new NegocioException("El campo \"" + campo + "\" no puede superar " + maximo + ".");
+        if (dkprValor.compareTo(dkprMaximo) > 0) {
+            throw new NegocioException("El campo \"" + dkprCampo + "\" no puede superar " + dkprMaximo + ".");
         }
-        return valor.setScale(2, RoundingMode.HALF_UP);
+        return dkprValor.setScale(2, RoundingMode.HALF_UP);
     }
 }

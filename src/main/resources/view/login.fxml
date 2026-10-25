@@ -13,8 +13,8 @@
 
     <Label text="Sistema de Envíos" styleClass="titulo"/>
     <Label text="Ingreso de personal de ventanilla"/>
-    <TextField fx:id="txtUsuario" promptText="Usuario"/>
-    <PasswordField fx:id="txtClave" promptText="Contraseña" onAction="#onIngresar"/>
-    <Label fx:id="lblError" styleClass="error" wrapText="true"/>
+    <TextField fx:id="dkprTxtUsuario" promptText="Usuario"/>
+    <PasswordField fx:id="dkprTxtClave" promptText="Contraseña" onAction="#onIngresar"/>
+    <Label fx:id="dkprLblError" styleClass="error" wrapText="true"/>
     <Button text="Ingresar" defaultButton="true" maxWidth="Infinity" onAction="#onIngresar"/>
 </VBox>

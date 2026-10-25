@@ -12,28 +12,28 @@
 
     <VBox spacing="8" HBox.hgrow="ALWAYS">
         <Label text="Agencias" styleClass="titulo"/>
-        <TableView fx:id="tabla" VBox.vgrow="ALWAYS">
+        <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
             <columns>
-                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="170"/>
-                <TableColumn fx:id="colCiudad" text="Ciudad" prefWidth="100"/>
-                <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="190"/>
-                <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100"/>
-                <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
+                <TableColumn fx:id="dkprColNombre" text="Nombre" prefWidth="170"/>
+                <TableColumn fx:id="dkprColCiudad" text="Ciudad" prefWidth="100"/>
+                <TableColumn fx:id="dkprColDireccion" text="Dirección" prefWidth="190"/>
+                <TableColumn fx:id="dkprColTelefono" text="Teléfono" prefWidth="100"/>
+                <TableColumn fx:id="dkprColEstado" text="Estado" prefWidth="80"/>
             </columns>
         </TableView>
     </VBox>
 
     <VBox spacing="6" prefWidth="320" minWidth="320" styleClass="panel-form">
-        <Label fx:id="lblModo" styleClass="subtitulo"/>
+        <Label fx:id="dkprLblModo" styleClass="subtitulo"/>
         <Label text="Nombre" styleClass="etiqueta"/>
-        <TextField fx:id="txtNombre"/>
+        <TextField fx:id="dkprTxtNombre"/>
         <Label text="Ciudad" styleClass="etiqueta"/>
-        <TextField fx:id="txtCiudad"/>
+        <TextField fx:id="dkprTxtCiudad"/>
         <Label text="Dirección" styleClass="etiqueta"/>
-        <TextField fx:id="txtDireccion"/>
+        <TextField fx:id="dkprTxtDireccion"/>
         <Label text="Teléfono" styleClass="etiqueta"/>
-        <TextField fx:id="txtTelefono"/>
-        <CheckBox fx:id="chkActivo" text="Agencia activa"/>
+        <TextField fx:id="dkprTxtTelefono"/>
+        <CheckBox fx:id="dkprChkActivo" text="Agencia activa"/>
         <HBox spacing="8" alignment="CENTER_RIGHT">
             <padding>
                 <Insets top="10"/>

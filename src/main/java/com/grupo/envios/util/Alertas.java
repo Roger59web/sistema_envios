@@ -12,61 +12,61 @@ public final class Alertas {
     private Alertas() {
     }
 
-    public static void info(String mensaje) {
-        mostrar(Alert.AlertType.INFORMATION, "Sistema de Envíos", mensaje);
+    public static void info(String dkprMensaje) {
+        mostrar(Alert.AlertType.INFORMATION, "Sistema de Envíos", dkprMensaje);
     }
 
-    public static void advertencia(String mensaje) {
-        mostrar(Alert.AlertType.WARNING, "Revisa los datos", mensaje);
+    public static void advertencia(String dkprMensaje) {
+        mostrar(Alert.AlertType.WARNING, "Revisa los datos", dkprMensaje);
     }
 
-    public static void error(String mensaje) {
-        mostrar(Alert.AlertType.ERROR, "Error", mensaje);
+    public static void error(String dkprMensaje) {
+        mostrar(Alert.AlertType.ERROR, "Error", dkprMensaje);
     }
 
     /** Pregunta Sí/No. Devuelve true si el usuario confirma. */
-    public static boolean confirmar(String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, mensaje, ButtonType.YES, ButtonType.NO);
-        alerta.setTitle("Confirmar");
-        alerta.setHeaderText(null);
-        alerta.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        return alerta.showAndWait().filter(b -> b == ButtonType.YES).isPresent();
+    public static boolean confirmar(String dkprMensaje) {
+        Alert dkprAlerta = new Alert(Alert.AlertType.CONFIRMATION, dkprMensaje, ButtonType.YES, ButtonType.NO);
+        dkprAlerta.setTitle("Confirmar");
+        dkprAlerta.setHeaderText(null);
+        dkprAlerta.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        return dkprAlerta.showAndWait().filter(dkprB -> dkprB == ButtonType.YES).isPresent();
     }
 
     /**
      * Muestra el mensaje adecuado según el tipo de excepción:
      * errores de validación como advertencia, errores de base de datos y otros como error.
      */
-    public static void manejar(Throwable t) {
-        if (t instanceof NegocioException) {
-            advertencia(t.getMessage());
+    public static void manejar(Throwable dkprT) {
+        if (dkprT instanceof NegocioException) {
+            advertencia(dkprT.getMessage());
             return;
         }
-        t.printStackTrace();
-        if (t instanceof SQLException) {
-            String estado = ((SQLException) t).getSQLState();
-            if ("23505".equals(estado)) {
+        dkprT.printStackTrace();
+        if (dkprT instanceof SQLException) {
+            String dkprEstado = ((SQLException) dkprT).getSQLState();
+            if ("23505".equals(dkprEstado)) {
                 advertencia("Ya existe un registro con esos datos.");
-            } else if ("23503".equals(estado)) {
+            } else if ("23503".equals(dkprEstado)) {
                 advertencia("No se puede completar la operación: el registro está relacionado con otros datos.");
-            } else if ("42P01".equals(estado) || "42703".equals(estado)) {
+            } else if ("42P01".equals(dkprEstado) || "42703".equals(dkprEstado)) {
                 // Falta una tabla o columna: la base no tiene aplicados los scripts de database/cambios.
                 error("La base de datos no está actualizada.\nEjecuta en orden los scripts de "
-                        + "database/cambios/ que falten.\n\nDetalle: " + t.getMessage());
+                        + "database/cambios/ que falten.\n\nDetalle: " + dkprT.getMessage());
             } else {
-                error("Error de base de datos:\n" + t.getMessage());
+                error("Error de base de datos:\n" + dkprT.getMessage());
             }
             return;
         }
-        error("Ocurrió un error inesperado:\n" + t.getMessage());
+        error("Ocurrió un error inesperado:\n" + dkprT.getMessage());
     }
 
-    private static void mostrar(Alert.AlertType tipo, String titulo, String mensaje) {
-        Alert alerta = new Alert(tipo);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alerta.showAndWait();
+    private static void mostrar(Alert.AlertType dkprTipo, String dkprTitulo, String dkprMensaje) {
+        Alert dkprAlerta = new Alert(dkprTipo);
+        dkprAlerta.setTitle(dkprTitulo);
+        dkprAlerta.setHeaderText(null);
+        dkprAlerta.setContentText(dkprMensaje);
+        dkprAlerta.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        dkprAlerta.showAndWait();
     }
 }

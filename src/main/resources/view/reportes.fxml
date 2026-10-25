@@ -14,9 +14,9 @@
 
     <HBox spacing="8" alignment="CENTER_LEFT">
         <Label text="Desde:" styleClass="etiqueta"/>
-        <DatePicker fx:id="dpDesde"/>
+        <DatePicker fx:id="dkprDpDesde"/>
         <Label text="Hasta:" styleClass="etiqueta"/>
-        <DatePicker fx:id="dpHasta"/>
+        <DatePicker fx:id="dkprDpHasta"/>
         <Button text="Generar" styleClass="boton-primario" onAction="#onGenerar"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="Exportar a CSV" onAction="#onExportar"/>
@@ -26,32 +26,32 @@
     <HBox spacing="32" styleClass="panel-form" alignment="CENTER_LEFT">
         <VBox spacing="2">
             <Label text="Envíos registrados" styleClass="etiqueta"/>
-            <Label fx:id="lblTotalEnvios" styleClass="costo"/>
+            <Label fx:id="dkprLblTotalEnvios" styleClass="costo"/>
         </VBox>
         <VBox spacing="2">
             <Label text="Ingresos (sin anulados)" styleClass="etiqueta"/>
-            <Label fx:id="lblIngresos" styleClass="costo"/>
+            <Label fx:id="dkprLblIngresos" styleClass="costo"/>
         </VBox>
     </HBox>
 
     <HBox spacing="16">
         <VBox spacing="4" HBox.hgrow="ALWAYS">
             <Label text="Por agencia de origen" styleClass="subtitulo"/>
-            <TableView fx:id="tablaAgencias" prefHeight="130">
+            <TableView fx:id="dkprTablaAgencias" prefHeight="130">
                 <columns>
-                    <TableColumn fx:id="colAgEtiqueta" text="Agencia" prefWidth="180"/>
-                    <TableColumn fx:id="colAgCantidad" text="Envíos" prefWidth="70"/>
-                    <TableColumn fx:id="colAgMonto" text="Ingresos (S/)" prefWidth="110"/>
+                    <TableColumn fx:id="dkprColAgEtiqueta" text="Agencia" prefWidth="180"/>
+                    <TableColumn fx:id="dkprColAgCantidad" text="Envíos" prefWidth="70"/>
+                    <TableColumn fx:id="dkprColAgMonto" text="Ingresos (S/)" prefWidth="110"/>
                 </columns>
             </TableView>
         </VBox>
         <VBox spacing="4" HBox.hgrow="ALWAYS">
             <Label text="Por estado" styleClass="subtitulo"/>
-            <TableView fx:id="tablaEstados" prefHeight="130">
+            <TableView fx:id="dkprTablaEstados" prefHeight="130">
                 <columns>
-                    <TableColumn fx:id="colEstEtiqueta" text="Estado" prefWidth="180"/>
-                    <TableColumn fx:id="colEstCantidad" text="Envíos" prefWidth="70"/>
-                    <TableColumn fx:id="colEstMonto" text="Monto (S/)" prefWidth="110"/>
+                    <TableColumn fx:id="dkprColEstEtiqueta" text="Estado" prefWidth="180"/>
+                    <TableColumn fx:id="dkprColEstCantidad" text="Envíos" prefWidth="70"/>
+                    <TableColumn fx:id="dkprColEstMonto" text="Monto (S/)" prefWidth="110"/>
                 </columns>
             </TableView>
         </VBox>
@@ -61,15 +61,15 @@
         <Label text="Detalle de envíos" styleClass="subtitulo"/>
         <Label text="(doble clic en un envío para ver e imprimir su ticket)" styleClass="aviso"/>
     </HBox>
-    <TableView fx:id="tablaDetalle" VBox.vgrow="ALWAYS">
+    <TableView fx:id="dkprTablaDetalle" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colCodigo" text="Código" prefWidth="90"/>
-            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="115"/>
-            <TableColumn fx:id="colRuta" text="Ruta" prefWidth="210"/>
-            <TableColumn fx:id="colRemitente" text="Remitente" prefWidth="150"/>
-            <TableColumn fx:id="colDestinatario" text="Destinatario" prefWidth="150"/>
-            <TableColumn fx:id="colEstado" text="Estado" prefWidth="130"/>
-            <TableColumn fx:id="colCosto" text="Costo (S/)" prefWidth="80"/>
+            <TableColumn fx:id="dkprColCodigo" text="Código" prefWidth="90"/>
+            <TableColumn fx:id="dkprColFecha" text="Fecha" prefWidth="115"/>
+            <TableColumn fx:id="dkprColRuta" text="Ruta" prefWidth="210"/>
+            <TableColumn fx:id="dkprColRemitente" text="Remitente" prefWidth="150"/>
+            <TableColumn fx:id="dkprColDestinatario" text="Destinatario" prefWidth="150"/>
+            <TableColumn fx:id="dkprColEstado" text="Estado" prefWidth="130"/>
+            <TableColumn fx:id="dkprColCosto" text="Costo (S/)" prefWidth="80"/>
         </columns>
     </TableView>
 </VBox>

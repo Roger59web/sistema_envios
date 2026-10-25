@@ -16,8 +16,8 @@ public final class Estados {
     private Estados() {
     }
 
-    public static String nombre(int id) {
-        return switch (id) {
+    public static String nombre(int dkprId) {
+        return switch (dkprId) {
             case REGISTRADO -> "REGISTRADO";
             case EN_TRANSITO -> "EN TRANSITO";
             case EN_AGENCIA_DESTINO -> "EN AGENCIA DESTINO";
@@ -28,18 +28,18 @@ public final class Estados {
     }
 
     /** Pinta la etiqueta con el color del estado (clases estado-* de estilos.css). */
-    public static void colorear(Label etiqueta, String nombre) {
-        etiqueta.getStyleClass().removeIf(c -> c.startsWith("estado-"));
-        if (nombre != null && !nombre.isBlank()) {
-            etiqueta.getStyleClass().add("estado-" + nombre.trim().toLowerCase().replace(' ', '-'));
+    public static void colorear(Label dkprEtiqueta, String dkprNombre) {
+        dkprEtiqueta.getStyleClass().removeIf(dkprC -> dkprC.startsWith("estado-"));
+        if (dkprNombre != null && !dkprNombre.isBlank()) {
+            dkprEtiqueta.getStyleClass().add("estado-" + dkprNombre.trim().toLowerCase().replace(' ', '-'));
         }
     }
 
     /** Devuelve el id del estado con ese nombre, o 0 si no existe. */
-    public static int id(String nombre) {
-        for (int i = REGISTRADO; i <= ANULADO; i++) {
-            if (nombre(i).equals(nombre)) {
-                return i;
+    public static int id(String dkprNombre) {
+        for (int dkprI = REGISTRADO; dkprI <= ANULADO; dkprI++) {
+            if (nombre(dkprI).equals(dkprNombre)) {
+                return dkprI;
             }
         }
         return 0;

@@ -2,37 +2,37 @@ package com.grupo.envios.model;
 
 public class Agencia {
 
-    private int idAgencia;
-    private String nombre;
-    private String ciudad;
-    private String direccion;
-    private String telefono;
-    private boolean activo = true;
+    private int dkprIdAgencia;
+    private String dkprNombre;
+    private String dkprCiudad;
+    private String dkprDireccion;
+    private String dkprTelefono;
+    private boolean dkprActivo = true;
 
-    public int getIdAgencia() { return idAgencia; }
-    public void setIdAgencia(int idAgencia) { this.idAgencia = idAgencia; }
+    public int getIdAgencia() { return dkprIdAgencia; }
+    public void setIdAgencia(int dkprIdAgencia) { this.dkprIdAgencia = dkprIdAgencia; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getNombre() { return dkprNombre; }
+    public void setNombre(String dkprNombre) { this.dkprNombre = dkprNombre; }
 
-    public String getCiudad() { return ciudad; }
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
+    public String getCiudad() { return dkprCiudad; }
+    public void setCiudad(String dkprCiudad) { this.dkprCiudad = dkprCiudad; }
 
-    public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) { this.direccion = direccion; }
+    public String getDireccion() { return dkprDireccion; }
+    public void setDireccion(String dkprDireccion) { this.dkprDireccion = dkprDireccion; }
 
-    public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) { this.telefono = telefono; }
+    public String getTelefono() { return dkprTelefono; }
+    public void setTelefono(String dkprTelefono) { this.dkprTelefono = dkprTelefono; }
 
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    public boolean isActivo() { return dkprActivo; }
+    public void setActivo(boolean dkprActivo) { this.dkprActivo = dkprActivo; }
 
     public String getEstadoTexto() {
-        return activo ? "Activa" : "Inactiva";
+        return dkprActivo ? "Activa" : "Inactiva";
     }
 
     @Override
     public String toString() {
-        return nombre + " (" + ciudad + ")";
+        return dkprNombre + " (" + dkprCiudad + ")";
     }
 }

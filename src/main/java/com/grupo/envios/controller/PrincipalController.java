@@ -18,57 +18,57 @@ import java.io.IOException;
 
 public class PrincipalController {
 
-    @FXML private Label lblUsuario;
-    @FXML private Button btnCerrarSesion;
-    @FXML private StackPane contenido;
+    @FXML private Label dkprLblUsuario;
+    @FXML private Button dkprBtnCerrarSesion;
+    @FXML private StackPane dkprContenido;
 
-    @FXML private Button btnClientes;
-    @FXML private Button btnEnvio;
-    @FXML private Button btnEntregas;
-    @FXML private VBox seccionAdmin;
+    @FXML private Button dkprBtnClientes;
+    @FXML private Button dkprBtnEnvio;
+    @FXML private Button dkprBtnEntregas;
+    @FXML private VBox dkprSeccionAdmin;
 
     @FXML
     private void initialize() {
-        Empleado e = Sesion.getActual();
-        if (e == null) {
+        Empleado dkprE = Sesion.getActual();
+        if (dkprE == null) {
             return;
         }
-        lblUsuario.setText(e.getNombreCompleto() + "  |  " + e.getRol() + "  |  " + e.getAgencia());
-        aplicarPermisos(e);
-        mostrarInicio(e);
+        dkprLblUsuario.setText(dkprE.getNombreCompleto() + "  |  " + dkprE.getRol() + "  |  " + dkprE.getAgencia());
+        aplicarPermisos(dkprE);
+        mostrarInicio(dkprE);
     }
 
     /** Oculta del menú lo que el rol del empleado no puede usar. */
-    private void aplicarPermisos(Empleado e) {
-        boolean admin = Roles.ADMINISTRADOR.equals(e.getRol());
-        boolean cajero = Roles.CAJERO.equals(e.getRol());
-        mostrarNodo(btnClientes, admin || cajero);
-        mostrarNodo(btnEnvio, admin || cajero);
-        mostrarNodo(btnEntregas, admin || cajero);
-        mostrarNodo(seccionAdmin, admin);
+    private void aplicarPermisos(Empleado dkprE) {
+        boolean dkprAdmin = Roles.ADMINISTRADOR.equals(dkprE.getRol());
+        boolean dkprCajero = Roles.CAJERO.equals(dkprE.getRol());
+        mostrarNodo(dkprBtnClientes, dkprAdmin || dkprCajero);
+        mostrarNodo(dkprBtnEnvio, dkprAdmin || dkprCajero);
+        mostrarNodo(dkprBtnEntregas, dkprAdmin || dkprCajero);
+        mostrarNodo(dkprSeccionAdmin, dkprAdmin);
     }
 
-    private void mostrarNodo(Node nodo, boolean visible) {
-        nodo.setVisible(visible);
-        nodo.setManaged(visible);
+    private void mostrarNodo(Node dkprNodo, boolean dkprVisible) {
+        dkprNodo.setVisible(dkprVisible);
+        dkprNodo.setManaged(dkprVisible);
     }
 
-    private void mostrarInicio(Empleado e) {
-        Label saludo = new Label("Bienvenido, " + e.getNombreCompleto());
-        saludo.getStyleClass().add("titulo");
-        Label detalle = new Label("Selecciona una opción del menú para comenzar.");
-        VBox caja = new VBox(8, saludo, detalle);
-        caja.setAlignment(Pos.CENTER);
-        contenido.getChildren().setAll(caja);
+    private void mostrarInicio(Empleado dkprE) {
+        Label dkprSaludo = new Label("Bienvenido, " + dkprE.getNombreCompleto());
+        dkprSaludo.getStyleClass().add("titulo");
+        Label dkprDetalle = new Label("Selecciona una opción del menú para comenzar.");
+        VBox dkprCaja = new VBox(8, dkprSaludo, dkprDetalle);
+        dkprCaja.setAlignment(Pos.CENTER);
+        dkprContenido.getChildren().setAll(dkprCaja);
     }
 
-    private void mostrar(String fxml) {
+    private void mostrar(String dkprFxml) {
         try {
-            Node vista = FXMLLoader.load(getClass().getResource("/view/" + fxml));
-            contenido.getChildren().setAll(vista);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Alertas.error("No se pudo abrir la pantalla: " + ex.getMessage());
+            Node dkprVista = FXMLLoader.load(getClass().getResource("/view/" + dkprFxml));
+            dkprContenido.getChildren().setAll(dkprVista);
+        } catch (IOException dkprEx) {
+            dkprEx.printStackTrace();
+            Alertas.error("No se pudo abrir la pantalla: " + dkprEx.getMessage());
         }
     }
 
@@ -86,6 +86,6 @@ public class PrincipalController {
     @FXML
     private void onCerrarSesion() throws IOException {
         Sesion.cerrar();
-        Navegador.ir(btnCerrarSesion, "login.fxml", "Sistema de Envíos - Iniciar sesión");
+        Navegador.ir(dkprBtnCerrarSesion, "login.fxml", "Sistema de Envíos - Iniciar sesión");
     }
 }
