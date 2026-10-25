@@ -10,6 +10,7 @@ import com.grupo.envios.service.EnvioService;
 import com.grupo.envios.service.RutaService;
 import com.grupo.envios.util.Alertas;
 import com.grupo.envios.util.Formato;
+import com.grupo.envios.util.LectorDni;
 import com.grupo.envios.util.Sesion;
 import com.grupo.envios.util.Validaciones;
 import com.grupo.envios.util.VistaTicket;
@@ -74,9 +75,20 @@ public class RegistrarEnvioController {
         dkprCmbRuta.valueProperty().addListener((dkprObs, dkprAnterior, dkprNueva) -> actualizarCosto());
         dkprTxtPeso.textProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> actualizarCosto());
 
-        // Enter en el documento busca al cliente sin tener que usar el mouse.
-        dkprTxtRemDoc.setOnAction(dkprE -> onBuscarRemitente());
-        dkprTxtDesDoc.setOnAction(dkprE -> onBuscarDestinatario());
+        // Enter en el documento busca al cliente sin tener que usar el mouse. El lector de código de
+        // barras también termina con Enter: si se escaneó el DNI, primero se extrae el número.
+        dkprTxtRemDoc.setOnAction(dkprE -> {
+            if (leerDni(dkprCmbRemTipo, dkprTxtRemDoc)
+                    && buscarCliente(dkprCmbRemTipo, dkprTxtRemDoc, dkprTxtRemNombre, dkprTxtRemTelefono)) {
+                dkprTxtDesDoc.requestFocus();
+            }
+        });
+        dkprTxtDesDoc.setOnAction(dkprE -> {
+            if (leerDni(dkprCmbDesTipo, dkprTxtDesDoc)
+                    && buscarCliente(dkprCmbDesTipo, dkprTxtDesDoc, dkprTxtDesNombre, dkprTxtDesTelefono)) {
+                dkprTxtDescripcion.requestFocus();
+            }
+        });
 
         limpiar();
     }
@@ -110,30 +122,59 @@ public class RegistrarEnvioController {
         dkprLblCosto.setText("S/ --");
     }
 
-    private void buscarCliente(ComboBox<String> dkprTipo, TextField dkprDoc, TextField dkprNombre, TextField dkprTelefono) {
+    /**
+     * Si el texto del documento viene del lector (código de barras del DNI), deja solo el número
+     * de DNI y pone el tipo DNI. Devuelve false si se escaneó algo en lo que no hay un DNI.
+     */
+    private boolean leerDni(ComboBox<String> dkprTipo, TextField dkprDoc) {
+        String dkprTexto = dkprDoc.getText();
+        if (!LectorDni.pareceEscaneado(dkprTexto)) {
+            return true;
+        }
+        String dkprDni = LectorDni.extraer(dkprTexto);
+        if (dkprDni == null) {
+            Alertas.advertencia("No se encontró un número de DNI en lo que leyó el escáner:\n" + dkprTexto.trim()
+                    + "\n\nEscribe el número a mano.");
+            dkprDoc.clear();
+            return false;
+        }
+        dkprTipo.setValue("DNI");
+        dkprDoc.setText(dkprDni);
+        return true;
+    }
+
+    /** Autocompleta nombre y teléfono. Devuelve true si el cliente ya estaba registrado. */
+    private boolean buscarCliente(ComboBox<String> dkprTipo, TextField dkprDoc, TextField dkprNombre, TextField dkprTelefono) {
         try {
             Cliente dkprC = dkprClienteService.buscarPorDocumento(dkprTipo.getValue(), dkprDoc.getText());
             if (dkprC == null) {
                 dkprNombre.clear();
                 dkprTelefono.clear();
                 Alertas.info("Cliente nuevo: completa su nombre y teléfono. Se registrará junto con el envío.");
-            } else {
-                dkprNombre.setText(dkprC.getNombreCompleto());
-                dkprTelefono.setText(dkprC.getTelefono());
+                dkprNombre.requestFocus();
+                return false;
             }
+            dkprNombre.setText(dkprC.getNombreCompleto());
+            dkprTelefono.setText(dkprC.getTelefono());
+            return true;
         } catch (Exception dkprE) {
             Alertas.manejar(dkprE);
+            return false;
         }
     }
 
     @FXML
     private void onBuscarRemitente() {
-        buscarCliente(dkprCmbRemTipo, dkprTxtRemDoc, dkprTxtRemNombre, dkprTxtRemTelefono);
+        if (leerDni(dkprCmbRemTipo, dkprTxtRemDoc)) {
+            buscarCliente(dkprCmbRemTipo, dkprTxtRemDoc, dkprTxtRemNombre, dkprTxtRemTelefono);
+        }
     }
 
     @FXML
     private void onBuscarDestinatario() {
-        buscarCliente(dkprCmbDesTipo, dkprTxtDesDoc, dkprTxtDesNombre, dkprTxtDesTelefono);
+        if (leerDni(dkprCmbDesTipo, dkprTxtDesDoc)) {
+            buscarCliente(dkprCmbDesTipo, dkprTxtDesDoc, dkprTxtDesNombre, dkprTxtDesTelefono);
+        }
     }
 
     @FXML

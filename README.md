@@ -100,6 +100,16 @@ Menú **Control de carga**. Complementa la Bandeja: aquí se controla cada **bul
 - El lector USB funciona como teclado + Enter. Si el teclado está en español y el lector escribe `'`
   en lugar de `-` (`ENV'000015'02`), el sistema lo entiende igual.
 
+## Lectura del DNI con el escáner
+
+En **Registrar envío**, con el cursor en el campo de documento (remitente o destinatario), se escanea el
+código de barras del DNI. El sistema extrae el número, pone el tipo *DNI*, busca al cliente y autocompleta
+nombre y teléfono; si ya estaba registrado, el cursor salta al siguiente campo. Si es nuevo, se avisa como siempre.
+
+Reconoce 8 dígitos solos, la zona MRZ del DNI electrónico (`I<PER70000001<…`) y textos largos con varios
+datos (se toma el primer grupo de 8 dígitos). El código del reverso del DNI suele ser **PDF417 (2D)**: necesita
+un lector 2D. Un RUC o CE escrito a mano no se modifica.
+
 ## Ticket y PDF
 
 - Al **registrar un envío** se abre la vista previa del ticket (formato de impresora térmica de 80 mm).
