@@ -15,7 +15,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-/** Registro de los vehículos y conductores que se eligen al despachar (manifiesto de carga). */
 public class VehiculosController {
 
     @FXML private TableView<Vehiculo> dkprTablaVehiculos;
@@ -68,7 +67,6 @@ public class VehiculosController {
                 mostrarConductor(dkprAhora);
             }
         });
-        // El DNI del conductor también se puede escanear.
         dkprTxtDni.setOnAction(dkprE -> {
             if (LectorDni.pareceEscaneado(dkprTxtDni.getText())) {
                 String dkprDni = LectorDni.extraer(dkprTxtDni.getText());
@@ -90,8 +88,6 @@ public class VehiculosController {
             Alertas.manejar(dkprE);
         }
     }
-
-    // -------------------------------------------------------------- vehículos
 
     private void mostrarVehiculo(Vehiculo dkprV) {
         dkprVehiculoSeleccionado = dkprV;
@@ -135,8 +131,6 @@ public class VehiculosController {
             Alertas.manejar(dkprE);
         }
     }
-
-    // ------------------------------------------------------------ conductores
 
     private void mostrarConductor(Conductor dkprC) {
         dkprConductorSeleccionado = dkprC;

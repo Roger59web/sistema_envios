@@ -17,7 +17,6 @@ public class ClienteService {
         return dkprDao.listar(dkprFiltro == null ? "" : dkprFiltro.trim());
     }
 
-    /** Devuelve el cliente con ese documento, o null si todavía no está registrado. */
     public Cliente buscarPorDocumento(String dkprTipo, String dkprNumero) throws SQLException {
         Validaciones.validarDocumento(dkprTipo, dkprNumero);
         return dkprDao.buscarPorDocumento(dkprTipo, dkprNumero.trim());
@@ -47,12 +46,6 @@ public class ClienteService {
         }
     }
 
-    /**
-     * Usado al registrar un envío: devuelve el cliente si ya existe; si no, lo crea
-     * (por eso exige el nombre) dentro de la misma transacción.
-     *
-     * @param etiqueta "remitente" o "destinatario", solo para armar los mensajes de error
-     */
     public Cliente obtenerOCrear(Connection dkprCn, String dkprTipo, String dkprDocumento, String dkprNombre,
                                  String dkprTelefono, String dkprEtiqueta) throws SQLException {
         Validaciones.validarDocumento(dkprTipo, dkprDocumento);

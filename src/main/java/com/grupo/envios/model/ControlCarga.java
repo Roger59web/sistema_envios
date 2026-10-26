@@ -2,7 +2,6 @@ package com.grupo.envios.model;
 
 import java.time.LocalDateTime;
 
-/** Sesión de escaneo de bultos: carga de un vehículo (DESPACHO) o descarga de un manifiesto (RECEPCION). */
 public class ControlCarga {
 
     public static final String DESPACHO = "DESPACHO";

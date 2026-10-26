@@ -23,10 +23,6 @@ public class EmpleadoService {
         return dkprDao.listarRoles();
     }
 
-    /**
-     * @param clavePlano contraseña escrita en pantalla. Obligatoria al crear; al editar,
-     *                   si está vacía se conserva la contraseña actual.
-     */
     public void guardar(Empleado dkprE, String dkprClavePlano) throws SQLException {
         if (dkprE.getIdAgencia() <= 0) {
             throw new NegocioException("Selecciona la agencia del empleado.");

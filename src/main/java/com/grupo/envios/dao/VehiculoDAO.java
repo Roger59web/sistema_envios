@@ -11,10 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Vehículos y conductores (tablas vehiculo y conductor). */
 public class VehiculoDAO {
-
-    // ---------------------------------------------------------------- vehículos
 
     public List<Vehiculo> listarVehiculos(boolean dkprSoloActivos) throws SQLException {
         String dkprSql = "SELECT * FROM vehiculo" + (dkprSoloActivos ? " WHERE activo" : "") + " ORDER BY placa";
@@ -29,7 +26,6 @@ public class VehiculoDAO {
         return dkprLista;
     }
 
-    /** Devuelve el vehículo con ese id, o null si no existe. */
     public Vehiculo buscarVehiculo(int dkprId) throws SQLException {
         try (Connection dkprCn = Conexion.obtener();
              PreparedStatement dkprPs = dkprCn.prepareStatement("SELECT * FROM vehiculo WHERE id_vehiculo = ?")) {
@@ -67,8 +63,6 @@ public class VehiculoDAO {
         return dkprV;
     }
 
-    // --------------------------------------------------------------- conductores
-
     public List<Conductor> listarConductores(boolean dkprSoloActivos) throws SQLException {
         String dkprSql = "SELECT * FROM conductor" + (dkprSoloActivos ? " WHERE activo" : "") + " ORDER BY nombre_completo";
         List<Conductor> dkprLista = new ArrayList<>();
@@ -82,7 +76,6 @@ public class VehiculoDAO {
         return dkprLista;
     }
 
-    /** Devuelve el conductor con ese id, o null si no existe. */
     public Conductor buscarConductor(int dkprId) throws SQLException {
         try (Connection dkprCn = Conexion.obtener();
              PreparedStatement dkprPs = dkprCn.prepareStatement("SELECT * FROM conductor WHERE id_conductor = ?")) {

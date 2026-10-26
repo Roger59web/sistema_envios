@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Rutas con su tarifa vigente (una tarifa activa por ruta). */
 public class RutaDAO {
 
     private static final String SELECT_BASE = """
@@ -28,7 +27,6 @@ public class RutaDAO {
         return consultar(SELECT_BASE + " ORDER BY ao.nombre, ad.nombre", null);
     }
 
-    /** Rutas activas con tarifa que salen de una agencia (para registrar envíos). */
     public List<Ruta> listarPorOrigen(int dkprIdAgenciaOrigen) throws SQLException {
         String dkprSql = SELECT_BASE
                 + " WHERE r.id_agencia_origen = ? AND r.activo = TRUE AND ao.activo = TRUE AND ad.activo = TRUE"

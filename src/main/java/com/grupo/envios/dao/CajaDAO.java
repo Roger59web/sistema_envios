@@ -26,7 +26,6 @@ public class CajaDAO {
             JOIN agencia ag ON ag.id_agencia = t.id_agencia
             """;
 
-    /** Abre el turno y devuelve su id. Si el cajero ya tiene uno abierto lanza una violación de unicidad (23505). */
     public int abrir(int dkprIdEmpleado, int dkprIdAgencia, BigDecimal dkprMontoInicial) throws SQLException {
         String dkprSql = "INSERT INTO caja_turno (id_empleado, id_agencia, monto_inicial) VALUES (?, ?, ?) RETURNING id_turno";
         try (Connection dkprCn = Conexion.obtener();
@@ -41,7 +40,6 @@ public class CajaDAO {
         }
     }
 
-    /** Turno abierto del empleado, o null si no tiene. */
     public CajaTurno buscarAbierto(int dkprIdEmpleado) throws SQLException {
         List<CajaTurno> dkprL = consultar(SELECT_BASE + " WHERE t.id_empleado = ? AND t.estado = 'ABIERTO'", dkprIdEmpleado);
         return dkprL.isEmpty() ? null : dkprL.get(0);
@@ -52,11 +50,6 @@ public class CajaDAO {
         return dkprL.isEmpty() ? null : dkprL.get(0);
     }
 
-    /**
-     * Turnos abiertos entre dos fechas (ambas incluidas), del más reciente al más antiguo.
-     *
-     * @param idEmpleado 0 = de todos los empleados
-     */
     public List<CajaTurno> listar(LocalDate dkprDesde, LocalDate dkprHasta, int dkprIdEmpleado) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE t.fecha_apertura >= ? AND t.fecha_apertura < ? AND (? = 0 OR t.id_empleado = ?) "
                 + "ORDER BY t.fecha_apertura DESC";
@@ -64,11 +57,6 @@ public class CajaDAO {
                 dkprIdEmpleado, dkprIdEmpleado);
     }
 
-    /**
-     * Comprobantes que emitió el empleado dentro del turno (al registrar envíos).
-     *
-     * @param hasta null = hasta ahora (turno abierto)
-     */
     public List<CobroCaja> cobros(int dkprIdEmpleado, LocalDateTime dkprDesde, LocalDateTime dkprHasta) throws SQLException {
         String dkprSql = """
                 SELECT c.serie, c.numero, c.fecha_emision, c.metodo_pago, c.total, e.codigo_seguimiento, e.id_estado_actual
@@ -102,7 +90,6 @@ public class CajaDAO {
         return dkprLista;
     }
 
-    /** Guarda lo esperado y lo contado y cierra el turno, solo si sigue abierto. */
     public boolean cerrar(CajaTurno dkprT) throws SQLException {
         String dkprSql = """
                 UPDATE caja_turno SET estado = 'CERRADO', fecha_cierre = ?,

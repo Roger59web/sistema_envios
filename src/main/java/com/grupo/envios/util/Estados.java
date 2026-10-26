@@ -2,9 +2,6 @@ package com.grupo.envios.util;
 
 import javafx.scene.control.Label;
 
-/**
- * Identificadores de la tabla estado_envio (se cargan en ese orden en el script SQL inicial).
- */
 public final class Estados {
 
     public static final int REGISTRADO = 1;
@@ -27,7 +24,6 @@ public final class Estados {
         };
     }
 
-    /** Pinta la etiqueta con el color del estado (clases estado-* de estilos.css). */
     public static void colorear(Label dkprEtiqueta, String dkprNombre) {
         dkprEtiqueta.getStyleClass().removeIf(dkprC -> dkprC.startsWith("estado-"));
         if (dkprNombre != null && !dkprNombre.isBlank()) {
@@ -35,7 +31,6 @@ public final class Estados {
         }
     }
 
-    /** Devuelve el id del estado con ese nombre, o 0 si no existe. */
     public static int id(String dkprNombre) {
         for (int dkprI = REGISTRADO; dkprI <= ANULADO; dkprI++) {
             if (nombre(dkprI).equals(dkprNombre)) {

@@ -2,7 +2,6 @@ package com.grupo.envios.util;
 
 import com.grupo.envios.model.Empleado;
 
-/** Guarda el empleado que inició sesión mientras la aplicación está abierta. */
 public final class Sesion {
 
     private static Empleado dkprActual;

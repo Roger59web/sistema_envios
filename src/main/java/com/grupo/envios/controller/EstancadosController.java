@@ -24,7 +24,6 @@ import javafx.scene.layout.Pane;
 import java.util.List;
 import java.util.function.Function;
 
-/** Lista de envíos que llevan más de X días sin moverse, para darles seguimiento. */
 public class EstancadosController {
 
     @FXML private Label dkprLblContador;
@@ -59,7 +58,6 @@ public class EstancadosController {
                 protected void updateItem(Envio dkprE, boolean dkprVacia) {
                     super.updateItem(dkprE, dkprVacia);
                     getStyleClass().remove("fila-alerta");
-                    // Resalta los que ya duplican el límite: son los más urgentes.
                     if (!dkprVacia && dkprE != null && dkprE.getDiasEnEstado() > 2L * dkprSpnDias.getValue()) {
                         getStyleClass().add("fila-alerta");
                     }
@@ -80,7 +78,6 @@ public class EstancadosController {
             Alertas.manejar(dkprE);
         }
         dkprSpnDias.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, EstancadoService.DIAS_MAXIMO, dkprDias));
-        // Cambiar los días filtra al instante; solo "Guardar" los deja como valor para todos.
         dkprSpnDias.valueProperty().addListener((dkprObs, dkprAntes, dkprAhora) -> cargar());
         cargar();
     }
@@ -99,7 +96,6 @@ public class EstancadosController {
             List<Envio> dkprLista = dkprService.listar(Sesion.getActual(), dkprSpnDias.getValue());
             dkprTabla.setItems(FXCollections.observableArrayList(dkprLista));
             dkprLblContador.setText(String.valueOf(dkprLista.size()));
-            // Verde (clase costo) si no hay ninguno; rojo si hay paquetes estancados.
             dkprLblContador.setStyle(dkprLista.isEmpty() ? "" : "-fx-text-fill: #c0392b;");
         } catch (Exception dkprE) {
             Alertas.manejar(dkprE);
@@ -119,7 +115,6 @@ public class EstancadosController {
         }
     }
 
-    /** Abre Seguimiento con el envío ya buscado. */
     private void abrirSeguimiento(Envio dkprEnvio) {
         try {
             FXMLLoader dkprLoader = new FXMLLoader(getClass().getResource("/view/seguimiento.fxml"));

@@ -36,7 +36,6 @@ public class EntregasController {
     @FXML
     private void initialize() {
         dkprTxtCodigo.setOnAction(dkprE -> onBuscar());
-        // El DNI de quien recoge también se puede escanear: se deja solo el número.
         dkprTxtDniReceptor.setOnAction(dkprE -> leerDniReceptor());
         limpiar();
     }
@@ -105,7 +104,6 @@ public class EntregasController {
         }
     }
 
-    /** Abre la pantalla con un envío ya buscado (se usa desde la bandeja de la agencia). */
     public void cargar(String dkprCodigo) {
         dkprTxtCodigo.setText(dkprCodigo);
         onBuscar();
@@ -121,7 +119,6 @@ public class EntregasController {
         }
     }
 
-    /** Copia el nombre y, si es un DNI, el documento del destinatario registrado. */
     @FXML
     private void onUsarDestinatario() {
         if (dkprEnvio == null) {

@@ -7,10 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Turno de caja de un cajero: fondo inicial, lo esperado por método de pago (según los comprobantes
- * que emitió) y, al cerrar, lo contado. La diferencia es contado − esperado (negativa = faltante).
- */
 public class CajaTurno {
 
     public static final List<String> METODOS = List.of("EFECTIVO", "TARJETA", "YAPE", "PLIN");
@@ -75,8 +71,6 @@ public class CajaTurno {
         return ABIERTO.equals(dkprEstado);
     }
 
-    // ------------------------------------------------------------ por método
-
     public BigDecimal getEsperado(String dkprMetodo) {
         return dkprEsperado.getOrDefault(dkprMetodo, BigDecimal.ZERO);
     }
@@ -85,7 +79,6 @@ public class CajaTurno {
         dkprEsperado.put(dkprMetodo, dkprMonto == null ? BigDecimal.ZERO : dkprMonto);
     }
 
-    /** null mientras no se haya contado. */
     public BigDecimal getContado(String dkprMetodo) {
         return dkprContado.get(dkprMetodo);
     }
@@ -106,19 +99,15 @@ public class CajaTurno {
         dkprCantidad.put(dkprMetodo, dkprN);
     }
 
-    /** contado − esperado del método, o null si aún no se contó. */
     public BigDecimal getDiferencia(String dkprMetodo) {
         BigDecimal dkprC = getContado(dkprMetodo);
         return dkprC == null ? null : dkprC.subtract(getEsperado(dkprMetodo));
     }
 
-    // ---------------------------------------------------------------- totales
-
     public BigDecimal getTotalEsperado() {
         return METODOS.stream().map(this::getEsperado).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    /** null si falta contar algún método. */
     public BigDecimal getTotalContado() {
         BigDecimal dkprTotal = BigDecimal.ZERO;
         for (String dkprM : METODOS) {
@@ -147,7 +136,6 @@ public class CajaTurno {
         return dkprFechaCierre == null ? "" : dkprFechaCierre.format(FORMATO);
     }
 
-    /** "Cuadra", "Faltante S/ 5.00" o "Sobrante S/ 2.50". */
     public static String resultado(BigDecimal dkprDiferencia) {
         if (dkprDiferencia == null) {
             return "Sin contar";

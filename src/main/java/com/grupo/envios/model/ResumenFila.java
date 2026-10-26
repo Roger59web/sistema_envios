@@ -2,7 +2,6 @@ package com.grupo.envios.model;
 
 import java.math.BigDecimal;
 
-/** Fila de un resumen de reportes (por agencia o por estado). */
 public class ResumenFila {
 
     private final String dkprEtiqueta;

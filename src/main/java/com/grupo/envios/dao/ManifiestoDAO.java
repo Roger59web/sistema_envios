@@ -14,7 +14,6 @@ import java.util.List;
 
 public class ManifiestoDAO {
 
-    /** Crea el manifiesto y devuelve su id. El código se arma con el id: MAN-000001. */
     public int insertar(Connection dkprCn, int dkprIdRuta, int dkprIdEmpleado, Vehiculo dkprVehiculo, Conductor dkprConductor,
                         String dkprObservacion) throws SQLException {
         int dkprId;
@@ -58,7 +57,6 @@ public class ManifiestoDAO {
             JOIN empleado em ON em.id_empleado = m.id_empleado
             """;
 
-    /** Devuelve el manifiesto con ese id, o null si no existe. */
     public Manifiesto buscar(int dkprIdManifiesto) throws SQLException {
         try (Connection dkprCn = Conexion.obtener();
              PreparedStatement dkprPs = dkprCn.prepareStatement(SELECT_BASE + " WHERE m.id_manifiesto = ?")) {
@@ -69,7 +67,6 @@ public class ManifiestoDAO {
         }
     }
 
-    /** Devuelve el manifiesto con ese código (MAN-000001), o null si no existe. */
     public Manifiesto buscarPorCodigo(String dkprCodigo) throws SQLException {
         try (Connection dkprCn = Conexion.obtener();
              PreparedStatement dkprPs = dkprCn.prepareStatement(SELECT_BASE + " WHERE m.codigo = ?")) {
@@ -80,7 +77,6 @@ public class ManifiestoDAO {
         }
     }
 
-    /** Manifiestos que vienen hacia la agencia con al menos un envío todavía EN TRANSITO. */
     public List<Manifiesto> listarEnCaminoHacia(int dkprIdAgencia) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE ru.id_agencia_destino = ? AND EXISTS (SELECT 1 FROM envio e "
                 + "WHERE e.id_manifiesto = m.id_manifiesto AND e.id_estado_actual = 2) ORDER BY m.fecha_salida";

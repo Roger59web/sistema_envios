@@ -2,7 +2,6 @@ package com.grupo.envios.model;
 
 import java.math.BigDecimal;
 
-/** Datos que captura la ventanilla para registrar un envío. */
 public record SolicitudEnvio(
         Ruta ruta,
         String remitenteTipo,

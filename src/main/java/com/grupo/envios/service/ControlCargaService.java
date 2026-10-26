@@ -26,11 +26,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Control de carga por bulto: cada bulto lleva una etiqueta que se escanea al subir al vehículo
- * (despacho) y al bajar en destino (recepción). Al cerrar se listan los faltantes y solo se
- * mueven los envíos que tienen todos sus bultos escaneados.
- */
 public class ControlCargaService {
 
     private final ControlCargaDAO dkprControlDAO = new ControlCargaDAO();
@@ -38,7 +33,6 @@ public class ControlCargaService {
     private final ManifiestoDAO dkprManifiestoDAO = new ManifiestoDAO();
     private final EnvioService dkprEnvioService = new EnvioService();
 
-    /** Resultado de cerrar una sesión: los envíos movidos y lo que faltó. */
     public record ResultadoCierre(String manifiesto, Integer idManifiesto, List<Envio> movidos, List<String> faltantes) {
     }
 
@@ -46,14 +40,10 @@ public class ControlCargaService {
         return dkprEnvioService.puedeOperarAlmacen(dkprEmpleado, dkprIdAgencia);
     }
 
-    // ---------------------------------------------------------------- etiquetas
-
-    /** Envíos registrados en la agencia que todavía no salen (los que normalmente se etiquetan). */
     public List<Envio> porEtiquetar(int dkprIdAgencia) throws SQLException {
         return dkprEnvioService.porDespachar(dkprIdAgencia);
     }
 
-    /** Busca el envío de un código escaneado o escrito (ENV-000015, 15, o la etiqueta de un bulto). */
     public Envio buscarEnvio(String dkprTexto) throws SQLException {
         CodigoBulto dkprC = CodigosBarras.leer(dkprTexto);
         if (dkprC == null) {
@@ -66,9 +56,6 @@ public class ControlCargaService {
         return dkprE;
     }
 
-    // ------------------------------------------------------------------ sesiones
-
-    /** Inicia la carga hacia una ruta o retoma la que ya estaba abierta (por ejemplo, tras un corte de luz). */
     public ControlCarga iniciarDespacho(int dkprIdAgencia, int dkprIdRuta, Empleado dkprEmpleado) throws SQLException {
         validarPermiso(dkprEmpleado, dkprIdAgencia);
         ControlCarga dkprAbierto = dkprControlDAO.buscarDespachoAbierto(dkprIdAgencia, dkprIdRuta);
@@ -79,7 +66,6 @@ public class ControlCargaService {
             return dkprControlDAO.buscar(dkprControlDAO.insertar(ControlCarga.DESPACHO, dkprIdAgencia, dkprIdRuta, null,
                     dkprEmpleado.getIdEmpleado()));
         } catch (SQLException dkprE) {
-            // Otra persona la abrió en el mismo instante: se trabaja sobre esa.
             if ("23505".equals(dkprE.getSQLState())) {
                 return dkprControlDAO.buscarDespachoAbierto(dkprIdAgencia, dkprIdRuta);
             }
@@ -91,7 +77,6 @@ public class ControlCargaService {
         return dkprManifiestoDAO.listarEnCaminoHacia(dkprIdAgencia);
     }
 
-    /** Inicia la descarga de un manifiesto o retoma la que ya estaba abierta. */
     public ControlCarga iniciarRecepcion(int dkprIdAgencia, Manifiesto dkprManifiesto, Empleado dkprEmpleado)
             throws SQLException {
         validarPermiso(dkprEmpleado, dkprIdAgencia);
@@ -113,7 +98,6 @@ public class ControlCargaService {
         }
     }
 
-    /** Envíos que deberían escanearse en la sesión. */
     public List<Envio> esperados(ControlCarga dkprC) throws SQLException {
         if (dkprC.esDespacho()) {
             return dkprEnvioService.porDespachar(dkprC.getIdAgencia()).stream()
@@ -129,12 +113,6 @@ public class ControlCargaService {
         return dkprControlDAO.listarLecturas(dkprC.getIdControl());
     }
 
-    // ------------------------------------------------------------------- escaneo
-
-    /**
-     * Valida y guarda una lectura del escáner. Las lecturas rechazadas también se guardan
-     * (quedan como constancia de lo que se intentó cargar o descargar).
-     */
     public LecturaCarga escanear(ControlCarga dkprC, String dkprTexto, Empleado dkprEmpleado) throws SQLException {
         String dkprLeido = dkprTexto == null ? "" : dkprTexto.trim();
         if (dkprLeido.isEmpty()) {
@@ -156,7 +134,6 @@ public class ControlCargaService {
             if (!"23505".equals(dkprE.getSQLState())) {
                 throw dkprE;
             }
-            // El bulto ya se había leído en esta sesión (quizá desde otra computadora).
             dkprL.setResultado(LecturaCarga.DUPLICADO);
             dkprL.setDetalle(etiquetaDe(dkprL) + " ya fue escaneado en esta sesión. No lo cuentes dos veces.");
             dkprControlDAO.insertarLectura(dkprC.getIdControl(), dkprL, dkprEmpleado.getIdEmpleado());
@@ -216,9 +193,6 @@ public class ControlCargaService {
                 + dkprE.getCantidadBultos() + "  ·  " + dkprE.getDestinatario());
     }
 
-    // -------------------------------------------------------------------- cierre
-
-    /** Bultos leídos correctamente, por id de envío. */
     public static Map<Integer, Set<Integer>> bultosLeidos(List<LecturaCarga> dkprLecturas) {
         Map<Integer, Set<Integer>> dkprLeidos = new HashMap<>();
         for (LecturaCarga dkprL : dkprLecturas) {
@@ -233,7 +207,6 @@ public class ControlCargaService {
         return dkprLeidos.getOrDefault(dkprE.getIdEnvio(), Set.of()).size() >= dkprE.getCantidadBultos();
     }
 
-    /** Una línea por envío al que le falta algún bulto, con los números de bulto que faltan. */
     public static List<String> faltantes(List<Envio> dkprEsperados, Map<Integer, Set<Integer>> dkprLeidos) {
         List<String> dkprLista = new ArrayList<>();
         for (Envio dkprE : dkprEsperados) {
@@ -255,10 +228,6 @@ public class ControlCargaService {
         return dkprLista;
     }
 
-    /**
-     * Despacha los envíos con todos sus bultos escaneados (crea el manifiesto) y cierra la sesión,
-     * todo en una transacción. Los incompletos se quedan en la agencia.
-     */
     public ResultadoCierre cerrarDespacho(ControlCarga dkprC, Integer dkprIdVehiculo, Integer dkprIdConductor,
                                           String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         validarPermiso(dkprEmpleado, dkprC.getIdAgencia());
@@ -289,10 +258,6 @@ public class ControlCargaService {
         }
     }
 
-    /**
-     * Confirma la llegada de los envíos con todos sus bultos escaneados y cierra la sesión.
-     * Los incompletos siguen EN TRANSITO (y aparecerán como atrasados si no llegan).
-     */
     public ResultadoCierre cerrarRecepcion(ControlCarga dkprC, String dkprObservacion, Empleado dkprEmpleado)
             throws SQLException {
         validarPermiso(dkprEmpleado, dkprC.getIdAgencia());
@@ -322,7 +287,6 @@ public class ControlCargaService {
         }
     }
 
-    /** Cancela la sesión sin mover ningún envío (las lecturas quedan guardadas como constancia). */
     public void cancelar(ControlCarga dkprC, Empleado dkprEmpleado) throws SQLException {
         validarPermiso(dkprEmpleado, dkprC.getIdAgencia());
         try (Connection dkprCn = Conexion.obtener()) {
@@ -330,13 +294,10 @@ public class ControlCargaService {
         }
     }
 
-    // -------------------------------------------------------------- manifiesto
-
     public Manifiesto buscarManifiesto(int dkprIdManifiesto) throws SQLException {
         return dkprManifiestoDAO.buscar(dkprIdManifiesto);
     }
 
-    /** Busca un manifiesto por su código (MAN-000003) o solo por el número (3). */
     public Manifiesto buscarManifiesto(String dkprTexto) throws SQLException {
         String dkprT = Validaciones.requerido(dkprTexto, "Código de manifiesto", 15).toUpperCase();
         if (dkprT.matches("\\d{1,6}")) {
@@ -352,8 +313,6 @@ public class ControlCargaService {
     public List<Envio> enviosDeManifiesto(int dkprIdManifiesto) throws SQLException {
         return dkprEnvioDAO.listarPorManifiesto(dkprIdManifiesto);
     }
-
-    // ------------------------------------------------------------------- ayudas
 
     private void validarPermiso(Empleado dkprEmpleado, int dkprIdAgencia) {
         if (!puedeOperar(dkprEmpleado, dkprIdAgencia)) {

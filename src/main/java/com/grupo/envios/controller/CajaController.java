@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/** Apertura y cierre del turno de caja, con lo esperado por método de pago contra lo contado. */
 public class CajaController {
 
     private static final String VERDE = "-fx-text-fill: #1e8449;";
@@ -55,7 +54,6 @@ public class CajaController {
 
     private CajaTurno dkprTurno;
     private List<CobroCaja> dkprCobros = List.of();
-    /** Celdas de la grilla por método de pago (se actualizan al escribir lo contado). */
     private final Map<String, Label> dkprLblCantidad = new HashMap<>();
     private final Map<String, Label> dkprLblEsperado = new HashMap<>();
     private final Map<String, TextField> dkprTxtContado = new HashMap<>();
@@ -120,7 +118,6 @@ public class CajaController {
         onBuscarHistorial();
     }
 
-    /** Grilla: Método | Cobros | Esperado | Contado (se escribe) | Diferencia, y la fila de totales. */
     private void armarGrilla() {
         String[] dkprTitulos = {"Método", "Cobros", "Esperado", "Contado", "Diferencia"};
         for (int dkprC = 0; dkprC < dkprTitulos.length; dkprC++) {
@@ -159,8 +156,6 @@ public class CajaController {
         return dkprM.charAt(0) + dkprM.substring(1).toLowerCase();
     }
 
-    // -------------------------------------------------------------- turno
-
     private void cargarTurno() {
         try {
             dkprTurno = dkprService.turnoAbierto(Sesion.getActual());
@@ -194,7 +189,6 @@ public class CajaController {
         pintarDiferencias();
     }
 
-    /** Lo contado escrito en la grilla (null en los métodos que están vacíos o mal escritos). */
     private Map<String, BigDecimal> contado() {
         Map<String, BigDecimal> dkprMapa = new HashMap<>();
         for (String dkprM : CajaTurno.METODOS) {
@@ -208,7 +202,6 @@ public class CajaController {
         return dkprMapa;
     }
 
-    /** Recalcula las diferencias mientras se escribe lo contado. */
     private void pintarDiferencias() {
         if (dkprTurno == null) {
             return;
@@ -262,7 +255,7 @@ public class CajaController {
             return;
         }
         try {
-            onActualizar(); // lo esperado se recalcula con los cobros hasta este momento
+            onActualizar();
             Map<String, BigDecimal> dkprContado = new HashMap<>();
             for (String dkprM : CajaTurno.METODOS) {
                 String dkprTexto = dkprTxtContado.get(dkprM).getText();
@@ -293,8 +286,6 @@ public class CajaController {
         }
     }
 
-    // ------------------------------------------------------------ historial
-
     @FXML
     private void onBuscarHistorial() {
         try {
@@ -315,7 +306,6 @@ public class CajaController {
         reporte(dkprT);
     }
 
-    /** Guarda el reporte de cuadre del turno (si sigue abierto, como arqueo parcial con lo esperado a la fecha). */
     private void reporte(CajaTurno dkprT) {
         try {
             List<CobroCaja> dkprLista = dkprService.cobros(dkprT);

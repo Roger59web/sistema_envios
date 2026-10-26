@@ -20,7 +20,6 @@
 
     <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
-        <!-- 1. Etiquetas con código de barras y QR, una por bulto -->
         <Tab fx:id="dkprTabEtiquetas" text="Etiquetas">
             <VBox spacing="8">
                 <padding>
@@ -60,7 +59,6 @@
             </VBox>
         </Tab>
 
-        <!-- 2. Carga del vehículo en la agencia de origen -->
         <Tab fx:id="dkprTabDespacho" text="Despacho">
             <VBox spacing="8">
                 <padding>
@@ -106,7 +104,6 @@
             </VBox>
         </Tab>
 
-        <!-- 3. Descarga del vehículo en la agencia destino -->
         <Tab fx:id="dkprTabRecepcion" text="Recepción">
             <VBox spacing="8">
                 <padding>

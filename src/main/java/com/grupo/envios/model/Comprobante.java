@@ -45,7 +45,6 @@ public class Comprobante {
     public String getMetodoPago() { return dkprMetodoPago; }
     public void setMetodoPago(String dkprMetodoPago) { this.dkprMetodoPago = dkprMetodoPago; }
 
-    /** Ejemplo: B001-00000012 */
     public String getNumeroTexto() {
         return dkprSerie + "-" + String.format("%08d", dkprNumero);
     }

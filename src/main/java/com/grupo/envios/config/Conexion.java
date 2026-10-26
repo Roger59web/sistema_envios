@@ -8,10 +8,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-/**
- * Entrega conexiones a PostgreSQL leyendo los datos de db.properties
- * (archivo en la raíz del proyecto, no se sube a GitHub).
- */
 public final class Conexion {
 
     private static final Properties props = new Properties();

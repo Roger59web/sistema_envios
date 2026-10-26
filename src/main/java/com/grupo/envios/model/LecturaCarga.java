@@ -3,7 +3,6 @@ package com.grupo.envios.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/** Una lectura del escáner dentro de un control de carga, con su resultado. */
 public class LecturaCarga {
 
     public static final String OK = "OK";
@@ -60,7 +59,6 @@ public class LecturaCarga {
         return dkprFecha == null ? "" : dkprFecha.format(FORMATO_HORA);
     }
 
-    /** Resultado en palabras para la tabla de lecturas. */
     public String getResultadoTexto() {
         return switch (dkprResultado) {
             case OK -> "OK";

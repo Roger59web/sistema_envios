@@ -52,15 +52,9 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Control de carga por bulto: etiquetas con código de barras y QR, escaneo al cargar el vehículo
- * (despacho, genera el manifiesto) y al descargarlo en destino (recepción).
- */
 public class ControlCargaController {
 
-    /** Etiquetas que se dibujan en la vista previa (al imprimir o en el PDF salen todas). */
     private static final int MAX_VISTA_PREVIA = 12;
-    /** Líneas de faltantes que se muestran en un aviso antes de resumir "y N más". */
     private static final int MAX_LINEAS_AVISO = 12;
 
     private static final String ESTILO_ERROR = "-fx-background-color: #fdedec; -fx-text-fill: #c0392b; "
@@ -110,7 +104,6 @@ public class ControlCargaController {
     private final ObservableList<Envio> dkprEnviosEtiquetas = FXCollections.observableArrayList();
     private String dkprUltimoManifiesto;
 
-    /** Destino que se puede cargar, con lo que hay pendiente hacia él. */
     private record OpcionRuta(int idRuta, String destino, int envios, int bultos) {
         @Override
         public String toString() {
@@ -128,14 +121,12 @@ public class ControlCargaController {
 
         Empleado dkprEmpleado = Sesion.getActual();
         boolean dkprAdmin = Roles.ADMINISTRADOR.equals(dkprEmpleado.getRol());
-        // Etiquetas las puede imprimir cualquiera; cargar y descargar es trabajo de almacén.
         if (!dkprService.puedeOperar(dkprEmpleado, dkprEmpleado.getIdAgencia())) {
             dkprTabs.getTabs().removeAll(dkprTabDespacho, dkprTabRecepcion);
         } else {
             cargarVehiculos();
         }
         dkprTxtManifiesto.setOnAction(dkprE -> escanearManifiesto());
-        // Al entrar a una pestaña de escaneo, el cursor queda listo para la pistola.
         dkprTabs.getSelectionModel().selectedItemProperty().addListener((dkprObs, dkprAntes, dkprAhora) -> {
             if (dkprAhora == dkprTabDespacho) {
                 dkprDespacho.enfocar();
@@ -152,20 +143,16 @@ public class ControlCargaController {
         } catch (Exception dkprE) {
             Alertas.manejar(dkprE);
         }
-        // Solo el administrador puede trabajar con otra agencia.
         dkprCmbAgencia.setDisable(!dkprAdmin);
         dkprCmbAgencia.setOnAction(dkprE -> cargar(true));
         cargar(true);
     }
-
-    // -------------------------------------------------------------- carga
 
     @FXML
     private void onActualizar() {
         cargar(false);
     }
 
-    /** @param cambioAgencia true: se descartan las sesiones mostradas (siguen abiertas en la base de datos) */
     private void cargar(boolean dkprCambioAgencia) {
         Agencia dkprAgencia = dkprCmbAgencia.getValue();
         if (dkprAgencia == null) {
@@ -204,7 +191,6 @@ public class ControlCargaController {
         }
     }
 
-    /** Destinos con envíos pendientes, en el orden en que aparecen (los más antiguos primero). */
     private static List<OpcionRuta> opcionesRuta(List<Envio> dkprPendientes) {
         Map<Integer, List<Envio>> dkprPorRuta = new LinkedHashMap<>();
         for (Envio dkprE : dkprPendientes) {
@@ -219,8 +205,6 @@ public class ControlCargaController {
     private Window ventana() {
         return dkprTabs.getScene().getWindow();
     }
-
-    // ---------------------------------------------------------- etiquetas
 
     private void configurarEtiquetas() {
         dkprTablaEtiquetas.setItems(dkprEnviosEtiquetas);
@@ -258,7 +242,6 @@ public class ControlCargaController {
                 : dkprTotal + " etiqueta(s) de " + dkprSeleccion.size() + " envío(s): una por bulto.");
     }
 
-    /** Agrega a la lista un envío escaneado o escrito (sirve también para reimprimir etiquetas). */
     @FXML
     private void onAgregarEtiqueta() {
         try {
@@ -309,8 +292,6 @@ public class ControlCargaController {
             Alertas.manejar(dkprE);
         }
     }
-
-    // ----------------------------------------------------------- despacho
 
     @FXML
     private void onIniciarDespacho() {
@@ -398,7 +379,6 @@ public class ControlCargaController {
         GeneradorPdf.ofrecerAbrir(dkprArchivo);
     }
 
-    /** Vehículos y conductores activos para el manifiesto (se registran en Vehículos y conductores). */
     private void cargarVehiculos() {
         try {
             dkprCmbVehiculo.setItems(FXCollections.observableArrayList(dkprVehiculoService.listarVehiculos(true)));
@@ -408,12 +388,6 @@ public class ControlCargaController {
         }
     }
 
-    // ---------------------------------------------------------- recepción
-
-    /**
-     * El conductor entrega el manifiesto impreso: al escanear su código de barras (o escribir MAN-000001 / 1)
-     * se elige ese manifiesto y empieza la descarga.
-     */
     private void escanearManifiesto() {
         String dkprTexto = dkprTxtManifiesto.getText() == null ? "" : dkprTxtManifiesto.getText().trim().toUpperCase();
         dkprTxtManifiesto.clear();
@@ -430,7 +404,6 @@ public class ControlCargaController {
             onIniciarRecepcion();
             return;
         }
-        // No está entre los que vienen hacia aquí: se explica por qué.
         try {
             Manifiesto dkprM2 = dkprService.buscarManifiesto(dkprId);
             if (dkprM2 == null) {
@@ -497,8 +470,6 @@ public class ControlCargaController {
         cancelar(dkprRecepcion, "¿Cancelar la descarga? Ningún envío cambiará de estado (las lecturas quedan guardadas como constancia).");
     }
 
-    // ------------------------------------------------------------- ayudas
-
     private void cancelar(PanelEscaneo dkprPanel, String dkprPregunta) {
         if (dkprPanel.getSesion() == null) {
             Alertas.advertencia("No hay ninguna sesión abierta.");
@@ -515,7 +486,6 @@ public class ControlCargaController {
         }
     }
 
-    /** Arma una lista para un aviso: "\n\nTítulo\n- línea..." (vacío si no hay líneas). */
     private static String lista(String dkprTitulo, List<String> dkprLineas) {
         if (dkprLineas.isEmpty()) {
             return "";
@@ -535,7 +505,6 @@ public class ControlCargaController {
         return dkprCol;
     }
 
-    /** Dos pitidos del sistema cuando una lectura se rechaza (para que se note sin mirar la pantalla). */
     private static void pitido() {
         Thread dkprHilo = new Thread(() -> {
             Toolkit dkprToolkit = Toolkit.getDefaultToolkit();
@@ -551,10 +520,6 @@ public class ControlCargaController {
         dkprHilo.start();
     }
 
-    /**
-     * Lo común a despacho y recepción: campo de escaneo, aviso de la última lectura, avance,
-     * tabla de envíos esperados (con sus bultos leídos) y tabla de lecturas.
-     */
     private class PanelEscaneo {
 
         private final TextField dkprTxtEscanear;
@@ -587,7 +552,6 @@ public class ControlCargaController {
                 protected void updateItem(Envio dkprE, boolean dkprVacia) {
                     super.updateItem(dkprE, dkprVacia);
                     getStyleClass().remove("fila-alerta");
-                    // Resalta los que tienen bultos a medias: son los que se suelen olvidar.
                     if (!dkprVacia && dkprE != null && leidosDe(dkprE) > 0 && leidosDe(dkprE) < dkprE.getCantidadBultos()) {
                         getStyleClass().add("fila-alerta");
                     }
@@ -647,7 +611,6 @@ public class ControlCargaController {
             enfocar();
         }
 
-        /** Vuelve a leer de la base los envíos esperados y las lecturas (también las de otras computadoras). */
         void refrescar() throws SQLException {
             if (dkprSesion == null) {
                 return;
@@ -658,7 +621,7 @@ public class ControlCargaController {
             dkprTablaEsperados.setItems(FXCollections.observableArrayList(dkprEsperados));
             dkprTablaEsperados.refresh();
             List<LecturaCarga> dkprRecientes = new ArrayList<>(dkprLecturas);
-            Collections.reverse(dkprRecientes); // la última lectura arriba
+            Collections.reverse(dkprRecientes);
             dkprTablaLecturas.setItems(FXCollections.observableArrayList(dkprRecientes));
 
             int dkprBultos = Etiqueta.contar(dkprEsperados);
@@ -703,7 +666,6 @@ public class ControlCargaController {
                     refrescar();
                 }
             } catch (NegocioException dkprE) {
-                // Sin ventanas emergentes: el Enter de la siguiente lectura las cerraría sin leerlas.
                 mostrarAviso("✖ " + dkprE.getMessage(), ESTILO_ERROR);
                 pitido();
             } catch (Exception dkprE) {
@@ -724,7 +686,6 @@ public class ControlCargaController {
             }
         }
 
-        /** @param estilo null = aviso verde de éxito (clase aviso-exito de estilos.css) */
         private void mostrarAviso(String dkprTexto, String dkprEstilo) {
             dkprLblAviso.setText(dkprTexto);
             dkprLblAviso.getStyleClass().remove("aviso-exito");

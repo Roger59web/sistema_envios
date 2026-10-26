@@ -3,7 +3,6 @@ package com.grupo.envios.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/** Manifiesto de carga: lo que lleva un vehículo hacia una agencia destino. */
 public class Manifiesto {
 
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -20,7 +19,6 @@ public class Manifiesto {
     private String dkprConductor;
     private String dkprObservacion;
     private String dkprEmpleado;
-    /** Envíos del manifiesto que siguen EN TRANSITO (solo se llena al listar los que vienen en camino). */
     private int dkprPendientes;
 
     public int getIdManifiesto() { return dkprIdManifiesto; }

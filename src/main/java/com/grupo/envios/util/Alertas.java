@@ -6,7 +6,6 @@ import javafx.scene.layout.Region;
 
 import java.sql.SQLException;
 
-/** Mensajes al usuario (ventanas de aviso). */
 public final class Alertas {
 
     private Alertas() {
@@ -24,7 +23,6 @@ public final class Alertas {
         mostrar(Alert.AlertType.ERROR, "Error", dkprMensaje);
     }
 
-    /** Pregunta Sí/No. Devuelve true si el usuario confirma. */
     public static boolean confirmar(String dkprMensaje) {
         Alert dkprAlerta = new Alert(Alert.AlertType.CONFIRMATION, dkprMensaje, ButtonType.YES, ButtonType.NO);
         dkprAlerta.setTitle("Confirmar");
@@ -33,10 +31,6 @@ public final class Alertas {
         return dkprAlerta.showAndWait().filter(dkprB -> dkprB == ButtonType.YES).isPresent();
     }
 
-    /**
-     * Muestra el mensaje adecuado según el tipo de excepción:
-     * errores de validación como advertencia, errores de base de datos y otros como error.
-     */
     public static void manejar(Throwable dkprT) {
         if (dkprT instanceof NegocioException) {
             advertencia(dkprT.getMessage());
@@ -50,7 +44,6 @@ public final class Alertas {
             } else if ("23503".equals(dkprEstado)) {
                 advertencia("No se puede completar la operación: el registro está relacionado con otros datos.");
             } else if ("42P01".equals(dkprEstado) || "42703".equals(dkprEstado)) {
-                // Falta una tabla o columna: la base no tiene aplicados los scripts de database/cambios.
                 error("La base de datos no está actualizada.\nEjecuta en orden los scripts de "
                         + "database/cambios/ que falten.\n\nDetalle: " + dkprT.getMessage());
             } else {

@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-/** Reglas de negocio de los envíos: tarifa, registro, cambios de estado, despacho en lote y entrega. */
 public class EnvioService {
 
     private static final BigDecimal FACTOR_IGV = new BigDecimal("1.18");
@@ -46,12 +45,6 @@ public class EnvioService {
     private final ClienteService dkprClienteService = new ClienteService();
     private final VehiculoService dkprVehiculoService = new VehiculoService();
 
-    // ------------------------------------------------------------------ tarifa
-
-    /**
-     * Costo = precio base (hasta 1 kg) + precio por cada kg adicional (se redondea hacia arriba).
-     * Ejemplo con base 15.00 y extra 1.50: 3.2 kg → 15.00 + 3 × 1.50 = 19.50.
-     */
     public BigDecimal calcularCosto(Ruta dkprRuta, BigDecimal dkprPesoKg) {
         if (dkprRuta == null) {
             throw new NegocioException("Selecciona la ruta de destino.");
@@ -69,9 +62,6 @@ public class EnvioService {
         return dkprRuta.getPrecioBase().add(dkprRuta.getPrecioKgExtra().multiply(dkprKgExtra)).setScale(2, RoundingMode.HALF_UP);
     }
 
-    // ---------------------------------------------------------------- registro
-
-    /** Registra el envío, su primer movimiento y el comprobante en una sola transacción. */
     public ResultadoRegistro registrar(SolicitudEnvio dkprS, Empleado dkprEmpleado) throws SQLException {
         if (!tieneRol(dkprEmpleado, Roles.ADMINISTRADOR, Roles.CAJERO)) {
             throw new NegocioException("Tu rol no permite registrar envíos.");
@@ -138,7 +128,6 @@ public class EnvioService {
                 dkprHistorialDAO.insertar(dkprCn, dkprIdEnvio, Estados.REGISTRADO, dkprEmpleado.getIdAgencia(),
                         dkprEmpleado.getIdEmpleado(), "Envío registrado en ventanilla");
 
-                // El costo ya incluye IGV (18 %): se separa subtotal e IGV.
                 BigDecimal dkprSubtotal = dkprCosto.divide(FACTOR_IGV, 2, RoundingMode.HALF_UP);
                 Comprobante dkprComprobante = new Comprobante();
                 dkprComprobante.setIdEnvio(dkprIdEnvio);
@@ -159,9 +148,6 @@ public class EnvioService {
         }
     }
 
-    // ------------------------------------------------------------- seguimiento
-
-    /** Acepta el código del ticket, la etiqueta de un bulto o solo el número (ver CodigosBarras.normalizarEnvio). */
     public Envio buscar(String dkprCodigo) throws SQLException {
         String dkprC = CodigosBarras.normalizarEnvio(Validaciones.requerido(dkprCodigo, "Código de seguimiento", 60));
         Envio dkprEnvio = dkprEnvioDAO.buscarPorCodigo(dkprC);
@@ -175,14 +161,12 @@ public class EnvioService {
         return dkprHistorialDAO.listarPorEnvio(dkprIdEnvio);
     }
 
-    /** Envío con su comprobante e historial: lo necesario para imprimir el ticket o el PDF. */
     public DetalleEnvio detalle(String dkprCodigo) throws SQLException {
         Envio dkprEnvio = buscar(dkprCodigo);
         return new DetalleEnvio(dkprEnvio, dkprComprobanteDAO.buscarPorEnvio(dkprEnvio.getIdEnvio()),
                 dkprHistorialDAO.listarPorEnvio(dkprEnvio.getIdEnvio()));
     }
 
-    /** Estados a los que se puede pasar desde el estado actual (la entrega se hace en su módulo). */
     public List<Integer> siguientesEstados(int dkprEstadoActual) {
         return switch (dkprEstadoActual) {
             case Estados.REGISTRADO -> List.of(Estados.EN_TRANSITO, Estados.ANULADO);
@@ -195,7 +179,6 @@ public class EnvioService {
         return tieneRol(dkprEmpleado, Roles.ADMINISTRADOR, Roles.ALMACEN, Roles.CAJERO);
     }
 
-    /** Estados a los que este empleado puede pasar el envío según su rol y su agencia. */
     public List<Integer> estadosDisponibles(Envio dkprEnvio, Empleado dkprEmpleado) {
         List<Integer> dkprDisponibles = new ArrayList<>();
         for (int dkprEstado : siguientesEstados(dkprEnvio.getIdEstadoActual())) {
@@ -206,10 +189,6 @@ public class EnvioService {
         return dkprDisponibles;
     }
 
-    /**
-     * Despachar y confirmar llegada: almacén (o administrador) en la agencia correspondiente.
-     * Anular: cajero (o administrador) de la agencia de origen. El administrador opera en cualquier agencia.
-     */
     private boolean puedeCambiarA(int dkprNuevoEstado, Envio dkprEnvio, Empleado dkprEmpleado) {
         boolean dkprAdmin = esAdmin(dkprEmpleado);
         if (dkprNuevoEstado == Estados.ANULADO) {
@@ -270,10 +249,6 @@ public class EnvioService {
         }
     }
 
-    /**
-     * Aviso para quien consulta un envío que no le toca mover: qué sigue y qué agencia lo hace.
-     * Devuelve "" si el empleado puede hacer el siguiente paso o si el envío ya terminó su flujo.
-     */
     public String avisoSoloConsulta(Envio dkprEnvio, Empleado dkprEmpleado) {
         return switch (dkprEnvio.getIdEstadoActual()) {
             case Estados.REGISTRADO -> puedeCambiarA(Estados.EN_TRANSITO, dkprEnvio, dkprEmpleado) ? ""
@@ -287,19 +262,14 @@ public class EnvioService {
         };
     }
 
-    // ------------------------------------------------------- bandeja de agencia
-
-    /** Envíos registrados en la agencia que esperan salir. */
     public List<Envio> porDespachar(int dkprIdAgencia) throws SQLException {
         return dkprEnvioDAO.listarPorEstadoYAgencia(Estados.REGISTRADO, dkprIdAgencia, true);
     }
 
-    /** Envíos que vienen en camino hacia la agencia. */
     public List<Envio> porRecibir(int dkprIdAgencia) throws SQLException {
         return dkprEnvioDAO.listarPorEstadoYAgencia(Estados.EN_TRANSITO, dkprIdAgencia, false);
     }
 
-    /** Envíos que ya están en la agencia esperando que el destinatario los recoja. */
     public List<Envio> porEntregar(int dkprIdAgencia) throws SQLException {
         return dkprEnvioDAO.listarPorEstadoYAgencia(Estados.EN_AGENCIA_DESTINO, dkprIdAgencia, false);
     }
@@ -313,10 +283,6 @@ public class EnvioService {
         return puedeEntregar(dkprEmpleado) && (esAdmin(dkprEmpleado) || dkprEmpleado.getIdAgencia() == dkprIdAgencia);
     }
 
-    /**
-     * Despacha varios envíos juntos: crea un manifiesto de carga (vehículo y conductor) y pasa
-     * todos a EN TRANSITO. Todos deben ir por la misma ruta. Devuelve el código del manifiesto.
-     */
     public String despachar(List<Envio> dkprEnvios, Integer dkprIdVehiculo, Integer dkprIdConductor, String dkprObservacion,
                             Empleado dkprEmpleado) throws SQLException {
         try (Connection dkprCn = Conexion.obtener()) {
@@ -332,10 +298,6 @@ public class EnvioService {
         }
     }
 
-    /**
-     * Igual que {@link #despachar}, pero dentro de una transacción que maneja quien llama
-     * (el control de carga cierra su sesión en la misma transacción). Devuelve el id del manifiesto.
-     */
     public int despacharEn(Connection dkprCn, List<Envio> dkprEnvios, Integer dkprIdVehiculo, Integer dkprIdConductor,
                            String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         if (dkprEnvios == null || dkprEnvios.isEmpty()) {
@@ -352,7 +314,6 @@ public class EnvioService {
                         + dkprE.getCodigoSeguimiento() + " a " + dkprE.getDestino() + ". Filtra por destino.");
             }
         }
-        // Vehículo y conductor registrados; en el manifiesto se copian placa y nombre tal como están hoy.
         Vehiculo dkprVehiculo = dkprVehiculoService.vehiculoParaDespacho(dkprIdVehiculo);
         Conductor dkprConductor = dkprVehiculoService.conductorParaDespacho(dkprIdConductor);
         String dkprObs = Validaciones.opcional(dkprObservacion, "Observación", 200);
@@ -374,10 +335,6 @@ public class EnvioService {
         return dkprIdManifiesto;
     }
 
-    /**
-     * Confirma la llegada de varios envíos a la agencia destino. Solo se marcan los paquetes que
-     * físicamente llegaron: los que falten siguen EN TRANSITO y aparecen como atrasados.
-     */
     public void recibir(List<Envio> dkprEnvios, String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         try (Connection dkprCn = Conexion.obtener()) {
             dkprCn.setAutoCommit(false);
@@ -391,7 +348,6 @@ public class EnvioService {
         }
     }
 
-    /** Igual que {@link #recibir}, pero dentro de una transacción que maneja quien llama. */
     public void recibirEn(Connection dkprCn, List<Envio> dkprEnvios, String dkprObservacion, Empleado dkprEmpleado)
             throws SQLException {
         if (dkprEnvios == null || dkprEnvios.isEmpty()) {
@@ -417,9 +373,6 @@ public class EnvioService {
         }
     }
 
-    // ----------------------------------------------------------------- entrega
-
-    /** Registra quién recoge la encomienda y pasa el envío a ENTREGADO. */
     public void registrarEntrega(String dkprCodigo, String dkprNombreReceptor, String dkprDniReceptor,
                                  String dkprObservacion, Empleado dkprEmpleado) throws SQLException {
         if (!puedeEntregar(dkprEmpleado)) {
@@ -460,9 +413,6 @@ public class EnvioService {
         }
     }
 
-    // ----------------------------------------------------------------- ayudas
-
-    /** Cambia el estado solo si nadie lo cambió antes (si no, avisa en lugar de pisar el otro cambio). */
     private void moverEstado(Connection dkprCn, Envio dkprEnvio, int dkprNuevoEstado) throws SQLException {
         if (!dkprEnvioDAO.actualizarEstadoSi(dkprCn, dkprEnvio.getIdEnvio(), dkprEnvio.getIdEstadoActual(), dkprNuevoEstado, null)) {
             throw new NegocioException("El envío " + dkprEnvio.getCodigoSeguimiento()
@@ -470,7 +420,6 @@ public class EnvioService {
         }
     }
 
-    /** Agencia donde ocurre físicamente el movimiento (el administrador puede operar desde otra). */
     private int agenciaDelMovimiento(int dkprNuevoEstado, Envio dkprEnvio) {
         return dkprNuevoEstado == Estados.EN_AGENCIA_DESTINO || dkprNuevoEstado == Estados.ENTREGADO
                 ? dkprEnvio.getIdAgenciaDestino() : dkprEnvio.getIdAgenciaOrigen();

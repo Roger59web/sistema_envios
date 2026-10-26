@@ -10,7 +10,6 @@ public class AuthService {
 
     private final EmpleadoDAO dkprEmpleadoDAO = new EmpleadoDAO();
 
-    /** Devuelve el empleado si las credenciales son correctas, o null si no lo son. */
     public Empleado login(String dkprUsuario, String dkprClave) throws SQLException {
         Empleado dkprEmpleado = dkprEmpleadoDAO.buscarPorUsuario(dkprUsuario);
         if (dkprEmpleado == null) {

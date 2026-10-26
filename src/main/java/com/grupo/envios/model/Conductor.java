@@ -1,6 +1,5 @@
 package com.grupo.envios.model;
 
-/** Conductor que maneja los vehículos de la empresa. */
 public class Conductor {
 
     private int dkprIdConductor;
@@ -32,7 +31,6 @@ public class Conductor {
         return dkprActivo ? "Activo" : "Inactivo";
     }
 
-    /** Texto que se guarda en el manifiesto y se muestra en Seguimiento: "Pedro Salas (DNI 12345678)". */
     public String getTextoManifiesto() {
         return dkprNombreCompleto + " (DNI " + dkprDni + ")";
     }

@@ -18,11 +18,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Cuadre de caja por turno. Lo esperado sale de los comprobantes que emitió el cajero durante el turno
- * (por método de pago); en efectivo se suma el fondo inicial. Los envíos anulados se muestran aparte
- * y no se cuentan (se asume que se devolvió el dinero).
- */
 public class CajaService {
 
     private static final BigDecimal MONTO_MAXIMO = new BigDecimal("99999999.99");
@@ -37,7 +32,6 @@ public class CajaService {
         return dkprE != null && Roles.ADMINISTRADOR.equals(dkprE.getRol());
     }
 
-    /** Turno abierto del empleado con lo esperado calculado al momento, o null si no tiene. */
     public CajaTurno turnoAbierto(Empleado dkprE) throws SQLException {
         CajaTurno dkprT = dkprDao.buscarAbierto(dkprE.getIdEmpleado());
         if (dkprT != null) {
@@ -46,7 +40,6 @@ public class CajaService {
         return dkprT;
     }
 
-    /** Consulta rápida (sin calcular cobros) para avisar en ventanilla si se cobra sin turno. */
     public boolean tieneTurnoAbierto(Empleado dkprE) throws SQLException {
         return dkprDao.buscarAbierto(dkprE.getIdEmpleado()) != null;
     }
@@ -67,12 +60,10 @@ public class CajaService {
         return turnoAbierto(dkprE);
     }
 
-    /** Comprobantes emitidos en el turno (hasta ahora si sigue abierto). */
     public List<CobroCaja> cobros(CajaTurno dkprT) throws SQLException {
         return dkprDao.cobros(dkprT.getIdEmpleado(), dkprT.getFechaApertura(), dkprT.getFechaCierre());
     }
 
-    /** Llena cantidades, esperado por método (efectivo + fondo) y anulados a partir de los cobros. */
     public static void calcular(CajaTurno dkprT, List<CobroCaja> dkprCobros) {
         int dkprAnulados = 0;
         BigDecimal dkprMontoAnulado = BigDecimal.ZERO;
@@ -94,10 +85,6 @@ public class CajaService {
         dkprT.setAnuladosMonto(dkprMontoAnulado);
     }
 
-    /**
-     * Cierra el turno: recalcula lo esperado hasta este momento, lo compara con lo contado y guarda
-     * ambos. Si hay diferencia, la observación es obligatoria.
-     */
     public CajaTurno cerrar(CajaTurno dkprTurno, Map<String, BigDecimal> dkprContado, String dkprObservacion,
                             Empleado dkprE) throws SQLException {
         if (dkprTurno.getIdEmpleado() != dkprE.getIdEmpleado() && !esAdmin(dkprE)) {
@@ -114,7 +101,6 @@ public class CajaService {
             }
             dkprT.setContado(dkprM, validarMonto(dkprMonto, "Lo contado en " + dkprM));
         }
-        // Hasta el segundo actual: lo que se cobre después ya cae fuera del turno.
         dkprT.setFechaCierre(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         calcular(dkprT, cobros(dkprT));
         String dkprObs = Validaciones.opcional(dkprObservacion, "Observación", 200);
@@ -129,7 +115,6 @@ public class CajaService {
         return dkprDao.buscar(dkprT.getIdTurno());
     }
 
-    /** Turnos entre dos fechas: el administrador ve los de todos; el cajero, los suyos. */
     public List<CajaTurno> historial(Empleado dkprE, LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
         if (dkprDesde == null || dkprHasta == null) {
             throw new NegocioException("Elige las fechas desde y hasta.");

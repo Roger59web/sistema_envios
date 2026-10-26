@@ -15,7 +15,6 @@ public class ClienteDAO {
     private static final String COLUMNAS =
             "id_cliente, tipo_documento, numero_documento, nombre_completo, telefono, email, direccion";
 
-    /** Lista clientes cuyo documento o nombre contenga el filtro (vacío = todos, máximo 200). */
     public List<Cliente> listar(String dkprFiltro) throws SQLException {
         String dkprSql = "SELECT " + COLUMNAS + " FROM cliente "
                 + "WHERE numero_documento ILIKE ? OR nombre_completo ILIKE ? "
@@ -41,7 +40,6 @@ public class ClienteDAO {
         }
     }
 
-    /** Versión para usar dentro de una transacción. Devuelve null si no existe. */
     public Cliente buscarPorDocumento(Connection dkprCn, String dkprTipo, String dkprNumero) throws SQLException {
         String dkprSql = "SELECT " + COLUMNAS + " FROM cliente WHERE tipo_documento = ? AND numero_documento = ?";
         try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSql)) {
@@ -59,7 +57,6 @@ public class ClienteDAO {
         }
     }
 
-    /** Versión para usar dentro de una transacción. Devuelve el id generado. */
     public int insertar(Connection dkprCn, Cliente dkprC) throws SQLException {
         String dkprSql = "INSERT INTO cliente (tipo_documento, numero_documento, nombre_completo, telefono, email, direccion) "
                 + "VALUES (?, ?, ?, ?, ?, ?) RETURNING id_cliente";

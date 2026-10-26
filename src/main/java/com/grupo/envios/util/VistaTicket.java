@@ -20,7 +20,6 @@ import javafx.stage.Window;
 import java.io.File;
 import java.util.List;
 
-/** Ventana de vista previa del ticket, con las opciones de imprimir y guardar en PDF. */
 public final class VistaTicket {
 
     private VistaTicket() {
@@ -30,7 +29,6 @@ public final class VistaTicket {
         mostrar(dkprD, dkprOwner, null);
     }
 
-    /** @param mensaje aviso opcional que se muestra arriba del ticket (ej: "Envío registrado correctamente") */
     public static void mostrar(DetalleEnvio dkprD, Window dkprOwner, String dkprMensaje) {
         String dkprCodigo = dkprD.envio().getCodigoSeguimiento();
         Stage dkprVentana = new Stage();
@@ -56,7 +54,6 @@ public final class VistaTicket {
         dkprBtnCerrar.setCancelButton(true);
         dkprBtnCerrar.setOnAction(dkprE -> dkprVentana.close());
 
-        // Las etiquetas de los bultos salen desde aquí mismo: no hace falta ir a Control de carga.
         int dkprBultos = dkprD.envio().getCantidadBultos();
         Button dkprBtnEtiquetas = new Button("Etiquetas (" + dkprBultos + ")");
         dkprBtnEtiquetas.setOnAction(dkprE -> Etiqueta.imprimir(List.of(dkprD.envio()), dkprVentana));
@@ -90,7 +87,6 @@ public final class VistaTicket {
         dkprVentana.showAndWait();
     }
 
-    /** Guarda el detalle completo del envío (A4) en PDF. */
     public static void guardarPdf(DetalleEnvio dkprD, Window dkprOwner) {
         String dkprCodigo = dkprD.envio().getCodigoSeguimiento();
         File dkprArchivo = GeneradorPdf.elegirDestino(dkprOwner, "Guardar detalle del envío", "envio_" + dkprCodigo + ".pdf");

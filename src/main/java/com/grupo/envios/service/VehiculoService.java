@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
-/** Registro de vehículos y conductores, y su validación al despachar. */
 public class VehiculoService {
 
     private static final BigDecimal CAPACIDAD_MAXIMA = new BigDecimal("99999");
@@ -26,7 +25,6 @@ public class VehiculoService {
         return dkprDao.listarConductores(dkprSoloActivos);
     }
 
-    /** Placa peruana normalizada a ABC-123 (acepta abc123, ABC 123, A1B-234...). */
     public static String normalizarPlaca(String dkprPlaca) {
         String dkprP = Validaciones.requerido(dkprPlaca, "Placa", 10).toUpperCase(Locale.ROOT).replaceAll("[\\s-]", "");
         if (!dkprP.matches("[A-Z0-9]{6}")) {
@@ -60,7 +58,6 @@ public class VehiculoService {
         dkprDao.guardarConductor(dkprC);
     }
 
-    /** Vehículo elegido para un despacho: debe existir y estar activo. */
     public Vehiculo vehiculoParaDespacho(Integer dkprIdVehiculo) throws SQLException {
         if (dkprIdVehiculo == null) {
             throw new NegocioException("Elige el vehículo que lleva la carga (se registran en Vehículos y conductores).");
@@ -72,7 +69,6 @@ public class VehiculoService {
         return dkprV;
     }
 
-    /** Conductor elegido para un despacho: debe existir y estar activo. */
     public Conductor conductorParaDespacho(Integer dkprIdConductor) throws SQLException {
         if (dkprIdConductor == null) {
             throw new NegocioException("Elige el conductor (se registran en Vehículos y conductores).");

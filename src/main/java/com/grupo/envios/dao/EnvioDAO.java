@@ -41,7 +41,6 @@ public class EnvioDAO {
             LEFT JOIN manifiesto man ON man.id_manifiesto = e.id_manifiesto
             """;
 
-    /** Reserva el siguiente id de envío (sirve para armar el código de seguimiento). */
     public int siguienteId(Connection dkprCn) throws SQLException {
         try (PreparedStatement dkprPs = dkprCn.prepareStatement(
                 "SELECT nextval(pg_get_serial_sequence('envio', 'id_envio'))");
@@ -74,10 +73,6 @@ public class EnvioDAO {
         }
     }
 
-    /**
-     * Cambia el estado solo si el envío sigue en el estado esperado (evita que dos empleados
-     * muevan el mismo paquete a la vez). Devuelve false si otro ya lo cambió.
-     */
     public boolean actualizarEstadoSi(Connection dkprCn, int dkprIdEnvio, int dkprEstadoEsperado, int dkprNuevoEstado,
                                       Integer dkprIdManifiesto) throws SQLException {
         String dkprSql = "UPDATE envio SET id_estado_actual = ?, id_manifiesto = COALESCE(?, id_manifiesto) "
@@ -91,12 +86,6 @@ public class EnvioDAO {
         }
     }
 
-    /**
-     * Envíos en un estado que pertenecen a una agencia, del más antiguo al más reciente
-     * (lo que lleva más tiempo esperando se atiende primero).
-     *
-     * @param comoOrigen true: la agencia es el origen (por despachar); false: es el destino
-     */
     public List<Envio> listarPorEstadoYAgencia(int dkprIdEstado, int dkprIdAgencia, boolean dkprComoOrigen) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.id_estado_actual = ? AND "
                 + (dkprComoOrigen ? "ru.id_agencia_origen" : "ru.id_agencia_destino") + " = ? "
@@ -115,7 +104,6 @@ public class EnvioDAO {
         return dkprLista;
     }
 
-    /** Devuelve el envío con ese código, o null si no existe. */
     public Envio buscarPorCodigo(String dkprCodigo) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.codigo_seguimiento = ?";
         try (Connection dkprCn = Conexion.obtener();
@@ -127,7 +115,6 @@ public class EnvioDAO {
         }
     }
 
-    /** Devuelve el envío con ese id, o null si no existe. */
     public Envio buscarPorId(int dkprIdEnvio) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.id_envio = ?";
         try (Connection dkprCn = Conexion.obtener();
@@ -139,7 +126,6 @@ public class EnvioDAO {
         }
     }
 
-    /** Envíos que salieron con un manifiesto (en cualquier estado), en el orden en que se registraron. */
     public List<Envio> listarPorManifiesto(int dkprIdManifiesto) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.id_manifiesto = ? ORDER BY e.id_envio";
         List<Envio> dkprLista = new ArrayList<>();
@@ -155,13 +141,6 @@ public class EnvioDAO {
         return dkprLista;
     }
 
-    /**
-     * Envíos sin terminar (registrado, en tránsito o en agencia destino) cuyo último movimiento fue
-     * hace más de {@code dias} días, del más antiguo al más reciente.
-     *
-     * @param idAgencia 0 = todas; si no, los envíos en los que la agencia tiene que actuar o esperar
-     *                  (origen mientras no sale, origen o destino en camino, destino al llegar)
-     */
     public List<Envio> listarEstancados(int dkprDias, int dkprIdAgencia) throws SQLException {
         String dkprSql = "SELECT * FROM (" + SELECT_BASE + """
                  WHERE e.id_estado_actual IN (1, 2, 3)) x
@@ -188,7 +167,6 @@ public class EnvioDAO {
         return dkprLista;
     }
 
-    /** Envíos registrados entre dos fechas (ambas incluidas), del más reciente al más antiguo. */
     public List<Envio> listarPorFechas(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.fecha_registro >= ? AND e.fecha_registro < ? "
                 + "ORDER BY e.fecha_registro DESC, e.id_envio DESC";
@@ -206,7 +184,6 @@ public class EnvioDAO {
         return dkprLista;
     }
 
-    /** Cantidad de envíos e ingresos por agencia de origen (los anulados no suman ingresos). */
     public List<ResumenFila> resumenPorAgencia(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
         String dkprSql = """
                 SELECT ao.nombre AS etiqueta, COUNT(*) AS cantidad,
@@ -221,7 +198,6 @@ public class EnvioDAO {
         return resumen(dkprSql, dkprDesde, dkprHasta);
     }
 
-    /** Cantidad de envíos y monto por estado actual. */
     public List<ResumenFila> resumenPorEstado(LocalDate dkprDesde, LocalDate dkprHasta) throws SQLException {
         String dkprSql = """
                 SELECT es.nombre AS etiqueta, COUNT(*) AS cantidad, COALESCE(SUM(e.costo_envio), 0) AS monto

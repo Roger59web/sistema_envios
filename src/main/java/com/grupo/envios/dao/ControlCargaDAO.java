@@ -25,13 +25,11 @@ public class ControlCargaDAO {
             LEFT JOIN manifiesto man ON man.id_manifiesto = cc.id_manifiesto
             """;
 
-    /** Carga abierta de la agencia hacia esa ruta, o null si no hay ninguna. */
     public ControlCarga buscarDespachoAbierto(int dkprIdAgencia, int dkprIdRuta) throws SQLException {
         return buscarUno(SELECT_BASE + " WHERE cc.tipo = 'DESPACHO' AND cc.estado = 'ABIERTO' "
                 + "AND cc.id_agencia = ? AND cc.id_ruta = ?", dkprIdAgencia, dkprIdRuta);
     }
 
-    /** Descarga abierta de ese manifiesto, o null si no hay ninguna. */
     public ControlCarga buscarRecepcionAbierta(int dkprIdManifiesto) throws SQLException {
         return buscarUno(SELECT_BASE + " WHERE cc.tipo = 'RECEPCION' AND cc.estado = 'ABIERTO' "
                 + "AND cc.id_manifiesto = ?", dkprIdManifiesto);
@@ -41,7 +39,6 @@ public class ControlCargaDAO {
         return buscarUno(SELECT_BASE + " WHERE cc.id_control = ?", dkprIdControl);
     }
 
-    /** Crea la sesión y devuelve su id. */
     public int insertar(String dkprTipo, int dkprIdAgencia, int dkprIdRuta, Integer dkprIdManifiesto, int dkprIdEmpleado)
             throws SQLException {
         String dkprSql = "INSERT INTO control_carga (tipo, id_agencia, id_ruta, id_manifiesto, id_empleado) "
@@ -60,7 +57,6 @@ public class ControlCargaDAO {
         }
     }
 
-    /** Guarda la lectura. Si el bulto ya se había leído como OK lanza una violación de unicidad (23505). */
     public void insertarLectura(int dkprIdControl, LecturaCarga dkprL, int dkprIdEmpleado) throws SQLException {
         String dkprSql = "INSERT INTO control_carga_lectura (id_control, codigo_leido, id_envio, nro_bulto, resultado, "
                 + "detalle, id_empleado) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -77,7 +73,6 @@ public class ControlCargaDAO {
         }
     }
 
-    /** Lecturas de la sesión en el orden en que se hicieron. */
     public List<LecturaCarga> listarLecturas(int dkprIdControl) throws SQLException {
         String dkprSql = "SELECT codigo_leido, id_envio, nro_bulto, resultado, detalle, fecha "
                 + "FROM control_carga_lectura WHERE id_control = ? ORDER BY fecha, id_lectura";
@@ -101,11 +96,6 @@ public class ControlCargaDAO {
         return dkprLista;
     }
 
-    /**
-     * Cierra (o cancela) la sesión solo si sigue abierta. Devuelve false si otra persona ya la cerró.
-     *
-     * @param idManifiesto en un despacho, el manifiesto generado al cerrar (null para dejar el que tenía)
-     */
     public boolean cerrar(Connection dkprCn, int dkprIdControl, String dkprEstado, Integer dkprIdManifiesto,
                           String dkprObservacion) throws SQLException {
         String dkprSql = "UPDATE control_carga SET estado = ?, fecha_cierre = NOW(), "

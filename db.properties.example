@@ -1,5 +1,3 @@
-# Copia este archivo como "db.properties" (en la raíz del proyecto) y ajusta tus datos.
-# db.properties NO se sube a GitHub.
 db.url=jdbc:postgresql://localhost:5432/sistema_envios
 db.user=postgres
 db.password=tu_clave_aqui

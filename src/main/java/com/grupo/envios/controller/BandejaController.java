@@ -37,10 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Trabajo diario de una agencia: lo que hay que despachar, lo que viene en camino y lo que
- * espera ser recogido. Los estados se cambian en lote, marcando (o escaneando) los paquetes.
- */
 public class BandejaController {
 
     private static final String TODOS_LOS_DESTINOS = "Todos los destinos";
@@ -94,7 +90,6 @@ public class BandejaController {
     private final AgenciaService dkprAgenciaService = new AgenciaService();
     private final VehiculoService dkprVehiculoService = new VehiculoService();
 
-    /** Casilla marcada de cada envío (por id), compartida por las tablas con selección en lote. */
     private final Map<Integer, BooleanProperty> dkprMarcas = new HashMap<>();
     private FilteredList<Envio> dkprDespachoFiltrado = new FilteredList<>(FXCollections.observableArrayList());
 
@@ -135,7 +130,6 @@ public class BandejaController {
         } catch (Exception dkprE) {
             Alertas.manejar(dkprE);
         }
-        // Solo el administrador puede ver la bandeja de otra agencia.
         dkprCmbAgencia.setDisable(!dkprAdmin);
         if (dkprTabs.getTabs().contains(dkprTabDespachar)) {
             cargarVehiculos();
@@ -143,7 +137,6 @@ public class BandejaController {
         cargar();
     }
 
-    /** Vehículos y conductores activos para el manifiesto (se registran en Vehículos y conductores). */
     private void cargarVehiculos() {
         try {
             dkprCmbVehiculo.setItems(FXCollections.observableArrayList(dkprVehiculoService.listarVehiculos(true)));
@@ -188,7 +181,6 @@ public class BandejaController {
         dkprCol.setCellValueFactory(dkprC -> new SimpleStringProperty(dkprValor.apply(dkprC.getValue())));
     }
 
-    /** Pinta la fila cuando el envío está atrasado o lleva demasiado tiempo en la agencia. */
     private TableRow<Envio> filaConAlerta() {
         return new TableRow<>() {
             @Override
@@ -228,8 +220,6 @@ public class BandejaController {
         dkprBtnRecibir.setDisable(dkprRecepcion == 0);
     }
 
-    // -------------------------------------------------------------- carga
-
     @FXML
     private void onActualizar() {
         cargar();
@@ -250,7 +240,6 @@ public class BandejaController {
                 List<String> dkprDestinos = dkprPendientes.stream().map(Envio::getDestino).distinct().sorted().toList();
                 dkprCmbDestino.getItems().setAll(TODOS_LOS_DESTINOS);
                 dkprCmbDestino.getItems().addAll(dkprDestinos);
-                // Con un solo destino ya queda listo para armar el manifiesto.
                 dkprCmbDestino.setValue(dkprDestinos.size() == 1 ? dkprDestinos.get(0) : TODOS_LOS_DESTINOS);
                 filtrarDestino();
                 dkprTabDespachar.setText("Por despachar (" + dkprPendientes.size() + ")");
@@ -272,21 +261,16 @@ public class BandejaController {
 
     private void filtrarDestino() {
         String dkprDestino = dkprCmbDestino.getValue();
-        // Al cambiar de destino se desmarca todo: un manifiesto va a un solo destino.
         dkprDespachoFiltrado.getSource().forEach(dkprE -> marca(dkprE).set(false));
         dkprDespachoFiltrado.setPredicate(dkprE -> dkprDestino == null || TODOS_LOS_DESTINOS.equals(dkprDestino)
                 || dkprDestino.equals(dkprE.getDestino()));
         actualizarBotones();
     }
 
-    // ------------------------------------------------------------ escaneo
-
-    /** Acepta el código completo (ENV-000015), solo el número (15) o la etiqueta de un bulto (ENV-000015-02). */
     private static String normalizarCodigo(String dkprTexto) {
         return CodigosBarras.normalizarEnvio(dkprTexto);
     }
 
-    /** Marca en la tabla el envío leído por la pistola de código de barras (o tipeado). */
     private void escanear(TextField dkprCampo, TableView<Envio> dkprTabla) {
         String dkprCodigo = normalizarCodigo(dkprCampo.getText());
         dkprCampo.clear();
@@ -328,8 +312,6 @@ public class BandejaController {
     private void onMarcarTodosRecibir() {
         dkprTablaRecibir.getItems().forEach(dkprE -> marca(dkprE).set(true));
     }
-
-    // ------------------------------------------------------------ acciones
 
     @FXML
     private void onDespachar() {
@@ -393,7 +375,6 @@ public class BandejaController {
         abrirEntrega(dkprEnvio);
     }
 
-    /** Abre la pantalla de Entregas con el envío ya cargado. */
     private void abrirEntrega(Envio dkprEnvio) {
         try {
             FXMLLoader dkprLoader = new FXMLLoader(getClass().getResource("/view/entregas.fxml"));

@@ -7,10 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/** Parámetros del sistema guardados como clave / valor (tabla configuracion). */
 public class ConfiguracionDAO {
 
-    /** Devuelve el valor de la clave, o null si no está configurada. */
     public String obtener(String dkprClave) throws SQLException {
         try (Connection dkprCn = Conexion.obtener();
              PreparedStatement dkprPs = dkprCn.prepareStatement("SELECT valor FROM configuracion WHERE clave = ?")) {

@@ -2,7 +2,6 @@ package com.grupo.envios.model;
 
 import java.math.BigDecimal;
 
-/** Vehículo de la empresa que traslada la carga entre agencias. */
 public class Vehiculo {
 
     private int dkprIdVehiculo;

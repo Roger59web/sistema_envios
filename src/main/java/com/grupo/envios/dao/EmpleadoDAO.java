@@ -21,7 +21,6 @@ public class EmpleadoDAO {
             JOIN agencia a ON a.id_agencia = e.id_agencia
             """;
 
-    /** Devuelve el empleado activo con ese usuario, o null si no existe. */
     public Empleado buscarPorUsuario(String dkprUsuario) throws SQLException {
         String dkprSql = SELECT_BASE + " WHERE e.usuario = ? AND e.activo = TRUE";
         try (Connection dkprCn = Conexion.obtener();
@@ -75,7 +74,6 @@ public class EmpleadoDAO {
         }
     }
 
-    /** Si claveHash es null, la contraseña actual no se modifica. */
     public void actualizar(Empleado dkprE) throws SQLException {
         boolean dkprCambiaClave = dkprE.getClaveHash() != null;
         String dkprSql = "UPDATE empleado SET id_agencia = ?, id_rol = ?, dni = ?, nombres = ?, apellidos = ?, "

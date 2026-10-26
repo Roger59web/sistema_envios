@@ -1,12 +1,3 @@
--- =====================================================
--- Sistema de Envios (tipo Shalom) - Modelo PostgreSQL
--- Uso: personal de ventanilla
--- =====================================================
-
--- Crear la base de datos (ejecutar conectado a la BD "postgres"):
--- CREATE DATABASE sistema_envios;
--- Luego conectarse a sistema_envios y correr el resto del script.
-
 DROP TABLE IF EXISTS entrega CASCADE;
 DROP TABLE IF EXISTS comprobante CASCADE;
 DROP TABLE IF EXISTS historial_envio CASCADE;
@@ -20,18 +11,15 @@ DROP TABLE IF EXISTS estado_envio CASCADE;
 DROP TABLE IF EXISTS rol CASCADE;
 DROP TABLE IF EXISTS agencia CASCADE;
 
--- -----------------------------------------------------
--- Catalogos
--- -----------------------------------------------------
 CREATE TABLE rol (
     id_rol      SERIAL PRIMARY KEY,
-    nombre      VARCHAR(30) NOT NULL UNIQUE      -- ADMINISTRADOR, CAJERO, ALMACEN
+    nombre      VARCHAR(30) NOT NULL UNIQUE
 );
 
 CREATE TABLE estado_envio (
     id_estado   SERIAL PRIMARY KEY,
     nombre      VARCHAR(30) NOT NULL UNIQUE,
-    orden       INT NOT NULL                      -- orden del flujo
+    orden       INT NOT NULL
 );
 
 CREATE TABLE agencia (
@@ -43,9 +31,6 @@ CREATE TABLE agencia (
     activo      BOOLEAN NOT NULL DEFAULT TRUE
 );
 
--- -----------------------------------------------------
--- Personal y clientes
--- -----------------------------------------------------
 CREATE TABLE empleado (
     id_empleado SERIAL PRIMARY KEY,
     id_agencia  INT NOT NULL REFERENCES agencia(id_agencia),
@@ -54,7 +39,7 @@ CREATE TABLE empleado (
     nombres     VARCHAR(80) NOT NULL,
     apellidos   VARCHAR(80) NOT NULL,
     usuario     VARCHAR(30) NOT NULL UNIQUE,
-    clave_hash  VARCHAR(100) NOT NULL,            -- guardar hash (BCrypt), nunca texto plano
+    clave_hash  VARCHAR(100) NOT NULL,
     activo      BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -62,16 +47,13 @@ CREATE TABLE cliente (
     id_cliente       SERIAL PRIMARY KEY,
     tipo_documento   VARCHAR(5) NOT NULL CHECK (tipo_documento IN ('DNI','RUC','CE')),
     numero_documento VARCHAR(15) NOT NULL,
-    nombre_completo  VARCHAR(150) NOT NULL,       -- nombres o razon social
+    nombre_completo  VARCHAR(150) NOT NULL,
     telefono         VARCHAR(15),
     email            VARCHAR(100),
     direccion        VARCHAR(150),
     UNIQUE (tipo_documento, numero_documento)
 );
 
--- -----------------------------------------------------
--- Rutas y tarifas
--- -----------------------------------------------------
 CREATE TABLE ruta (
     id_ruta             SERIAL PRIMARY KEY,
     id_agencia_origen   INT NOT NULL REFERENCES agencia(id_agencia),
@@ -85,19 +67,16 @@ CREATE TABLE ruta (
 CREATE TABLE tarifa (
     id_tarifa     SERIAL PRIMARY KEY,
     id_ruta       INT NOT NULL REFERENCES ruta(id_ruta),
-    precio_base   NUMERIC(8,2) NOT NULL CHECK (precio_base >= 0),   -- hasta 1 kg
+    precio_base   NUMERIC(8,2) NOT NULL CHECK (precio_base >= 0),
     precio_kg_extra NUMERIC(8,2) NOT NULL CHECK (precio_kg_extra >= 0),
     peso_max_kg   NUMERIC(6,2) NOT NULL DEFAULT 50,
     vigente_desde DATE NOT NULL DEFAULT CURRENT_DATE,
     activo        BOOLEAN NOT NULL DEFAULT TRUE
 );
 
--- -----------------------------------------------------
--- Envios
--- -----------------------------------------------------
 CREATE TABLE envio (
     id_envio            SERIAL PRIMARY KEY,
-    codigo_seguimiento  VARCHAR(15) NOT NULL UNIQUE,   -- ej: ENV-000001
+    codigo_seguimiento  VARCHAR(15) NOT NULL UNIQUE,
     id_ruta             INT NOT NULL REFERENCES ruta(id_ruta),
     id_remitente        INT NOT NULL REFERENCES cliente(id_cliente),
     id_destinatario     INT NOT NULL REFERENCES cliente(id_cliente),
@@ -123,9 +102,6 @@ CREATE TABLE historial_envio (
     observacion  VARCHAR(200)
 );
 
--- -----------------------------------------------------
--- Comprobante de pago y entrega
--- -----------------------------------------------------
 CREATE TABLE comprobante (
     id_comprobante SERIAL PRIMARY KEY,
     id_envio       INT NOT NULL UNIQUE REFERENCES envio(id_envio),
@@ -150,9 +126,6 @@ CREATE TABLE entrega (
     observacion     VARCHAR(200)
 );
 
--- -----------------------------------------------------
--- Indices utiles para busquedas de ventanilla
--- -----------------------------------------------------
 CREATE INDEX idx_envio_remitente    ON envio(id_remitente);
 CREATE INDEX idx_envio_destinatario ON envio(id_destinatario);
 CREATE INDEX idx_envio_estado       ON envio(id_estado_actual);
@@ -160,9 +133,6 @@ CREATE INDEX idx_envio_fecha        ON envio(fecha_registro);
 CREATE INDEX idx_historial_envio    ON historial_envio(id_envio);
 CREATE UNIQUE INDEX uq_tarifa_activa ON tarifa(id_ruta) WHERE activo;
 
--- -----------------------------------------------------
--- Datos iniciales
--- -----------------------------------------------------
 INSERT INTO rol (nombre) VALUES ('ADMINISTRADOR'), ('CAJERO'), ('ALMACEN');
 
 INSERT INTO estado_envio (nombre, orden) VALUES
@@ -185,14 +155,6 @@ INSERT INTO tarifa (id_ruta, precio_base, precio_kg_extra) VALUES
     (1, 15.00, 1.50), (2, 15.00, 1.50), (3, 18.00, 2.00),
     (4, 18.00, 2.00), (5, 10.00, 1.00), (6, 10.00, 1.00);
 
--- -----------------------------------------------------
--- Usuarios de prueba (cambiar las claves antes de un uso real)
---   admin     / admin123     ADMINISTRADOR  Lima
---   cajero1   / cajero123    CAJERO         Lima
---   almacen1  / almacen123   ALMACEN        Lima
---   cajero2   / cajero123    CAJERO         Arequipa
---   almacen2  / almacen123   ALMACEN        Arequipa
--- -----------------------------------------------------
 INSERT INTO empleado (id_agencia, id_rol, dni, nombres, apellidos, usuario, clave_hash) VALUES
     (1, (SELECT id_rol FROM rol WHERE nombre = 'ADMINISTRADOR'), '00000001', 'Admin',  'Sistema',  'admin',    '$2a$10$n0QU1DC2mjmX.a3xl03sYOyp8cTF0ID4yWkAhVTuX0ppHRwus4a4e'),
     (1, (SELECT id_rol FROM rol WHERE nombre = 'CAJERO'),        '00000002', 'Rosa',   'Vargas',   'cajero1',  '$2a$10$KPdJXrZnW6XFGGiem0LlzOM8PVAZUYJlHLXmY7AMBrFBzv3b.Dw4W'),
@@ -200,9 +162,6 @@ INSERT INTO empleado (id_agencia, id_rol, dni, nombres, apellidos, usuario, clav
     (2, (SELECT id_rol FROM rol WHERE nombre = 'CAJERO'),        '00000004', 'Ana',    'Torres',   'cajero2',  '$2a$10$6kguPXygksIu71SLXev.PO8OX6n9PYeIqzG.tTmvFOoVNff0Qljpe'),
     (2, (SELECT id_rol FROM rol WHERE nombre = 'ALMACEN'),       '00000005', 'Pedro',  'Salas',    'almacen2', '$2a$10$JZecu9GaEn1AGvKLDXvuNObaUMbrHYW9NXZ9SLCY4HwEf7ZBWQBpu');
 
--- -----------------------------------------------------
--- Clientes de ejemplo
--- -----------------------------------------------------
 INSERT INTO cliente (tipo_documento, numero_documento, nombre_completo, telefono, email, direccion) VALUES
     ('DNI', '70000001',    'Juan Perez Quispe',      '987654321', 'juan.perez@example.com', 'Av. Brasil 100, Lima'),
     ('DNI', '70000002',    'Maria Lopez Huaman',     '976543210', NULL,                     'Calle Los Pinos 25, Arequipa'),

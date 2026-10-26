@@ -13,7 +13,6 @@ public class Envio {
     private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final DateTimeFormatter FORMATO_DIA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    /** Días que la agencia guarda una encomienda sin cobrar almacenaje (luego se avisa). */
     public static final int DIAS_ALMACEN_GRATIS = 7;
 
     private int dkprIdEnvio;
@@ -143,15 +142,12 @@ public class Envio {
     public String getManifiesto() { return dkprManifiesto; }
     public void setManifiesto(String dkprManifiesto) { this.dkprManifiesto = dkprManifiesto; }
 
-    /** Placa del vehículo en que salió (null mientras no se despacha). */
     public String getPlaca() { return dkprPlaca; }
     public void setPlaca(String dkprPlaca) { this.dkprPlaca = dkprPlaca; }
 
-    /** Conductor del vehículo en que salió (null mientras no se despacha). */
     public String getConductor() { return dkprConductor; }
     public void setConductor(String dkprConductor) { this.dkprConductor = dkprConductor; }
 
-    /** "ABC-123 (MAN-000001)", o "-" si todavía no salió. */
     public String getVehiculoTexto() {
         if (dkprManifiesto == null) {
             return "-";
@@ -159,7 +155,6 @@ public class Envio {
         return (dkprPlaca == null || dkprPlaca.isBlank() ? "Sin placa" : dkprPlaca) + " (" + dkprManifiesto + ")";
     }
 
-    /** Texto "Origen → Destino" para mostrar en tablas. */
     public String getRuta() {
         return dkprOrigen + " → " + dkprDestino;
     }
@@ -172,9 +167,6 @@ public class Envio {
         return dkprFechaUltimoMovimiento == null ? "" : dkprFechaUltimoMovimiento.format(FORMATO);
     }
 
-    // ------------------------------------------------- datos calculados (automáticos)
-
-    /** Fecha de llegada prometida al cliente: registro + días estimados de la ruta. */
     public LocalDate getFechaEstimada() {
         return dkprFechaRegistro == null ? null : dkprFechaRegistro.toLocalDate().plusDays(dkprDiasEstimados);
     }
@@ -184,7 +176,6 @@ public class Envio {
         return dkprF == null ? "" : dkprF.format(FORMATO_DIA);
     }
 
-    /** Días de retraso respecto a la llegada estimada (0 si va a tiempo o ya llegó a destino). */
     public long getDiasAtraso() {
         LocalDate dkprF = getFechaEstimada();
         if (dkprF == null || (dkprIdEstadoActual != Estados.REGISTRADO && dkprIdEstadoActual != Estados.EN_TRANSITO)) {
@@ -193,13 +184,11 @@ public class Envio {
         return Math.max(0, ChronoUnit.DAYS.between(dkprF, LocalDate.now()));
     }
 
-    /** Días que el envío lleva en su estado actual (desde el último movimiento). */
     public long getDiasEnEstado() {
         LocalDateTime dkprDesde = dkprFechaUltimoMovimiento != null ? dkprFechaUltimoMovimiento : dkprFechaRegistro;
         return dkprDesde == null ? 0 : ChronoUnit.DAYS.between(dkprDesde.toLocalDate(), LocalDate.now());
     }
 
-    /** Aviso para las bandejas: atraso en el camino o demasiados días esperando en la agencia destino. */
     public String getAlerta() {
         long dkprAtraso = getDiasAtraso();
         if (dkprAtraso > 0) {

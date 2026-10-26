@@ -1,17 +1,12 @@
-# Maven
 target/
 
-# IntelliJ
 .idea/
 *.iml
 out/
 
-# VS Code
 .vscode/
 
-# Configuración local con claves (NO subir)
 db.properties
 
-# Sistema operativo
 .DS_Store
 Thumbs.db

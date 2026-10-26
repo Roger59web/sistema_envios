@@ -22,13 +22,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Scale;
 import javafx.stage.Window;
 
-/**
- * Ticket del envío con el formato de una impresora térmica de 80 mm.
- * El mismo nodo se usa para la vista previa y para imprimir.
- */
 public final class Ticket {
 
-    /** Ancho del ticket en píxeles (≈ 72 mm de área imprimible en papel de 80 mm). */
     private static final double ANCHO = 270;
     private static final String FUENTE = "Consolas";
 
@@ -46,7 +41,6 @@ public final class Ticket {
         dkprT.setMaxWidth(ANCHO);
         dkprT.setStyle("-fx-background-color: white;");
 
-        // Cabecera
         dkprT.getChildren().add(centrado("SISTEMA DE ENVÍOS", 15, true));
         dkprT.getChildren().add(centrado(dkprE.getOrigen(), 11, false));
         if (dkprE.getOrigenDireccion() != null) {
@@ -57,7 +51,6 @@ public final class Ticket {
         }
         dkprT.getChildren().add(separador());
 
-        // Comprobante
         if (dkprC != null) {
             dkprT.getChildren().add(centrado("BOLETA".equals(dkprC.getTipo()) ? "BOLETA DE VENTA" : "FACTURA", 12, true));
             dkprT.getChildren().add(centrado(dkprC.getNumeroTexto(), 12, true));
@@ -67,17 +60,14 @@ public final class Ticket {
         }
         dkprT.getChildren().add(separador());
 
-        // Código de seguimiento
         dkprT.getChildren().add(centrado("CÓDIGO DE SEGUIMIENTO", 10, false));
         dkprT.getChildren().add(centrado(dkprE.getCodigoSeguimiento(), 22, true));
-        // Se escanea en Seguimiento, Entregas, Bandeja y Control de carga (envíos de un solo bulto).
         dkprT.getChildren().add(centrar(CodigosBarras.barras(dkprE.getCodigoSeguimiento(), ANCHO - 40, 44)));
         if (dkprE.getIdEstadoActual() == Estados.ANULADO) {
             dkprT.getChildren().add(centrado("*** ENVÍO ANULADO ***", 13, true));
         }
         dkprT.getChildren().add(separador());
 
-        // Ruta y personas
         dkprT.getChildren().add(fila("Origen:", dkprE.getOrigen()));
         dkprT.getChildren().add(fila("Destino:", dkprE.getDestino()));
         dkprT.getChildren().add(separador());
@@ -85,7 +75,6 @@ public final class Ticket {
         persona(dkprT, "DESTINATARIO", dkprE.getDestinatario(), dkprE.getDestinatarioDocumento(), dkprE.getDestinatarioTelefono());
         dkprT.getChildren().add(separador());
 
-        // Paquete
         dkprT.getChildren().add(texto("Contenido: " + dkprE.getDescripcion(), 11, false));
         dkprT.getChildren().add(fila("Bultos:", String.valueOf(dkprE.getCantidadBultos())));
         dkprT.getChildren().add(fila("Peso:", dkprE.getPesoKg().toPlainString() + " kg"));
@@ -95,7 +84,6 @@ public final class Ticket {
         }
         dkprT.getChildren().add(separador());
 
-        // Importes
         if (dkprC != null) {
             dkprT.getChildren().add(fila("Op. gravada:", Formato.soles(dkprC.getSubtotal())));
             dkprT.getChildren().add(fila("IGV (18%):", Formato.soles(dkprC.getIgv())));
@@ -106,11 +94,9 @@ public final class Ticket {
         }
         dkprT.getChildren().add(separador());
 
-        // Pie
         dkprT.getChildren().add(fila("Estado:", dkprE.getEstado()));
         dkprT.getChildren().add(texto("Atendido por: " + Formato.texto(dkprE.getEmpleadoRegistro()), 11, false));
         dkprT.getChildren().add(separador());
-        // El QR necesita un margen blanco alrededor (≈ 4 módulos) para que los lectores lo encuentren.
         Node dkprQr = centrar(CodigosBarras.qr(dkprE.getCodigoSeguimiento(), 84));
         VBox.setMargin(dkprQr, new Insets(16, 0, 16, 0));
         dkprT.getChildren().add(dkprQr);
@@ -121,10 +107,6 @@ public final class Ticket {
         return dkprT;
     }
 
-    /**
-     * Abre el diálogo de impresión y manda el ticket a la impresora elegida
-     * (sirve también "Microsoft Print to PDF"). Si no entra en la página, se reduce.
-     */
     public static void imprimir(DetalleEnvio dkprD, Window dkprOwner) {
         PrinterJob dkprJob = PrinterJob.createPrinterJob();
         if (dkprJob == null) {
@@ -135,7 +117,6 @@ public final class Ticket {
             return;
         }
 
-        // El nodo debe estar en una escena para calcular su tamaño antes de imprimir.
         VBox dkprTicket = crear(dkprD);
         Group dkprGrupo = new Group(dkprTicket);
         new Scene(dkprGrupo);
@@ -154,8 +135,6 @@ public final class Ticket {
             Alertas.error("No se pudo imprimir el ticket.");
         }
     }
-
-    // ----------------------------------------------------------------- ayudas
 
     private static void persona(VBox dkprT, String dkprRol, String dkprNombre, String dkprDocumento, String dkprTelefono) {
         dkprT.getChildren().add(texto(dkprRol, 11, true));

@@ -20,7 +20,6 @@
 
     <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
-        <!-- 1. Paquetes registrados aquí que esperan salir -->
         <Tab fx:id="dkprTabDespachar" text="Por despachar">
             <VBox spacing="8">
                 <padding>
@@ -60,7 +59,6 @@
             </VBox>
         </Tab>
 
-        <!-- 2. Paquetes que vienen en camino hacia esta agencia -->
         <Tab fx:id="dkprTabRecibir" text="Por recibir">
             <VBox spacing="8">
                 <padding>
@@ -95,7 +93,6 @@
             </VBox>
         </Tab>
 
-        <!-- 3. Paquetes en esta agencia esperando que el destinatario los recoja -->
         <Tab fx:id="dkprTabEntregar" text="Por entregar">
             <VBox spacing="8">
                 <padding>

@@ -10,7 +10,6 @@ import java.sql.SQLException;
 
 public class ComprobanteDAO {
 
-    /** Inserta el comprobante asignándole el siguiente número de su serie. */
     public void insertar(Connection dkprCn, Comprobante dkprC) throws SQLException {
         String dkprSqlNumero = "SELECT COALESCE(MAX(numero), 0) + 1 FROM comprobante WHERE tipo = ? AND serie = ?";
         try (PreparedStatement dkprPs = dkprCn.prepareStatement(dkprSqlNumero)) {
@@ -37,7 +36,6 @@ public class ComprobanteDAO {
         }
     }
 
-    /** Devuelve el comprobante del envío, o null si no tiene. */
     public Comprobante buscarPorEnvio(int dkprIdEnvio) throws SQLException {
         String dkprSql = "SELECT id_envio, tipo, serie, numero, fecha_emision, subtotal, igv, total, metodo_pago "
                 + "FROM comprobante WHERE id_envio = ?";

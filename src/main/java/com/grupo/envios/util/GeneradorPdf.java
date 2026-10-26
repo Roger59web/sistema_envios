@@ -34,7 +34,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/** Genera los documentos PDF del sistema: detalle de un envío, reporte, etiquetas, manifiesto y cuadre de caja. */
 public final class GeneradorPdf {
 
     private static final Color AZUL = new Color(0x1f, 0x3a, 0x5f);
@@ -58,7 +57,6 @@ public final class GeneradorPdf {
     private GeneradorPdf() {
     }
 
-    /** Muestra el diálogo "Guardar como" para un PDF. Devuelve null si el usuario cancela. */
     public static File elegirDestino(Window dkprOwner, String dkprTitulo, String dkprNombreInicial) {
         FileChooser dkprSelector = new FileChooser();
         dkprSelector.setTitle(dkprTitulo);
@@ -67,12 +65,10 @@ public final class GeneradorPdf {
         return dkprSelector.showSaveDialog(dkprOwner);
     }
 
-    /** Avisa dónde se guardó el PDF y, si el usuario quiere, lo abre con el visor del sistema. */
     public static void ofrecerAbrir(File dkprArchivo) {
         if (!Alertas.confirmar("PDF guardado en:\n" + dkprArchivo.getAbsolutePath() + "\n\n¿Deseas abrirlo ahora?")) {
             return;
         }
-        // Desktop es de AWT: se abre fuera del hilo de JavaFX para no congelar la ventana.
         Thread dkprHilo = new Thread(() -> {
             try {
                 if (Desktop.isDesktopSupported()) {
@@ -85,8 +81,6 @@ public final class GeneradorPdf {
         dkprHilo.setDaemon(true);
         dkprHilo.start();
     }
-
-    // --------------------------------------------------------- detalle de envío
 
     public static void detalleEnvio(DetalleEnvio dkprD, File dkprArchivo) throws IOException {
         Envio dkprE = dkprD.envio();
@@ -101,7 +95,6 @@ public final class GeneradorPdf {
             encabezado(dkprDoc, "Detalle de envío", dkprE.getOrigen()
                     + (dkprE.getOrigenDireccion() == null ? "" : " - " + dkprE.getOrigenDireccion()));
 
-            // Código y estado
             PdfPTable dkprCodigo = new PdfPTable(new float[]{3, 2});
             dkprCodigo.setWidthPercentage(100);
             PdfPCell dkprCeldaCodigo = new PdfPCell();
@@ -122,7 +115,6 @@ public final class GeneradorPdf {
             dkprCodigo.setSpacingAfter(12);
             dkprDoc.add(dkprCodigo);
 
-            // Datos del envío
             seccion(dkprDoc, "Datos del envío");
             PdfPTable dkprDatos = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
             dkprDatos.setWidthPercentage(100);
@@ -151,7 +143,6 @@ public final class GeneradorPdf {
             dkprDatos.setSpacingAfter(12);
             dkprDoc.add(dkprDatos);
 
-            // Comprobante
             seccion(dkprDoc, "Comprobante de pago");
             PdfPTable dkprPago = new PdfPTable(new float[]{1.5f, 3, 1.5f, 3});
             dkprPago.setWidthPercentage(100);
@@ -175,7 +166,6 @@ public final class GeneradorPdf {
             dkprPago.setSpacingAfter(12);
             dkprDoc.add(dkprPago);
 
-            // Historial
             seccion(dkprDoc, "Historial de movimientos");
             PdfPTable dkprHist = new PdfPTable(new float[]{1.6f, 1.8f, 1.6f, 2, 3});
             dkprHist.setWidthPercentage(100);
@@ -199,8 +189,6 @@ public final class GeneradorPdf {
             throw new IOException("No se pudo generar el PDF: " + dkprEx.getMessage(), dkprEx);
         }
     }
-
-    // ------------------------------------------------------------------ reporte
 
     public static void reporte(LocalDate dkprDesde, LocalDate dkprHasta, List<ResumenFila> dkprPorAgencia,
                                List<ResumenFila> dkprPorEstado, List<Envio> dkprDetalle, File dkprArchivo)
@@ -235,7 +223,6 @@ public final class GeneradorPdf {
             dkprTotales.setSpacingAfter(12);
             dkprDoc.add(dkprTotales);
 
-            // Resúmenes lado a lado
             PdfPTable dkprResumenes = new PdfPTable(new float[]{1, 0.08f, 1});
             dkprResumenes.setWidthPercentage(100);
             dkprResumenes.addCell(contenedor(tablaResumen("Por agencia de origen", "Agencia", "Ingresos (S/)", dkprPorAgencia)));
@@ -270,9 +257,6 @@ public final class GeneradorPdf {
         }
     }
 
-    // -------------------------------------------------------- etiquetas de bultos
-
-    /** Etiquetas de bultos en hojas A4: 8 por hoja (2 × 4), con líneas para recortar. */
     public static void etiquetas(List<Envio> dkprEnvios, File dkprArchivo) throws IOException {
         Document dkprDoc = new Document(PageSize.A4, 20, 20, 20, 20);
         try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
@@ -345,9 +329,6 @@ public final class GeneradorPdf {
         return dkprI;
     }
 
-    // ------------------------------------------------------- manifiesto de carga
-
-    /** Manifiesto de carga (lo que lleva el conductor): envíos, bultos, peso y firmas. */
     public static void manifiesto(Manifiesto dkprM, List<Envio> dkprEnvios, File dkprArchivo) throws IOException {
         Document dkprDoc = new Document(PageSize.A4, 40, 40, 36, 36);
         try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
@@ -445,9 +426,6 @@ public final class GeneradorPdf {
         }
     }
 
-    // ------------------------------------------------------------ cuadre de caja
-
-    /** Reporte del turno de caja: esperado vs. contado por método de pago, diferencia, cobros y firmas. */
     public static void cuadreCaja(CajaTurno dkprT, List<CobroCaja> dkprCobros, File dkprArchivo) throws IOException {
         Document dkprDoc = new Document(PageSize.A4, 40, 40, 36, 36);
         try (OutputStream dkprOut = new FileOutputStream(dkprArchivo)) {
@@ -582,8 +560,6 @@ public final class GeneradorPdf {
         return dkprT;
     }
 
-    // ------------------------------------------------------------------ ayudas
-
     private static void encabezado(Document dkprDoc, String dkprTitulo, String dkprSubtitulo) throws DocumentException {
         PdfPTable dkprT = new PdfPTable(new float[]{3, 2});
         dkprT.setWidthPercentage(100);
@@ -667,7 +643,7 @@ public final class GeneradorPdf {
     private static PdfPCell contenedor(PdfPTable dkprTabla) {
         PdfPCell dkprC = new PdfPCell();
         if (dkprTabla != null) {
-            dkprC.addElement(dkprTabla); // así la tabla no se estira al alto de la fila
+            dkprC.addElement(dkprTabla);
         }
         dkprC.setBorder(Rectangle.NO_BORDER);
         dkprC.setPadding(0);

@@ -79,8 +79,6 @@ public class RegistrarEnvioController {
         dkprCmbRuta.valueProperty().addListener((dkprObs, dkprAnterior, dkprNueva) -> actualizarCosto());
         dkprTxtPeso.textProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> actualizarCosto());
 
-        // Enter en el documento busca al cliente sin tener que usar el mouse. El lector de código de
-        // barras también termina con Enter: si se escaneó el DNI, primero se extrae el número.
         dkprTxtRemDoc.setOnAction(dkprE -> {
             if (leerDni(dkprCmbRemTipo, dkprTxtRemDoc)
                     && buscarCliente(dkprCmbRemTipo, dkprTxtRemDoc, dkprTxtRemNombre, dkprTxtRemTelefono)) {
@@ -97,13 +95,12 @@ public class RegistrarEnvioController {
         limpiar();
     }
 
-    /** Registrar sin caja abierta está permitido, pero se avisa: ese cobro no entrará en ningún cuadre. */
     private void avisarCaja(Empleado dkprEmpleado) {
         boolean dkprSinTurno;
         try {
             dkprSinTurno = !dkprCajaService.tieneTurnoAbierto(dkprEmpleado);
         } catch (Exception dkprE) {
-            dkprSinTurno = false; // sin la tabla de caja (script 005 sin aplicar) no se avisa
+            dkprSinTurno = false;
         }
         dkprLblCaja.setVisible(dkprSinTurno);
         dkprLblCaja.setManaged(dkprSinTurno);
@@ -138,10 +135,6 @@ public class RegistrarEnvioController {
         dkprLblCosto.setText("S/ --");
     }
 
-    /**
-     * Si el texto del documento viene del lector (código de barras del DNI), deja solo el número
-     * de DNI y pone el tipo DNI. Devuelve false si se escaneó algo en lo que no hay un DNI.
-     */
     private boolean leerDni(ComboBox<String> dkprTipo, TextField dkprDoc) {
         String dkprTexto = dkprDoc.getText();
         if (!LectorDni.pareceEscaneado(dkprTexto)) {
@@ -159,7 +152,6 @@ public class RegistrarEnvioController {
         return true;
     }
 
-    /** Autocompleta nombre y teléfono. Devuelve true si el cliente ya estaba registrado. */
     private boolean buscarCliente(ComboBox<String> dkprTipo, TextField dkprDoc, TextField dkprNombre, TextField dkprTelefono) {
         try {
             Cliente dkprC = dkprClienteService.buscarPorDocumento(dkprTipo.getValue(), dkprDoc.getText());
@@ -225,7 +217,6 @@ public class RegistrarEnvioController {
         }
     }
 
-    /** Tras registrar, abre la vista previa del ticket para imprimirlo o guardarlo en PDF. */
     private void mostrarTicket(ResultadoRegistro dkprResultado) {
         String dkprResumen = "Envío registrado correctamente.\n"
                 + "Código: " + dkprResultado.codigoSeguimiento()
@@ -236,7 +227,6 @@ public class RegistrarEnvioController {
             VistaTicket.mostrar(dkprEnvioService.detalle(dkprResultado.codigoSeguimiento()),
                     dkprLblCosto.getScene().getWindow(), dkprResumen);
         } catch (Exception dkprE) {
-            // El envío ya quedó registrado: si falla la vista previa, al menos se informa el resultado.
             dkprE.printStackTrace();
             Alertas.info(dkprResumen + "\n\nPuedes reimprimir el ticket desde Seguimiento.");
         }

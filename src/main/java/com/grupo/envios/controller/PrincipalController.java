@@ -35,7 +35,6 @@ public class PrincipalController {
     @FXML private Button dkprBtnEstancados;
     @FXML private Button dkprBtnCaja;
 
-    /** Cada cuánto se vuelve a contar los paquetes estancados del menú. */
     private static final Duration INTERVALO_ESTANCADOS = Duration.minutes(5);
 
     private final EstancadoService dkprEstancadoService = new EstancadoService();
@@ -57,7 +56,6 @@ public class PrincipalController {
         dkprRelojEstancados.play();
     }
 
-    /** Cuenta los paquetes estancados en segundo plano y lo muestra en el botón del menú. */
     private void actualizarEstancados() {
         Empleado dkprE = Sesion.getActual();
         if (dkprE == null) {
@@ -68,7 +66,6 @@ public class PrincipalController {
             try {
                 dkprCantidad = dkprEstancadoService.contar(dkprE);
             } catch (Exception dkprEx) {
-                // Sin la tabla configuracion (script 004 sin aplicar) o sin conexión: el menú queda normal.
                 dkprCantidad = 0;
             }
             int dkprTotal = dkprCantidad;
@@ -81,7 +78,6 @@ public class PrincipalController {
         dkprHilo.start();
     }
 
-    /** Oculta del menú lo que el rol del empleado no puede usar. */
     private void aplicarPermisos(Empleado dkprE) {
         boolean dkprAdmin = Roles.ADMINISTRADOR.equals(dkprE.getRol());
         boolean dkprCajero = Roles.CAJERO.equals(dkprE.getRol());
@@ -110,7 +106,6 @@ public class PrincipalController {
         try {
             Node dkprVista = FXMLLoader.load(getClass().getResource("/view/" + dkprFxml));
             dkprContenido.getChildren().setAll(dkprVista);
-            // Al cambiar de pantalla pudo haberse despachado o recibido algo: se recuenta.
             actualizarEstancados();
         } catch (IOException dkprEx) {
             dkprEx.printStackTrace();

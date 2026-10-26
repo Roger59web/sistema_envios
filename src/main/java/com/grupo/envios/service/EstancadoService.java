@@ -11,10 +11,6 @@ import com.grupo.envios.util.Roles;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Paquetes estancados: envíos sin terminar que llevan más de X días sin ningún movimiento
- * en su historial. X se configura (tabla configuracion, clave dias_estancado).
- */
 public class EstancadoService {
 
     public static final String CLAVE_DIAS = "dias_estancado";
@@ -47,7 +43,6 @@ public class EstancadoService {
         dkprConfiguracionDAO.guardar(CLAVE_DIAS, String.valueOf(dkprDias));
     }
 
-    /** El administrador ve todas las agencias; el resto, los envíos en los que participa su agencia. */
     public List<Envio> listar(Empleado dkprEmpleado, int dkprDias) throws SQLException {
         int dkprIdAgencia = puedeConfigurar(dkprEmpleado) ? 0 : dkprEmpleado.getIdAgencia();
         return dkprEnvioDAO.listarEstancados(dkprDias, dkprIdAgencia);
@@ -57,7 +52,6 @@ public class EstancadoService {
         return listar(dkprEmpleado, diasEstancado()).size();
     }
 
-    /** Qué hay que hacer para que el envío vuelva a moverse, y quién lo hace. */
     public static String queFalta(Envio dkprE) {
         return switch (dkprE.getIdEstadoActual()) {
             case Estados.REGISTRADO -> "Despachar desde " + dkprE.getOrigen();

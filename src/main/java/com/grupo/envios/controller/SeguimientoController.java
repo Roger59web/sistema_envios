@@ -124,7 +124,6 @@ public class SeguimientoController {
         dkprLblPesoBultos.setText(dkprE.getPesoKg().toPlainString() + " kg  /  " + dkprE.getCantidadBultos() + " bulto(s)");
         dkprLblCosto.setText("S/ " + dkprE.getCostoEnvio().toPlainString());
         dkprLblEstimada.setText(textoLlegada(dkprE));
-        // Vehículo y conductor del manifiesto con el que salió (vacío mientras está en la agencia de origen).
         dkprLblVehiculo.setText(dkprE.getManifiesto() == null ? "Aún no sale de la agencia de origen" : dkprE.getVehiculoTexto());
         dkprLblConductor.setText(dkprE.getConductor() == null || dkprE.getConductor().isBlank() ? "-" : dkprE.getConductor());
 
@@ -144,7 +143,6 @@ public class SeguimientoController {
         }
     }
 
-    /** Fecha prometida al cliente, con el atraso o el manifiesto en que viaja. */
     private String textoLlegada(Envio dkprE) {
         String dkprTexto = dkprE.getFechaEstimadaTexto();
         if (dkprE.getDiasAtraso() > 0) {

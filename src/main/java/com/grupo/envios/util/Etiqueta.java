@@ -20,13 +20,8 @@ import javafx.stage.Window;
 
 import java.util.List;
 
-/**
- * Etiqueta de un bulto (≈ 100 × 60 mm) con código de barras y QR. Se pega en cada bulto
- * y se escanea al cargar y al descargar el vehículo.
- */
 public final class Etiqueta {
 
-    /** Medidas en puntos (1/72 de pulgada): 100 × 60 mm. */
     private static final double ANCHO = 283;
     private static final double ALTO = 170;
     private static final String FUENTE = "Consolas";
@@ -61,15 +56,10 @@ public final class Etiqueta {
         return dkprEtiqueta;
     }
 
-    /** Cantidad de etiquetas que salen para esos envíos (una por bulto). */
     public static int contar(List<Envio> dkprEnvios) {
         return dkprEnvios.stream().mapToInt(Envio::getCantidadBultos).sum();
     }
 
-    /**
-     * Imprime una etiqueta por página (impresora de etiquetas o térmica). Para hojas A4 conviene
-     * "Guardar PDF", que acomoda varias etiquetas por hoja.
-     */
     public static void imprimir(List<Envio> dkprEnvios, Window dkprOwner) {
         PrinterJob dkprJob = PrinterJob.createPrinterJob();
         if (dkprJob == null) {
@@ -84,7 +74,6 @@ public final class Etiqueta {
                 dkprPagina.getPrintableHeight() / ALTO));
         for (Envio dkprE : dkprEnvios) {
             for (int dkprN = 1; dkprN <= dkprE.getCantidadBultos(); dkprN++) {
-                // El nodo debe estar en una escena para calcular su tamaño antes de imprimir.
                 VBox dkprEtiqueta = crear(dkprE, dkprN);
                 Group dkprGrupo = new Group(dkprEtiqueta);
                 new Scene(dkprGrupo);

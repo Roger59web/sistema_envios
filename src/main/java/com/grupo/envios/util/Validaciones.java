@@ -3,10 +3,6 @@ package com.grupo.envios.util;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
-/**
- * Validaciones de datos de entrada. Los métodos lanzan {@link NegocioException}
- * con un mensaje listo para mostrar al usuario.
- */
 public final class Validaciones {
 
     private static final Pattern EMAIL = Pattern.compile("^[\\w.+-]+@[\\w-]+(\\.[\\w-]+)+$");
@@ -21,7 +17,6 @@ public final class Validaciones {
         return dkprTexto == null || dkprTexto.trim().isEmpty();
     }
 
-    /** Texto obligatorio: devuelve el valor sin espacios sobrantes. */
     public static String requerido(String dkprValor, String dkprCampo, int dkprMaxCaracteres) {
         if (vacio(dkprValor)) {
             throw new NegocioException("El campo \"" + dkprCampo + "\" es obligatorio.");
@@ -29,7 +24,6 @@ public final class Validaciones {
         return limitar(dkprValor.trim(), dkprCampo, dkprMaxCaracteres);
     }
 
-    /** Texto opcional: devuelve null si está vacío. */
     public static String opcional(String dkprValor, String dkprCampo, int dkprMaxCaracteres) {
         if (vacio(dkprValor)) {
             return null;
@@ -44,7 +38,6 @@ public final class Validaciones {
         return dkprValor;
     }
 
-    /** Número decimal obligatorio (acepta coma o punto como separador). */
     public static BigDecimal decimal(String dkprTexto, String dkprCampo) {
         if (vacio(dkprTexto)) {
             throw new NegocioException("El campo \"" + dkprCampo + "\" es obligatorio.");
@@ -56,7 +49,6 @@ public final class Validaciones {
         return new BigDecimal(dkprLimpio.replace(',', '.'));
     }
 
-    /** Número entero obligatorio. */
     public static int entero(String dkprTexto, String dkprCampo) {
         if (vacio(dkprTexto)) {
             throw new NegocioException("El campo \"" + dkprCampo + "\" es obligatorio.");
@@ -68,7 +60,6 @@ public final class Validaciones {
         return Integer.parseInt(dkprLimpio);
     }
 
-    /** Valida un DNI (8 dígitos). El parámetro "etiqueta" es el inicio del mensaje, ej. "El DNI". */
     public static void validarDni(String dkprDni, String dkprEtiqueta) {
         if (vacio(dkprDni)) {
             throw new NegocioException(dkprEtiqueta + " es obligatorio.");
@@ -78,7 +69,6 @@ public final class Validaciones {
         }
     }
 
-    /** Valida el número según el tipo de documento: DNI (8 dígitos), RUC (11) o CE (9 a 12 caracteres). */
     public static void validarDocumento(String dkprTipo, String dkprNumero) {
         if (dkprTipo == null) {
             throw new NegocioException("Selecciona el tipo de documento.");
@@ -108,7 +98,6 @@ public final class Validaciones {
         }
     }
 
-    /** El teléfono es opcional: si viene vacío no se valida. */
     public static void validarTelefono(String dkprTelefono) {
         if (vacio(dkprTelefono)) {
             return;
@@ -118,7 +107,6 @@ public final class Validaciones {
         }
     }
 
-    /** El correo es opcional: si viene vacío no se valida. */
     public static void validarEmail(String dkprEmail) {
         if (vacio(dkprEmail)) {
             return;

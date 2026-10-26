@@ -14,7 +14,6 @@
 
     <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
-        <!-- 1. Turno del cajero: apertura, cobros del turno y cierre con lo contado -->
         <Tab text="Mi turno">
             <VBox spacing="10">
                 <padding>
@@ -56,7 +55,6 @@
             </VBox>
         </Tab>
 
-        <!-- 2. Turnos anteriores y su reporte imprimible -->
         <Tab text="Historial">
             <VBox spacing="8">
                 <padding>

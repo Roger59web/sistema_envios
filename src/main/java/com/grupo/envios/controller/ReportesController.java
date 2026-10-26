@@ -130,7 +130,7 @@ public class ReportesController {
         }
 
         try (BufferedWriter dkprW = Files.newBufferedWriter(dkprArchivo.toPath(), StandardCharsets.UTF_8)) {
-            dkprW.write('﻿'); // para que Excel reconozca las tildes
+            dkprW.write('﻿');
             dkprW.write("Codigo,Fecha,Origen,Destino,Remitente,Destinatario,Estado,Costo (S/)\n");
             for (Envio dkprE : dkprDetalle) {
                 dkprW.write(String.join(",",

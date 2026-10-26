@@ -6,16 +6,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Saca el número de DNI de lo que escribe un lector de código de barras al escanear el documento.
- * Cada modelo de DNI y de lector entrega un texto distinto, así que se prueban varios formatos:
- * <ul>
- *   <li>8 dígitos solos: {@code 70000001}</li>
- *   <li>zona MRZ del DNI electrónico: {@code I<PER70000001<4<<<<...}</li>
- *   <li>texto largo con datos separados (PDF417), donde el DNI es el único grupo de 8 dígitos
- *       o el que va primero</li>
- * </ul>
- */
 public final class LectorDni {
 
     private static final Pattern MRZ = Pattern.compile("PER(\\d{8})");
@@ -24,7 +14,6 @@ public final class LectorDni {
     private LectorDni() {
     }
 
-    /** Devuelve el DNI (8 dígitos) o null si en el texto no se reconoce ninguno. */
     public static String extraer(String dkprTexto) {
         if (dkprTexto == null) {
             return null;
@@ -47,10 +36,6 @@ public final class LectorDni {
         return dkprGrupos.isEmpty() ? null : dkprGrupos.get(0);
     }
 
-    /**
-     * true si el texto parece venir del lector y no tipeado a mano: trae letras o separadores,
-     * o es más largo que cualquier documento. Así no se toca un RUC o CE escrito en el campo.
-     */
     public static boolean pareceEscaneado(String dkprTexto) {
         if (dkprTexto == null) {
             return false;
