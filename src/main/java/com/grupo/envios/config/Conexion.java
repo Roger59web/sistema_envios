@@ -1,38 +1,16 @@
 package com.grupo.envios.config;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public final class Conexion {
-
-    private static final Properties props = new Properties();
 
     private Conexion() {
     }
 
-    private static synchronized void cargarConfiguracion() {
-        if (!props.isEmpty()) {
-            return;
-        }
-        try (InputStream dkprIn = new FileInputStream("db.properties")) {
-            props.load(dkprIn);
-        } catch (IOException dkprE) {
-            throw new IllegalStateException(
-                    "No se encontró db.properties en la raíz del proyecto. "
-                            + "Copia db.properties.example como db.properties y ajusta tus datos.", dkprE);
-        }
-    }
-
     public static Connection obtener() throws SQLException {
-        cargarConfiguracion();
-        return DriverManager.getConnection(
-                props.getProperty("db.url"),
-                props.getProperty("db.user"),
-                props.getProperty("db.password"));
+        DatosConexion dkprDatos = ConfiguracionConexion.actual();
+        return DriverManager.getConnection(dkprDatos.url(), dkprDatos.usuario(), dkprDatos.clave());
     }
 }

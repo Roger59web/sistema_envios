@@ -17,4 +17,5 @@
     <PasswordField fx:id="dkprTxtClave" promptText="Contraseña" onAction="#onIngresar"/>
     <Label fx:id="dkprLblError" styleClass="error" wrapText="true"/>
     <Button text="Ingresar" defaultButton="true" maxWidth="Infinity" onAction="#onIngresar"/>
+    <Hyperlink fx:id="dkprLnkConexion" text="Configurar conexión" onAction="#onConfigurarConexion"/>
 </VBox>
