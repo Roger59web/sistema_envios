@@ -11,15 +11,14 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
    ```sql
    CREATE DATABASE sistema_envios;
    ```
-3. **Conéctate a `sistema_envios`** (no a `postgres`) y ejecuta completo `database/01_schema_y_datos.sql`.
+3. **Conéctate a `sistema_envios`** (no a `postgres`) y ejecuta, en este orden, los tres scripts de `database/`:
+   `1_tablas.sql` (crea todas las tablas), `2_indices.sql` y `3_registros.sql` (datos iniciales y usuarios de prueba).
    Comprueba con `SELECT * FROM empleado;` (deben aparecer 5 usuarios).
-   Después ejecuta, en orden, los scripts de `database/cambios/` (`002_manifiesto_y_bandeja.sql`,
-   `003_control_carga.sql`, ...). Solo agregan tablas y columnas: se pueden correr sobre una base con datos.
 4. Copia `db.properties.example` como `db.properties` en la raíz del proyecto y pon tu usuario y clave de PostgreSQL.
    La URL debe terminar en `/sistema_envios`.
 5. En IntelliJ: clic derecho en `Launcher.java` > *Run*. También sirve `mvn javafx:run`.
 
-> El script borra y vuelve a crear las tablas: úsalo solo en desarrollo.
+> Los scripts se ejecutan sobre una base vacía. Para empezar de cero, borra la base y vuelve a crearla.
 
 ## Usuarios de prueba
 
@@ -106,7 +105,7 @@ Menú **Control de carga**. Complementa la Bandeja: aquí se controla cada **bul
 
 ## Vehículos y conductores
 
-Menú **Vehículos y conductores** (administrador), script `006_vehiculos.sql`. Se registran la placa
+Menú **Vehículos y conductores** (administrador), tablas `vehiculo` y `conductor`. Se registran la placa
 (se normaliza a `ABC-123`), descripción y capacidad del vehículo, y DNI, nombre, licencia (brevete) y teléfono
 del conductor. Al **despachar** (Bandeja o Control de carga) se eligen de una lista: son obligatorios y solo
 aparecen los activos. El manifiesto guarda la placa y el conductor, que se muestran en **Seguimiento**,
@@ -143,13 +142,13 @@ movimiento (registrado sin despachar, en tránsito sin llegar o en agencia sin r
 para que avance; doble clic lo abre en Seguimiento.
 
 - *X* es 3 por defecto. Cualquiera puede cambiarlo en la pantalla para consultar; solo el administrador
-  lo guarda para todos (*Guardar días para todos*, tabla `configuracion`, script `004_configuracion.sql`).
+  lo guarda para todos (*Guardar días para todos*, tabla `configuracion`).
 - El administrador ve todas las agencias; los demás, los envíos en los que participa su agencia.
 - Se resaltan los que ya duplican el límite.
 
 ## Cuadre de caja
 
-Menú **Cuadre de caja** (cajero y administrador), script `005_caja.sql`.
+Menú **Cuadre de caja** (cajero y administrador), tabla `caja_turno`.
 
 1. **Abrir turno:** se cuenta el efectivo con el que se empieza (fondo inicial).
 2. Durante el turno la pantalla muestra lo **esperado por método de pago** (efectivo, tarjeta, Yape, Plin):
@@ -212,5 +211,5 @@ Registrar un envío, cambiar su estado y entregarlo se hacen en **una sola trans
 
 - Nadie sube directo a `main`: cada uno trabaja en su rama (`feature/clientes`, ...) y abre un Pull Request.
 - Los cambios en la base de datos se hacen con scripts nuevos en `database/cambios/`
-  (ej. `002_agregar_columna_x.sql`), nunca solo en la máquina de uno.
+  (ej. `001_agregar_columna_x.sql`), nunca solo en la máquina de uno.
 - `db.properties` no se sube (ya está en `.gitignore`).
