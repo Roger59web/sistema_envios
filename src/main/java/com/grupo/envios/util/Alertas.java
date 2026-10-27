@@ -44,8 +44,9 @@ public final class Alertas {
             } else if ("23503".equals(dkprEstado)) {
                 advertencia("No se puede completar la operación: el registro está relacionado con otros datos.");
             } else if ("42P01".equals(dkprEstado) || "42703".equals(dkprEstado)) {
-                error("La base de datos no está actualizada.\nEjecuta en orden los scripts de "
-                        + "database/cambios/ que falten.\n\nDetalle: " + dkprT.getMessage());
+                error("La base de datos no está actualizada: le faltan tablas o columnas.\n"
+                        + "Vuelve a crearla con los scripts 1_tablas.sql, 2_indices.sql y 3_registros.sql "
+                        + "de la carpeta database/.\n\nDetalle: " + dkprT.getMessage());
             } else {
                 error("Error de base de datos:\n" + dkprT.getMessage());
             }

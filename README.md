@@ -211,7 +211,8 @@ Generar (PowerShell normal, en la carpeta del proyecto):
 powershell -ExecutionPolicy Bypass -File .\instalador\construir.ps1
 ```
 
-`-SoloNormal` genera solo el instalador normal. El completo copia PostgreSQL de `C:\Program Files\PostgreSQL\18`
+Para una versión nueva cambia `$Version` al inicio de `instalador/construir.ps1` (por ejemplo `"1.1"`): ese número
+va en el nombre del `.exe` y en *Aplicaciones* de Windows. `-SoloNormal` genera solo el instalador normal. El completo copia PostgreSQL de `C:\Program Files\PostgreSQL\18`
 (se cambia con `-PostgresOrigen`). No instales el sistema completo en una carpeta con tildes o ñ: PostgreSQL no arranca.
 
 ## Arquitectura
