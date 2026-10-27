@@ -44,7 +44,9 @@ if ($LASTEXITCODE -ne 0) { throw "Falló la compilación con Maven." }
 $Entrada = Join-Path $Trabajo "entrada"
 New-Item -ItemType Directory -Force $Entrada, $Salida | Out-Null
 Copy-Item (Join-Path $Raiz "target\libs\*.jar") $Entrada
-Copy-Item (Join-Path $Raiz "target\sistema-envios-1.0.0.jar") $Entrada
+$Jar = Get-ChildItem (Join-Path $Raiz "target") -Filter "sistema-envios-*.jar" | Select-Object -First 1
+if (-not $Jar) { throw "No se encontró el .jar del proyecto en target." }
+Copy-Item $Jar.FullName $Entrada
 
 $Comunes = @(
     "--type", "exe",
@@ -53,7 +55,7 @@ $Comunes = @(
     "--vendor", "Grupo Envíos",
     "--description", $Nombre,
     "--input", "entrada",
-    "--main-jar", "sistema-envios-1.0.0.jar",
+    "--main-jar", $Jar.Name,
     "--main-class", "com.grupo.envios.Launcher",
     "--java-options", "-Dfile.encoding=UTF-8",
     "--install-dir", "SistemaEnvios",
