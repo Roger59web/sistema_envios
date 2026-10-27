@@ -185,6 +185,35 @@ Ejemplo con base 15.00 y 1.50 por kg: un paquete de 2.5 kg cuesta 15.00 + 2 × 1
 El costo incluye IGV (18 %); el comprobante lo separa en subtotal e IGV.
 Los comprobantes son de práctica académica y no tienen validez tributaria.
 
+## Instaladores para Windows
+
+El script `instalador/construir.ps1` genera dos instaladores en `target\instaladores\`:
+
+| Archivo | Para quién | Base de datos |
+|---|---|---|
+| `SistemaEnvios-1.0.exe` | PCs con PostgreSQL ya instalado (o en otro equipo de la red) | La primera vez aparece **Configuración de conexión**; los datos se guardan en `%APPDATA%\SistemaEnvios\db.properties` |
+| `SistemaEnvios-1.0-Completo.exe` | PCs sin PostgreSQL | Trae PostgreSQL portátil: se enciende al abrir el sistema (puerto 5440) y se apaga al cerrarlo. Datos en `C:\ProgramData\SistemaEnvios\datos` (no se borran al desinstalar) |
+
+Ambos incluyen Java, permiten elegir la carpeta y crean el acceso directo **Sistema de Envíos** en el escritorio
+y en el menú Inicio. Si la base no existe, el sistema la crea y ejecuta los tres scripts de `database/`.
+En desarrollo, si hay un `db.properties` en la carpeta del proyecto, se usa ese.
+
+Requisitos (una sola vez, PowerShell como administrador):
+
+```powershell
+Enable-WindowsOptionalFeature -Online -FeatureName NetFx3 -All
+winget install --id WiXToolset.WiXToolset -e
+```
+
+Generar (PowerShell normal, en la carpeta del proyecto):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\instalador\construir.ps1
+```
+
+`-SoloNormal` genera solo el instalador normal. El completo copia PostgreSQL de `C:\Program Files\PostgreSQL\18`
+(se cambia con `-PostgresOrigen`). No instales el sistema completo en una carpeta con tildes o ñ: PostgreSQL no arranca.
+
 ## Arquitectura
 
 ```
