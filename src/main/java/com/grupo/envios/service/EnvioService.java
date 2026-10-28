@@ -45,21 +45,27 @@ public class EnvioService {
     private final ClienteService dkprClienteService = new ClienteService();
     private final VehiculoService dkprVehiculoService = new VehiculoService();
 
-    public BigDecimal calcularCosto(Ruta dkprRuta, BigDecimal dkprPesoKg) {
+    public BigDecimal calcularCosto(Ruta dkprRuta, int dkprBultos, BigDecimal dkprPesoKg) {
         if (dkprRuta == null) {
             throw new NegocioException("Selecciona la ruta de destino.");
         }
         if (dkprRuta.getPrecioBase() == null || dkprRuta.getPrecioKgExtra() == null) {
             throw new NegocioException("La ruta seleccionada no tiene una tarifa vigente.");
         }
+        if (dkprBultos < 1 || dkprBultos > 999) {
+            throw new NegocioException("La cantidad de bultos debe estar entre 1 y 999.");
+        }
         if (dkprPesoKg == null || dkprPesoKg.signum() <= 0) {
             throw new NegocioException("El peso debe ser mayor que 0.");
         }
-        if (dkprRuta.getPesoMaxKg() != null && dkprPesoKg.compareTo(dkprRuta.getPesoMaxKg()) > 0) {
-            throw new NegocioException("El peso máximo para esta ruta es " + dkprRuta.getPesoMaxKg() + " kg.");
+        BigDecimal dkprCantidad = BigDecimal.valueOf(dkprBultos);
+        if (dkprRuta.getPesoMaxKg() != null && dkprPesoKg.compareTo(dkprRuta.getPesoMaxKg().multiply(dkprCantidad)) > 0) {
+            throw new NegocioException("El peso máximo para esta ruta es " + dkprRuta.getPesoMaxKg() + " kg por bulto.");
         }
-        BigDecimal dkprKgExtra = dkprPesoKg.subtract(BigDecimal.ONE).max(BigDecimal.ZERO).setScale(0, RoundingMode.CEILING);
-        return dkprRuta.getPrecioBase().add(dkprRuta.getPrecioKgExtra().multiply(dkprKgExtra)).setScale(2, RoundingMode.HALF_UP);
+        // Cada bulto paga el precio base (que incluye 1 kg); se cobra aparte cada kg que pase de eso.
+        BigDecimal dkprKgExtra = dkprPesoKg.subtract(dkprCantidad).max(BigDecimal.ZERO).setScale(0, RoundingMode.CEILING);
+        return dkprRuta.getPrecioBase().multiply(dkprCantidad)
+                .add(dkprRuta.getPrecioKgExtra().multiply(dkprKgExtra)).setScale(2, RoundingMode.HALF_UP);
     }
 
     public ResultadoRegistro registrar(SolicitudEnvio dkprS, Empleado dkprEmpleado) throws SQLException {
@@ -96,7 +102,7 @@ public class EnvioService {
             throw new NegocioException("Para emitir factura, el remitente debe tener RUC.");
         }
 
-        BigDecimal dkprCosto = calcularCosto(dkprS.ruta(), dkprS.pesoKg());
+        BigDecimal dkprCosto = calcularCosto(dkprS.ruta(), dkprS.cantidadBultos(), dkprS.pesoKg());
 
         try (Connection dkprCn = Conexion.obtener()) {
             dkprCn.setAutoCommit(false);

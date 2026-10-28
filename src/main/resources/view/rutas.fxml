@@ -12,7 +12,7 @@
 
     <VBox spacing="8" HBox.hgrow="ALWAYS">
         <Label text="Rutas y tarifas" styleClass="titulo"/>
-        <Label text="Costo del envío = precio base (hasta 1 kg) + precio por cada kg adicional." styleClass="aviso"/>
+        <Label text="Costo del envío = precio base por bulto (cada uno incluye 1 kg) + precio por cada kg adicional." styleClass="aviso"/>
         <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="dkprColOrigen" text="Origen" prefWidth="140"/>
@@ -34,11 +34,11 @@
         <ComboBox fx:id="dkprCmbDestino" maxWidth="Infinity"/>
         <Label text="Días estimados" styleClass="etiqueta"/>
         <TextField fx:id="dkprTxtDias"/>
-        <Label text="Precio base (S/, hasta 1 kg)" styleClass="etiqueta"/>
+        <Label text="Precio base por bulto (S/, incluye 1 kg)" styleClass="etiqueta"/>
         <TextField fx:id="dkprTxtPrecioBase"/>
         <Label text="Precio por kg adicional (S/)" styleClass="etiqueta"/>
         <TextField fx:id="dkprTxtPrecioKg"/>
-        <Label text="Peso máximo (kg)" styleClass="etiqueta"/>
+        <Label text="Peso máximo por bulto (kg)" styleClass="etiqueta"/>
         <TextField fx:id="dkprTxtPesoMax"/>
         <CheckBox fx:id="dkprChkActivo" text="Ruta activa"/>
         <HBox spacing="8" alignment="CENTER_RIGHT">

@@ -78,6 +78,7 @@ public class RegistrarEnvioController {
 
         dkprCmbRuta.valueProperty().addListener((dkprObs, dkprAnterior, dkprNueva) -> actualizarCosto());
         dkprTxtPeso.textProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> actualizarCosto());
+        dkprTxtBultos.textProperty().addListener((dkprObs, dkprAnterior, dkprNuevo) -> actualizarCosto());
 
         dkprTxtRemDoc.setOnAction(dkprE -> {
             if (leerDni(dkprCmbRemTipo, dkprTxtRemDoc)
@@ -108,8 +109,9 @@ public class RegistrarEnvioController {
 
     private void actualizarCosto() {
         try {
+            int dkprBultos = Validaciones.entero(dkprTxtBultos.getText(), "Bultos");
             BigDecimal dkprPeso = Validaciones.decimal(dkprTxtPeso.getText(), "Peso");
-            dkprLblCosto.setText("S/ " + dkprEnvioService.calcularCosto(dkprCmbRuta.getValue(), dkprPeso).toPlainString());
+            dkprLblCosto.setText("S/ " + dkprEnvioService.calcularCosto(dkprCmbRuta.getValue(), dkprBultos, dkprPeso).toPlainString());
         } catch (Exception dkprE) {
             dkprLblCosto.setText("S/ --");
         }
