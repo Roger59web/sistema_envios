@@ -8,7 +8,7 @@
 $ErrorActionPreference = "Stop"
 
 $Nombre = "Sistema de Envíos"
-$Version = "1.0"
+$Version = "1.1"
 $UpgradeUuid = "6f1d2c3a-8b4e-4f7a-9c21-5e0b7d3a1f42"
 $Raiz = Split-Path -Parent $PSScriptRoot
 $Trabajo = Join-Path $Raiz "target\jpackage"

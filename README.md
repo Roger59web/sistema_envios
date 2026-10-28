@@ -179,9 +179,12 @@ un turno simplemente no entra en ningún cuadre.
 
 ## Cálculo de la tarifa
 
-Cada ruta (origen → destino) tiene una tarifa: precio base (hasta 1 kg), precio por kg adicional y peso máximo.
-`costo = precio base + kg adicionales (redondeados hacia arriba) × precio por kg`.
-Ejemplo con base 15.00 y 1.50 por kg: un paquete de 2.5 kg cuesta 15.00 + 2 × 1.50 = 18.00.
+Cada ruta (origen → destino) tiene una tarifa: precio base por bulto (incluye 1 kg), precio por kg adicional
+y peso máximo por bulto.
+`costo = precio base × bultos + kg adicionales × precio por kg`, donde los kg adicionales son el peso total menos
+1 kg por bulto (redondeados hacia arriba).
+Ejemplo con base 15.00 y 1.50 por kg: 1 bulto de 2.5 kg cuesta 15.00 + 2 × 1.50 = 18.00;
+3 bultos que pesan 7 kg en total cuestan 3 × 15.00 + 4 × 1.50 = 51.00.
 El costo incluye IGV (18 %); el comprobante lo separa en subtotal e IGV.
 Los comprobantes son de práctica académica y no tienen validez tributaria.
 
@@ -191,8 +194,8 @@ El script `instalador/construir.ps1` genera dos instaladores en `target\instalad
 
 | Archivo | Para quién | Base de datos |
 |---|---|---|
-| `SistemaEnvios-1.0.exe` | PCs con PostgreSQL ya instalado (o en otro equipo de la red) | La primera vez aparece **Configuración de conexión**; los datos se guardan en `%APPDATA%\SistemaEnvios\db.properties` |
-| `SistemaEnvios-1.0-Completo.exe` | PCs sin PostgreSQL | Trae PostgreSQL portátil: se enciende al abrir el sistema (puerto 5440) y se apaga al cerrarlo. Datos en `C:\ProgramData\SistemaEnvios\datos` (no se borran al desinstalar) |
+| `SistemaEnvios-1.1.exe` | PCs con PostgreSQL ya instalado (o en otro equipo de la red) | La primera vez aparece **Configuración de conexión**; los datos se guardan en `%APPDATA%\SistemaEnvios\db.properties` |
+| `SistemaEnvios-1.1-Completo.exe` | PCs sin PostgreSQL | Trae PostgreSQL portátil: se enciende al abrir el sistema (puerto 5440) y se apaga al cerrarlo. Datos en `C:\ProgramData\SistemaEnvios\datos` (no se borran al desinstalar) |
 
 Ambos incluyen Java, permiten elegir la carpeta y crean el acceso directo **Sistema de Envíos** en el escritorio
 y en el menú Inicio. Si la base no existe, el sistema la crea y ejecuta los tres scripts de `database/`.
