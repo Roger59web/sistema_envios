@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.CajaController">
+      fx:controller="com.grupo.envios.controller.DkprCajaController">
     <padding>
         <Insets top="16" right="20" bottom="16" left="20"/>
     </padding>
@@ -27,7 +27,7 @@
                     <HBox spacing="8" alignment="CENTER_LEFT">
                         <Label text="Fondo inicial (S/):" styleClass="etiqueta"/>
                         <TextField fx:id="dkprTxtFondo" promptText="0.00" prefWidth="120"/>
-                        <Button text="Abrir turno" styleClass="boton-primario" onAction="#onAbrir"/>
+                        <Button text="Abrir turno" styleClass="boton-primario" onAction="#dkprOnAbrir"/>
                     </HBox>
                 </VBox>
 
@@ -42,8 +42,8 @@
                     <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
                         <TextField fx:id="dkprTxtObservacion" promptText="Observación (obligatoria si hay faltante o sobrante)"
                                    HBox.hgrow="ALWAYS"/>
-                        <Button text="Actualizar cobros" minWidth="-Infinity" onAction="#onActualizar"/>
-                        <Button text="Cerrar turno" minWidth="-Infinity" styleClass="boton-primario" onAction="#onCerrar"/>
+                        <Button text="Actualizar cobros" minWidth="-Infinity" onAction="#dkprOnActualizar"/>
+                        <Button text="Cerrar turno" minWidth="-Infinity" styleClass="boton-primario" onAction="#dkprOnCerrar"/>
                     </HBox>
                     <Label text="Cobros del turno" styleClass="etiqueta"/>
                     <TableView fx:id="dkprTablaCobros" VBox.vgrow="ALWAYS">
@@ -65,7 +65,7 @@
                     <DatePicker fx:id="dkprDpDesde" prefWidth="140"/>
                     <Label text="Hasta:" styleClass="etiqueta"/>
                     <DatePicker fx:id="dkprDpHasta" prefWidth="140"/>
-                    <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscarHistorial"/>
+                    <Button text="Buscar" styleClass="boton-primario" onAction="#dkprOnBuscarHistorial"/>
                 </HBox>
                 <TableView fx:id="dkprTablaHistorial" VBox.vgrow="ALWAYS">
                     <placeholder>
@@ -74,7 +74,7 @@
                 </TableView>
                 <HBox spacing="8" alignment="CENTER_RIGHT">
                     <Label text="Doble clic o selecciona un turno para su reporte." styleClass="aviso"/>
-                    <Button text="Reporte PDF" styleClass="boton-primario" onAction="#onReporte"/>
+                    <Button text="Reporte PDF" styleClass="boton-primario" onAction="#dkprOnReporte"/>
                 </HBox>
             </VBox>
         </Tab>

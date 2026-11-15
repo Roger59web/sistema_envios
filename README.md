@@ -16,7 +16,7 @@ Sistema de escritorio para el personal de ventanilla de una empresa de encomiend
    Comprueba con `SELECT * FROM empleado;` (deben aparecer 5 usuarios).
 4. Copia `db.properties.example` como `db.properties` en la raíz del proyecto y pon tu usuario y clave de PostgreSQL.
    La URL debe terminar en `/sistema_envios`.
-5. En IntelliJ: clic derecho en `Launcher.java` > *Run*. También sirve `mvn javafx:run`.
+5. En IntelliJ: clic derecho en `DkprLauncher.java` > *Run*. También sirve `mvn javafx:run`.
 
 > Los scripts se ejecutan sobre una base vacía. Para empezar de cero, borra la base y vuelve a crearla.
 
@@ -222,9 +222,9 @@ va en el nombre del `.exe` y en *Aplicaciones* de Windows. `-SoloNormal` genera 
 
 ```
 com.grupo.envios
-├── App.java / Launcher.java   arranque de JavaFX
-├── config/                    conexión a PostgreSQL (Conexion)
-├── model/                     clases del dominio (Envio, Cliente, Ruta, Empleado...)
+├── DkprApp.java / DkprLauncher.java   arranque de JavaFX
+├── config/                    conexión a PostgreSQL (DkprConexion)
+├── model/                     clases del dominio (DkprEnvio, DkprCliente, DkprRuta, DkprEmpleado...)
 ├── dao/                       acceso a datos con JDBC (una clase por tabla principal)
 ├── service/                   reglas de negocio (tarifa, estados, permisos, validaciones)
 ├── controller/                un controlador por pantalla

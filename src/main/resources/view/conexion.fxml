@@ -6,7 +6,7 @@
 
 <VBox spacing="6" prefWidth="380" styleClass="login-box"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.ConexionController">
+      fx:controller="com.grupo.envios.controller.DkprConexionController">
     <padding>
         <Insets top="24" right="40" bottom="24" left="40"/>
     </padding>
@@ -23,7 +23,7 @@
     <Label text="Usuario" styleClass="etiqueta"/>
     <TextField fx:id="dkprTxtUsuario" promptText="postgres"/>
     <Label text="Contraseña" styleClass="etiqueta"/>
-    <PasswordField fx:id="dkprTxtClave" promptText="Contraseña" onAction="#onGuardar"/>
+    <PasswordField fx:id="dkprTxtClave" promptText="Contraseña" onAction="#dkprOnGuardar"/>
 
     <Label fx:id="dkprLblMensaje" wrapText="true"/>
 
@@ -31,7 +31,7 @@
         <padding>
             <Insets top="6"/>
         </padding>
-        <Button text="Probar conexión" onAction="#onProbar"/>
-        <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardar"/>
+        <Button text="Probar conexión" onAction="#dkprOnProbar"/>
+        <Button text="Guardar" styleClass="boton-primario" onAction="#dkprOnGuardar"/>
     </HBox>
 </VBox>

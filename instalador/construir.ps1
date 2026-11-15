@@ -56,7 +56,7 @@ $Comunes = @(
     "--description", $Nombre,
     "--input", "entrada",
     "--main-jar", $Jar.Name,
-    "--main-class", "com.grupo.envios.Launcher",
+    "--main-class", "com.grupo.envios.DkprLauncher",
     "--java-options", "-Dfile.encoding=UTF-8",
     "--install-dir", "SistemaEnvios",
     "--win-dir-chooser",

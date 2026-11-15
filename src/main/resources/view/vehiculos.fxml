@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.VehiculosController">
+      fx:controller="com.grupo.envios.controller.DkprVehiculosController">
     <padding>
         <Insets top="16" right="16" bottom="16" left="16"/>
     </padding>
@@ -44,8 +44,8 @@
                         <padding>
                             <Insets top="10"/>
                         </padding>
-                        <Button text="Nuevo" onAction="#onNuevoVehiculo"/>
-                        <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardarVehiculo"/>
+                        <Button text="Nuevo" onAction="#dkprOnNuevoVehiculo"/>
+                        <Button text="Guardar" styleClass="boton-primario" onAction="#dkprOnGuardarVehiculo"/>
                     </HBox>
                 </VBox>
             </HBox>
@@ -84,8 +84,8 @@
                         <padding>
                             <Insets top="10"/>
                         </padding>
-                        <Button text="Nuevo" onAction="#onNuevoConductor"/>
-                        <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardarConductor"/>
+                        <Button text="Nuevo" onAction="#dkprOnNuevoConductor"/>
+                        <Button text="Guardar" styleClass="boton-primario" onAction="#dkprOnGuardarConductor"/>
                     </HBox>
                 </VBox>
             </HBox>

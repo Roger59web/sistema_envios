@@ -6,7 +6,7 @@
 
 <VBox alignment="CENTER" spacing="12" prefWidth="380" prefHeight="340" styleClass="login-box"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.LoginController">
+      fx:controller="com.grupo.envios.controller.DkprLoginController">
     <padding>
         <Insets top="30" right="40" bottom="30" left="40"/>
     </padding>
@@ -14,8 +14,8 @@
     <Label text="Sistema de Envíos" styleClass="titulo"/>
     <Label text="Ingreso de personal de ventanilla"/>
     <TextField fx:id="dkprTxtUsuario" promptText="Usuario"/>
-    <PasswordField fx:id="dkprTxtClave" promptText="Contraseña" onAction="#onIngresar"/>
+    <PasswordField fx:id="dkprTxtClave" promptText="Contraseña" onAction="#dkprOnIngresar"/>
     <Label fx:id="dkprLblError" styleClass="error" wrapText="true"/>
-    <Button text="Ingresar" defaultButton="true" maxWidth="Infinity" onAction="#onIngresar"/>
-    <Hyperlink fx:id="dkprLnkConexion" text="Configurar conexión" onAction="#onConfigurarConexion"/>
+    <Button text="Ingresar" defaultButton="true" maxWidth="Infinity" onAction="#dkprOnIngresar"/>
+    <Hyperlink fx:id="dkprLnkConexion" text="Configurar conexión" onAction="#dkprOnConfigurarConexion"/>
 </VBox>
