@@ -242,8 +242,8 @@ Registrar un envío, cambiar su estado y entregarlo se hacen en **una sola trans
 
 ## Trabajo en equipo
 
-- Nadie sube directo a `main`: cada uno trabaja en su rama (`feature/clientes`, ...) y abre un Pull Request.
+- Todos trabajan directamente en la rama `main`: antes de empezar, `git pull`; al terminar, commit y `git push`.
 - Los cambios en la base de datos se hacen en los scripts de `database/` (tablas en `1_tablas.sql`,
-  índices en `2_indices.sql`, datos iniciales en `3_registros.sql`) y se suben en el Pull Request,
+  índices en `2_indices.sql`, datos iniciales en `3_registros.sql`) y se suben en el mismo commit,
   nunca solo en la máquina de uno. Para aplicarlos, cada uno vuelve a crear su base y corre los tres scripts.
 - `db.properties` no se sube (ya está en `.gitignore`).
