@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.ReportesController">
+      fx:controller="com.grupo.envios.controller.DkprReportesController">
     <padding>
         <Insets top="16" right="20" bottom="16" left="20"/>
     </padding>
@@ -17,10 +17,10 @@
         <DatePicker fx:id="dkprDpDesde"/>
         <Label text="Hasta:" styleClass="etiqueta"/>
         <DatePicker fx:id="dkprDpHasta"/>
-        <Button text="Generar" styleClass="boton-primario" onAction="#onGenerar"/>
+        <Button text="Generar" styleClass="boton-primario" onAction="#dkprOnGenerar"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Exportar a CSV" onAction="#onExportar"/>
-        <Button text="Exportar a PDF" onAction="#onExportarPdf"/>
+        <Button text="Exportar a CSV" onAction="#dkprOnExportar"/>
+        <Button text="Exportar a PDF" onAction="#dkprOnExportarPdf"/>
     </HBox>
 
     <HBox spacing="32" styleClass="panel-form" alignment="CENTER_LEFT">

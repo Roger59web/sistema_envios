@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.SeguimientoController">
+      fx:controller="com.grupo.envios.controller.DkprSeguimientoController">
     <padding>
         <Insets top="16" right="20" bottom="16" left="20"/>
     </padding>
@@ -14,11 +14,11 @@
 
     <HBox spacing="8">
         <TextField fx:id="dkprTxtCodigo" promptText="Código de seguimiento (ej: ENV-000001)" prefWidth="320"/>
-        <Button text="Buscar" styleClass="boton-primario" onAction="#onBuscar"/>
+        <Button text="Buscar" styleClass="boton-primario" onAction="#dkprOnBuscar"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="dkprBtnCopiar" text="Copiar código" onAction="#onCopiarCodigo"/>
-        <Button fx:id="dkprBtnPdf" text="Guardar PDF" onAction="#onGuardarPdf"/>
-        <Button fx:id="dkprBtnTicket" text="Imprimir ticket" styleClass="boton-primario" onAction="#onTicket"/>
+        <Button fx:id="dkprBtnCopiar" text="Copiar código" onAction="#dkprOnCopiarCodigo"/>
+        <Button fx:id="dkprBtnPdf" text="Guardar PDF" onAction="#dkprOnGuardarPdf"/>
+        <Button fx:id="dkprBtnTicket" text="Imprimir ticket" styleClass="boton-primario" onAction="#dkprOnTicket"/>
     </HBox>
 
     <GridPane hgap="12" vgap="6" styleClass="panel-form">
@@ -78,7 +78,7 @@
         <HBox spacing="8" alignment="CENTER_LEFT">
             <ComboBox fx:id="dkprCmbNuevoEstado" promptText="Nuevo estado" prefWidth="200"/>
             <TextField fx:id="dkprTxtObservacion" promptText="Observación (obligatoria al anular)" HBox.hgrow="ALWAYS"/>
-            <Button text="Actualizar" styleClass="boton-primario" onAction="#onActualizarEstado"/>
+            <Button text="Actualizar" styleClass="boton-primario" onAction="#dkprOnActualizarEstado"/>
         </HBox>
     </VBox>
 </VBox>

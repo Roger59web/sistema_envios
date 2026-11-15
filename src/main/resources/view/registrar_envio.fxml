@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.grupo.envios.controller.RegistrarEnvioController">
+            fx:controller="com.grupo.envios.controller.DkprRegistrarEnvioController">
     <VBox spacing="12">
         <padding>
             <Insets top="16" right="20" bottom="16" left="20"/>
@@ -27,7 +27,7 @@
                 <HBox spacing="6">
                     <ComboBox fx:id="dkprCmbRemTipo" prefWidth="80"/>
                     <TextField fx:id="dkprTxtRemDoc" promptText="N° de documento" HBox.hgrow="ALWAYS"/>
-                    <Button text="Buscar" onAction="#onBuscarRemitente"/>
+                    <Button text="Buscar" onAction="#dkprOnBuscarRemitente"/>
                 </HBox>
                 <TextField fx:id="dkprTxtRemNombre" promptText="Nombre completo / razón social"/>
                 <TextField fx:id="dkprTxtRemTelefono" promptText="Teléfono"/>
@@ -38,7 +38,7 @@
                 <HBox spacing="6">
                     <ComboBox fx:id="dkprCmbDesTipo" prefWidth="80"/>
                     <TextField fx:id="dkprTxtDesDoc" promptText="N° de documento" HBox.hgrow="ALWAYS"/>
-                    <Button text="Buscar" onAction="#onBuscarDestinatario"/>
+                    <Button text="Buscar" onAction="#dkprOnBuscarDestinatario"/>
                 </HBox>
                 <TextField fx:id="dkprTxtDesNombre" promptText="Nombre completo / razón social"/>
                 <TextField fx:id="dkprTxtDesTelefono" promptText="Teléfono"/>
@@ -67,8 +67,8 @@
         </HBox>
 
         <HBox spacing="8" alignment="CENTER_RIGHT">
-            <Button text="Limpiar" onAction="#onLimpiar"/>
-            <Button text="Registrar envío" styleClass="boton-primario" onAction="#onRegistrar"/>
+            <Button text="Limpiar" onAction="#dkprOnLimpiar"/>
+            <Button text="Registrar envío" styleClass="boton-primario" onAction="#dkprOnRegistrar"/>
         </HBox>
     </VBox>
 </ScrollPane>

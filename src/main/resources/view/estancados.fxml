@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.EstancadosController">
+      fx:controller="com.grupo.envios.controller.DkprEstancadosController">
     <padding>
         <Insets top="16" right="20" bottom="16" left="20"/>
     </padding>
@@ -13,7 +13,7 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Paquetes estancados" styleClass="titulo"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button text="Actualizar" onAction="#onActualizar"/>
+        <Button text="Actualizar" onAction="#dkprOnActualizar"/>
     </HBox>
 
     <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel-form">
@@ -22,7 +22,7 @@
         <Spinner fx:id="dkprSpnDias" editable="true" prefWidth="80"/>
         <Label text="días sin moverse." styleClass="etiqueta"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="dkprBtnGuardarDias" text="Guardar días para todos" onAction="#onGuardarDias"/>
+        <Button fx:id="dkprBtnGuardarDias" text="Guardar días para todos" onAction="#dkprOnGuardarDias"/>
     </HBox>
 
     <Label fx:id="dkprLblAmbito" styleClass="aviso"/>

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <HBox spacing="16" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.ClientesController">
+      fx:controller="com.grupo.envios.controller.DkprClientesController">
     <padding>
         <Insets top="16" right="16" bottom="16" left="16"/>
     </padding>
@@ -14,7 +14,7 @@
         <Label text="Clientes" styleClass="titulo"/>
         <HBox spacing="8">
             <TextField fx:id="dkprTxtBuscar" promptText="Buscar por documento o nombre" HBox.hgrow="ALWAYS"/>
-            <Button text="Buscar" onAction="#onBuscar"/>
+            <Button text="Buscar" onAction="#dkprOnBuscar"/>
         </HBox>
         <TableView fx:id="dkprTabla" VBox.vgrow="ALWAYS">
             <columns>
@@ -44,8 +44,8 @@
             <padding>
                 <Insets top="10"/>
             </padding>
-            <Button text="Nuevo" onAction="#onNuevo"/>
-            <Button text="Guardar" styleClass="boton-primario" onAction="#onGuardar"/>
+            <Button text="Nuevo" onAction="#dkprOnNuevo"/>
+            <Button text="Guardar" styleClass="boton-primario" onAction="#dkprOnGuardar"/>
         </HBox>
     </VBox>
 </HBox>

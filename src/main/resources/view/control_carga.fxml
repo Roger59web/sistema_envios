@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.ControlCargaController">
+      fx:controller="com.grupo.envios.controller.DkprControlCargaController">
     <padding>
         <Insets top="16" right="20" bottom="16" left="20"/>
     </padding>
@@ -15,7 +15,7 @@
         <Region HBox.hgrow="ALWAYS"/>
         <Label text="Agencia:" styleClass="etiqueta"/>
         <ComboBox fx:id="dkprCmbAgencia" prefWidth="240"/>
-        <Button text="Actualizar" onAction="#onActualizar"/>
+        <Button text="Actualizar" onAction="#dkprOnActualizar"/>
     </HBox>
 
     <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
@@ -28,7 +28,7 @@
                 <HBox spacing="8" alignment="CENTER_LEFT">
                     <TextField fx:id="dkprTxtBuscarEtiqueta" HBox.hgrow="ALWAYS"
                                promptText="Escanea el ticket o escribe el código del envío (ENV-000015 o 15) y pulsa Enter"/>
-                    <Button text="Agregar" onAction="#onAgregarEtiqueta"/>
+                    <Button text="Agregar" onAction="#dkprOnAgregarEtiqueta"/>
                 </HBox>
                 <HBox spacing="12" VBox.vgrow="ALWAYS">
                     <VBox spacing="6" HBox.hgrow="ALWAYS">
@@ -53,8 +53,8 @@
                 <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
                     <Label fx:id="dkprLblEtiquetas" styleClass="etiqueta"/>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="Guardar PDF (hojas A4)" onAction="#onEtiquetasPdf"/>
-                    <Button text="Imprimir etiquetas" styleClass="boton-primario" onAction="#onImprimirEtiquetas"/>
+                    <Button text="Guardar PDF (hojas A4)" onAction="#dkprOnEtiquetasPdf"/>
+                    <Button text="Imprimir etiquetas" styleClass="boton-primario" onAction="#dkprOnImprimirEtiquetas"/>
                 </HBox>
             </VBox>
         </Tab>
@@ -69,9 +69,9 @@
                 <HBox spacing="8" alignment="CENTER_LEFT">
                     <Label text="Destino:" styleClass="etiqueta"/>
                     <ComboBox fx:id="dkprCmbRuta" promptText="Elige el destino del vehículo" prefWidth="320"/>
-                    <Button text="Iniciar / retomar carga" onAction="#onIniciarDespacho"/>
+                    <Button text="Iniciar / retomar carga" onAction="#dkprOnIniciarDespacho"/>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="Imprimir manifiesto…" onAction="#onImprimirManifiesto"/>
+                    <Button text="Imprimir manifiesto…" onAction="#dkprOnImprimirManifiesto"/>
                 </HBox>
                 <Label fx:id="dkprLblSesionDespacho" styleClass="aviso" wrapText="true" minHeight="-Infinity"/>
                 <TextField fx:id="dkprTxtEscanearDespacho" style="-fx-font-size: 18px;"
@@ -96,9 +96,9 @@
                         <ComboBox fx:id="dkprCmbVehiculo" promptText="Vehículo (placa)" prefWidth="190"/>
                         <ComboBox fx:id="dkprCmbConductor" promptText="Conductor" prefWidth="220"/>
                         <TextField fx:id="dkprTxtObsDespacho" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
-                        <Button text="Cancelar carga" minWidth="-Infinity" onAction="#onCancelarDespacho"/>
+                        <Button text="Cancelar carga" minWidth="-Infinity" onAction="#dkprOnCancelarDespacho"/>
                         <Button fx:id="dkprBtnCerrarDespacho" text="Cerrar carga y despachar" minWidth="-Infinity" styleClass="boton-primario"
-                                onAction="#onCerrarDespacho"/>
+                                onAction="#dkprOnCerrarDespacho"/>
                     </HBox>
                 </VBox>
             </VBox>
@@ -115,7 +115,7 @@
                     <TextField fx:id="dkprTxtManifiesto" promptText="Escanea el manifiesto (MAN-000001)" prefWidth="240" minWidth="240"/>
                     <Label text="o elige:" styleClass="etiqueta" minWidth="-Infinity"/>
                     <ComboBox fx:id="dkprCmbManifiesto" promptText="Manifiesto que llega" prefWidth="300" minWidth="200" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-                    <Button text="Iniciar / retomar descarga" minWidth="-Infinity" onAction="#onIniciarRecepcion"/>
+                    <Button text="Iniciar / retomar descarga" minWidth="-Infinity" onAction="#dkprOnIniciarRecepcion"/>
                 </HBox>
                 <Label fx:id="dkprLblSesionRecepcion" styleClass="aviso" wrapText="true" minHeight="-Infinity"/>
                 <TextField fx:id="dkprTxtEscanearRecepcion" style="-fx-font-size: 18px;"
@@ -136,9 +136,9 @@
                 </HBox>
                 <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
                     <TextField fx:id="dkprTxtObsRecepcion" promptText="Observación (ej: caja golpeada)" HBox.hgrow="ALWAYS"/>
-                    <Button text="Cancelar descarga" minWidth="-Infinity" onAction="#onCancelarRecepcion"/>
+                    <Button text="Cancelar descarga" minWidth="-Infinity" onAction="#dkprOnCancelarRecepcion"/>
                     <Button fx:id="dkprBtnCerrarRecepcion" text="Cerrar recepción" minWidth="-Infinity" styleClass="boton-primario"
-                            onAction="#onCerrarRecepcion"/>
+                            onAction="#dkprOnCerrarRecepcion"/>
                 </HBox>
             </VBox>
         </Tab>

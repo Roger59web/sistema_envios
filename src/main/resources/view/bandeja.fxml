@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox spacing="10" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.grupo.envios.controller.BandejaController">
+      fx:controller="com.grupo.envios.controller.DkprBandejaController">
     <padding>
         <Insets top="16" right="20" bottom="16" left="20"/>
     </padding>
@@ -15,7 +15,7 @@
         <Region HBox.hgrow="ALWAYS"/>
         <Label text="Agencia:" styleClass="etiqueta"/>
         <ComboBox fx:id="dkprCmbAgencia" prefWidth="240"/>
-        <Button text="Actualizar" onAction="#onActualizar"/>
+        <Button text="Actualizar" onAction="#dkprOnActualizar"/>
     </HBox>
 
     <TabPane fx:id="dkprTabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
@@ -29,7 +29,7 @@
                     <ComboBox fx:id="dkprCmbDestino" promptText="Destino" prefWidth="240"/>
                     <TextField fx:id="dkprTxtEscanearDespacho" promptText="Escanea o escribe el código y pulsa Enter"
                                HBox.hgrow="ALWAYS"/>
-                    <Button text="Marcar todos" onAction="#onMarcarTodosDespacho"/>
+                    <Button text="Marcar todos" onAction="#dkprOnMarcarTodosDespacho"/>
                 </HBox>
                 <TableView fx:id="dkprTablaDespachar" editable="true" VBox.vgrow="ALWAYS">
                     <columns>
@@ -53,7 +53,7 @@
                         <ComboBox fx:id="dkprCmbConductor" promptText="Conductor" prefWidth="220"/>
                         <TextField fx:id="dkprTxtObsDespacho" promptText="Observación (opcional)" HBox.hgrow="ALWAYS"/>
                         <Button fx:id="dkprBtnDespachar" text="Despachar" styleClass="boton-primario"
-                                onAction="#onDespachar"/>
+                                onAction="#dkprOnDespachar"/>
                     </HBox>
                 </VBox>
             </VBox>
@@ -67,7 +67,7 @@
                 <HBox spacing="8" alignment="CENTER_LEFT">
                     <TextField fx:id="dkprTxtEscanearRecibir" promptText="Escanea cada paquete que baja del vehículo y pulsa Enter"
                                HBox.hgrow="ALWAYS"/>
-                    <Button text="Marcar todos" onAction="#onMarcarTodosRecibir"/>
+                    <Button text="Marcar todos" onAction="#dkprOnMarcarTodosRecibir"/>
                 </HBox>
                 <TableView fx:id="dkprTablaRecibir" editable="true" VBox.vgrow="ALWAYS">
                     <columns>
@@ -88,7 +88,7 @@
                 <HBox spacing="8" alignment="CENTER_LEFT" styleClass="panel-form">
                     <TextField fx:id="dkprTxtObsRecepcion" promptText="Observación (ej: caja golpeada)" HBox.hgrow="ALWAYS"/>
                     <Button fx:id="dkprBtnRecibir" text="Confirmar llegada" styleClass="boton-primario"
-                            onAction="#onRecibir"/>
+                            onAction="#dkprOnRecibir"/>
                 </HBox>
             </VBox>
         </Tab>
@@ -114,7 +114,7 @@
                     </placeholder>
                 </TableView>
                 <HBox alignment="CENTER_RIGHT">
-                    <Button text="Entregar seleccionado" styleClass="boton-primario" onAction="#onEntregar"/>
+                    <Button text="Entregar seleccionado" styleClass="boton-primario" onAction="#dkprOnEntregar"/>
                 </HBox>
             </VBox>
         </Tab>
